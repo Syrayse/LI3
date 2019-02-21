@@ -22,7 +22,7 @@ static int  v_price                  (char*,int*);
 int         is_valid_client         (char* s, int* flag)
     {
         *flag = strlen(s);
-        return ( *flag == 5
+        return ( (*flag == 5 || (*flag == 6 && s[5] == '\n'))
                 && isupper(s[0])
                 && is_between(atoi(s+1),1000,5000)
          );
@@ -32,15 +32,20 @@ int         is_valid_client         (char* s, int* flag)
 int         is_valid_product        (char* s, int* flag)
     {
         *flag = strlen(s);
-        return ( *flag == 6
-                && isupper(s[0])
+        int i;
+        /*puts("~~~~~");
+        for(i=0;s[i];i++)
+        	printf("%d:%c\n",i,s[i]);
+        puts("~~~~~");*/
+        return ( /*(*flag == 6 || (*flag == 8 && s[6] == '\n'))
+                && */isupper(s[0])
                 && isupper(s[1])
                 && is_between(atoi(s+2),1000,9999)
          );        
     }
 
 
-
+/*
 int         main ()
     {
         int r,tmp = 0;
@@ -56,3 +61,4 @@ int         main ()
         printf("%d\n",isupper('A'));
         printf("atof %f\n",atof("323f3"));    
     }
+*/
