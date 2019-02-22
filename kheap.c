@@ -1,16 +1,6 @@
-#include <stdlib.h>
+#include "kheap.h"
 #include <stdio.h>
 #include <string.h>
-#include "kheap.h"
-
-#define     min(a,b)        ((a)<(b)?(a):(b))
-#define     max(a,b)        ((a)>(b)?(a):(b))
-#define     ant(i)          (((i)-1)/K)
-#define     succ(i,o)       ((K)*(i)+(o))
-#define     BASESIZE        1
-#define     addr(heap,i,nb)     ((heap)+((i)*(nb)))
-#define     addre(kh,i)     (addr(((kh)->heap),(i),((kh)->nb)))
-#define     K               6
 
 // TYPE DEFS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -22,33 +12,36 @@ typedef struct kheap {
     char * heap;
 }*KHEAP;
 
-// Listagem das funções ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Listagem das Methods  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    //Public
-        //Criação && Remoção
 KHEAP           make_kheap          (fcompare,size_t);
 KHEAP           heapify_arr         (DATA,fcompare,size_t,int);
 void            free_kheap          (KHEAP);
-
-        //Operações base
 void            insert_data         (KHEAP, DATA);
 int             check_root          (KHEAP, DATA);
 int             extract_root        (KHEAP, DATA);
-
-        //Inspecção
 int             get_size_kheap      (KHEAP);
 int             is_empty_kheap      (KHEAP);
 
-    //Private
-        //Gestão
+//private
 int             bubble_up           (KHEAP);
 int             bubble_down         (KHEAP);
 void            double_heap         (KHEAP);
 void            swap_arr            (char*,char*,size_t,int,int);
-// Funções ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    //Public
-        //Criação && Remoção
+// USEFUL macros
+
+#define     min(a,b)        ((a)<(b)?(a):(b))
+#define     max(a,b)        ((a)>(b)?(a):(b))
+#define     ant(i)          (((i)-1)/K)
+#define     succ(i,o)       ((K)*(i)+(o))
+#define     BASESIZE        1
+#define     addr(heap,i,nb)     ((heap)+((i)*(nb)))
+#define     addre(kh,i)     (addr(((kh)->heap),(i),((kh)->nb)))
+#define     K               6
+
+// Methods ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 KHEAP           make_kheap          (fcompare fc,size_t nb)
     {
         KHEAP kh = NULL;
@@ -102,7 +95,6 @@ void            free_kheap          (KHEAP kh)
             perror("There is nothing to free");
     }
 
-        //Operações base
 void            insert_data         (KHEAP kh, DATA d)
     {
         if(kh)
@@ -117,7 +109,6 @@ void            insert_data         (KHEAP kh, DATA d)
             perror("Trying to insert in NULL heap");
     }
 
-//1 se nao vazio, 0 se vazio
 int             check_root          (KHEAP kh, DATA d)
     {
         int r = 0;
@@ -130,7 +121,6 @@ int             check_root          (KHEAP kh, DATA d)
 
     }
 
-//1 se não vazio, 0 se vazio
 int             extract_root        (KHEAP kh, DATA d)
     {
         int r = 0;
@@ -145,7 +135,6 @@ int             extract_root        (KHEAP kh, DATA d)
         return r;
     }
 
-        //Inspecção
 int             get_size_kheap      (KHEAP kh)
     {
         return kh->used;
@@ -156,13 +145,10 @@ int             is_empty_kheap      (KHEAP kh)
         return (kh->used==0);
     }
 
-    //Private
-        //Gestão
 int             bubble_up           (KHEAP kh)
     {
         int p=kh->used,r=0;
         while(p>0 && kh->fc(addre(kh,p),addre(kh,ant(p)))>0 )
-        //kh->fc(kh->heap[p],kh->heap[ant(p,kh->K)])>0)
             {
                 ++r;
                 swap_arr(kh->heap,kh->dummy,kh->nb,p,ant(p));
@@ -176,7 +162,7 @@ int             bubble_down         (KHEAP kh)
     {
         int i, p, minI, r, order;
         p = r = order = 0;
-        char *min = kh->min;//(char*)malloc(sizeof(char)*kh->nb);
+        char *min = kh->min;
 
         while(succ(p,1)<kh->used && !order)
             {
@@ -199,8 +185,6 @@ int             bubble_down         (KHEAP kh)
                 else
                     order = 1;
             }
-
-        //free(min);
         return r;
     }
 
