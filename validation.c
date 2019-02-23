@@ -64,10 +64,4 @@ int main () {
         placer[i++] = strdup(token);
         token = strtok(NULL," ");
     }
-
-    for (i = 0; i < 7; i++)
-        printf("%s!\n",placer[i]);
-
-    printf("is valid %d\n",is_valid_sale(placer,7));
-   return(0);
-}*/
+*/
