@@ -2,7 +2,7 @@ IDIR=../include
 ODIR=obj
 
 CC=gcc
-CFLAGS = -Wall -std=c11 -g -Ofast `pkg-config --cflags glib-2.0` -I$(IDIR)
+CFLAGS = -Wall -std=c11 -g -O2 `pkg-config --cflags glib-2.0` -I$(IDIR)
 
 DEPS=$(IDIR)/$(wildcard *.h)
 SOURCES=$(wildcard *.c)
