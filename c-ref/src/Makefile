@@ -1,11 +1,22 @@
-default: doI.o validation.o
-	gcc -o doI doI.o validation.o
+IDIR=../include
+ODIR=obj
 
-doI.o: doI.c validation.h
-	gcc -g -O -c doI.c
+CC=gcc
+CFLAGS = -Wall -std=c11 -g -Ofast `pkg-config --cflags glib-2.0` -I$(IDIR)
 
-validation.o: validation.c validation.h
-	gcc -g -O -c validation.c
+DEPS=$(IDIR)/$(wildcard *.h)
+SOURCES=$(wildcard *.c)
+SOURCES_OBJ=$(patsubst %.c,$(ODIR)/%.o,$(SOURCES))
+LIBS=`pkg-config --libs glib-2.0`
+
+print-% : ; @echo $* = $($*)
+
+$(ODIR)/%.o : %.c $(DEPS)
+		$(CC) $(CFLAGS) -c -o $@ $<
+
+program: $(SOURCES_OBJ)
+	$(CC) $(CFLAGS) $(wildcard $(ODIR)/*.o) -o program $(LIBS)
 
 clean:
-	rm -rf *.o
+	rm obj/*.o
+	rm program
