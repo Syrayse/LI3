@@ -25,29 +25,16 @@ int         is_valid_client         (char* s)
 
 int         is_valid_product        (char* s)
     {
-<<<<<<< HEAD
         return (
             isupper(s[0])
             && isupper(s[1])
             && is_between(atoi(s+2),1000,9999)
             && (s[6] == '\0')
         );
-=======
-        *flag = strlen(s);
-        return ( (*flag == 5 || (*flag == 6 && s[5] == '\n'))
-                && isupper(s[0])
-                && is_between(atoi(s+1),1000,5000)
-         );
->>>>>>> master
     }
 
-/*
-Recebe um array de strings que contem todas as partes da string
-N indica o numero de string passadas como argumento.
-*/
 int         is_valid_sale           (char** placer, int N)
     {
-<<<<<<< HEAD
         int r = 1;
         if (N == 7) {
             r = is_valid_product(placer[0])
@@ -61,55 +48,4 @@ int         is_valid_sale           (char** placer, int N)
         else
             r = 0;
         return r;
-=======
-        *flag = strlen(s);
-        int i;
-        /*puts("~~~~~");
-        for(i=0;s[i];i++)
-        	printf("%d:%c\n",i,s[i]);
-        puts("~~~~~");*/
-        return ( /*(*flag == 6 || (*flag == 8 && s[6] == '\n'))
-                && */isupper(s[0])
-                && isupper(s[1])
-                && is_between(atoi(s+2),1000,9999)
-         );        
->>>>>>> master
     }
-
-/*
-int main () {
-    int i = 0;
-    char str[80] = "US1761 132.36 170 H W3608 12 3";
-    char *placer[7];
-    char *token = strtok(str," ");
-    while(token && i < 7){
-        placer[i++] = strdup(token);
-        token = strtok(NULL," ");
-    }
-
-<<<<<<< HEAD
-    for (i = 0; i < 7; i++)
-        printf("%s!\n",placer[i]);
-
-    printf("is valid %d\n",is_valid_sale(placer,7));
-   return(0);
-}*/
-=======
-/*
-int         main ()
-    {
-        int r,tmp = 0;
-        char client[20] = "f0216";
-        char product[20] = "AB9012";
-
-        r = is_valid_client(client,&tmp);
-        printf("Client %s is %d, with size %d\n",client,r,tmp);
-
-        r = is_valid_product(product,&tmp);
-        printf("Product %s is %d, with size %d\n",product,r,tmp);
-    
-        printf("%d\n",isupper('A'));
-        printf("atof %f\n",atof("323f3"));    
-    }
-*/
->>>>>>> master
