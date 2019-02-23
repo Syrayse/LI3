@@ -1,0 +1,143 @@
+#include "sale.h"
+#include <stdlib.h>
+#include <string.h>
+
+// Type defs
+typedef struct sale {
+    char *client                //Código do cliente
+        ,*product;              //Código do produto
+    unsigned char month                  //Mes do registo    
+        ,filial                 //Filial do registo
+        ,promo                  //Booleano do registo
+        ,units;                  //unidades do registo
+    float price;                //Preco do registo
+} *SALE;
+
+//publico
+//Construtores e desconstrutores
+SALE make_s (void);
+void destroy_s (SALE);
+
+//setters e getters
+//getters
+char* get_client_s (SALE s);
+char* get_product_s (SALE s);
+unsigned char get_month_s (SALE s);
+unsigned char get_filial_s (SALE s);
+unsigned char get_promo_s (SALE s);
+unsigned char get_units_s (SALE s);
+float get_price_s (SALE s);
+
+//setters
+SALE set_client_s (SALE s, char* client);
+SALE set_product_s (SALE s, char* product);
+SALE set_month_s (SALE s, unsigned char month);
+SALE set_filial_s (SALE s, unsigned char filial);
+SALE set_promo_s (SALE s, unsigned char promo);
+SALE set_units_s (SALE s, unsigned char units);
+SALE set_price_s (SALE s, float price);
+
+//privado
+//None
+
+// Code ------------------------------------------------------
+// for the builders
+SALE make_s (void)
+{
+    SALE r = (SALE)malloc(sizeof(struct sale));
+    r->client = r->product = NULL;
+    r->month = r->filial = r->promo = r->units = 0;
+    r->price = -1;
+    return r;
+}
+
+void destroy_s (SALE s)
+{
+    if(s) {
+        if(s->product) free(s->product);
+        if(s->client) free(s->client);
+        free(s);
+    }
+}
+
+// for the setters and getters
+//getters
+char* get_client_s (SALE s)
+{
+    return ( s->client ? strdup(s->client) : NULL );
+}
+
+char* get_product_s (SALE s)
+{
+    return ( s->product ? strdup(s->product) : NULL );
+}
+
+unsigned char get_month_s (SALE s)
+{
+    return s->month;
+}
+
+unsigned char get_filial_s (SALE s)
+{
+    return s->filial;
+}
+
+unsigned char get_promo_s (SALE s)
+{
+    return s->promo;
+}
+
+unsigned char get_units_s (SALE s)
+{   
+    return s->units;
+}
+
+float get_price_s (SALE s)
+{
+    return s->price;
+}
+
+//setters
+SALE set_client_s (SALE s, char* client)
+{
+    if(client)
+        s->client = strdup(client);
+    return s;
+}
+
+SALE set_product_s (SALE s, char* product)
+{
+    if(product)
+        s->product = strdup(product);
+    return s;
+}
+
+SALE set_month_s (SALE s, unsigned char month)
+{
+    s->month = month;
+    return s;
+}
+
+SALE set_filial_s (SALE s, unsigned char filial)
+{
+    s->filial = filial;
+    return s;
+}
+
+SALE set_promo_s (SALE s, unsigned char promo)
+{
+    s->promo = promo;
+    return s;
+}
+
+SALE set_units_s (SALE s, unsigned char units)
+{
+    s->units = units;
+    return s;
+}
+
+SALE set_price_s (SALE s, float price)
+{
+    s->price = price;
+    return s;
+}
