@@ -10,11 +10,9 @@
 // PUBLIC METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int         is_valid_client         (char*);
 int         is_valid_product        (char*);
-int         is_valid_sale           (char*);
+int         is_valid_sale           (char**,int);
 
 // PRIVATE METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int     get_token_length (char* token, char** placer);
-void    free_placer (char ** placer, int n);
 // CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int         is_valid_client         (char* s)
     {
@@ -36,15 +34,13 @@ int         is_valid_product        (char* s)
     }
 
 /*
-Recebe um token da strtok
-produto + preco + unidades + promo + cliente + mes + filial
+Recebe um array de strings que contem todas as partes da string
+N indica o numero de string passadas como argumento.
 */
-int         is_valid_sale           (char* str)
+int         is_valid_sale           (char** placer, int N)
     {
-        int n,r = 1;
-        char **placer,*token = strtok(str," ");
-        placer = (char**)malloc(sizeof(char*)*7);
-        if ((n = get_token_length(token,placer)) == 7) {
+        int r = 1;
+        if (N == 7) {
             r = is_valid_product(placer[0])
                 && is_between(atof(placer[1]),0.0,999.99)
                 && is_between(atoi(placer[2]),1,200)
@@ -55,47 +51,23 @@ int         is_valid_sale           (char* str)
         }
         else
             r = 0;
-
-        for(r = 0; r < 7; r++)
-            printf("%s\n",placer[r]);
-        free_placer(placer,n);
         return r;
-        
     }
 
-int     get_token_length (char* token, char** placer) 
-{
-    int r = 0;
-    while (token != NULL && r < 7) {
-        placer[r++] = strdup(token);
-        strtok(NULL," ");
-    }
-    if (r > 7) r = -1;
-    return r;
-}
-
-void    free_placer (char ** placer, int n)
-{
-    int i;
-    for (i = 0; i < n; i++)
-        free(placer[i]);
-    free(placer);
-}
-
+/*
 int main () {
-    int i;
-    char str[80] = "US1761 832.36 170 P W3608 11 3";
-    char **placer = (char**)malloc(sizeof(char*)*7);
-    char *saver;
-    char *token = strtok_r(str," ",&saver);
-    while(token){
-        printf("%s | %d\n",token,strlen(token));
-        placer[i] = (char*)malloc(sizeof(char)*(strlen(token) + 1));
-        strcpy(placer[i],token);
-        token = strtok_r(NULL," ",&saver);
+    int i = 0;
+    char str[80] = "US1761 132.36 170 H W3608 12 3";
+    char *placer[7];
+    char *token = strtok(str," ");
+    while(token && i < 7){
+        placer[i++] = strdup(token);
+        token = strtok(NULL," ");
     }
 
     for (i = 0; i < 7; i++)
         printf("%s!\n",placer[i]);
+
+    printf("is valid %d\n",is_valid_sale(placer,7));
    return(0);
-}
+}*/
