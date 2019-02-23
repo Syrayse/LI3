@@ -52,8 +52,10 @@ SALE make_s (void)
 
 void destroy_s (SALE s)
 {
-    g_free(s->product);
-    g_free(s->client);
+    if(s) {
+        g_free(s->product);
+        g_free(s->client);
+    }
     g_free(s);
 }
 
