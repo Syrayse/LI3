@@ -1,8 +1,5 @@
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-#include <stdio.h>
 #include "validation.h"
+#include <glib.h>
 
 // USEFUL MACROS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #define     is_between(x,min,max)   ((x>=min) && (x<=max))
@@ -12,12 +9,11 @@ int         is_valid_client         (char*);
 int         is_valid_product        (char*);
 int         is_valid_sale           (char**,int);
 
-// PRIVATE METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int         is_valid_client         (char* s)
     {
         return (
-            isupper(s[0])                                           //Vejo se a primeira letra e maiuscula
+            g_ascii_isupper(s[0])                                           //Vejo se a primeira letra e maiuscula
             && is_between(atoi(s+1),1000,5000)                      //Vejo se esse numero esta entre 1000 e 5000
             && (s[5] == '\0')                                       //Vejo se a frase de facto termina quando eu acho que ela deve terminar
         );
@@ -26,8 +22,8 @@ int         is_valid_client         (char* s)
 int         is_valid_product        (char* s)
     {
         return (
-            isupper(s[0])
-            && isupper(s[1])
+            g_ascii_isupper(s[0])
+            && g_ascii_isupper(s[1])
             && is_between(atoi(s+2),1000,9999)
             && (s[6] == '\0')
         );
