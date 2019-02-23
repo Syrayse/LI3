@@ -1,7 +1,4 @@
 #include "kheap.h"
-#include <stdio.h>
-#include <string.h>
-#include <glib.h>
 
 // TYPE DEFS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -15,8 +12,8 @@ typedef struct kheap {
 
 // Listagem das Methods  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-KHEAP           make_kheap          (fcompare,size_t);
-KHEAP           heapify_arr         (DATA,fcompare,size_t,int);
+KHEAP           make_kheap          (fcompare, size_t);
+KHEAP           heapify_arr         (DATA, fcompare, size_t, int);
 void            free_kheap          (KHEAP);
 void            insert_data         (KHEAP, DATA);
 int             check_root          (KHEAP, DATA);
@@ -28,7 +25,9 @@ int             is_empty_kheap      (KHEAP);
 int             bubble_up           (KHEAP);
 int             bubble_down         (KHEAP);
 void            double_heap         (KHEAP);
-void            swap_arr            (char*,char*,size_t,int,int);
+void            swap_arr            (char*, char*, size_t, int, int);
+void            bubble_up_iter      (KHEAP, int);
+
 
 // USEFUL macros
 
@@ -57,8 +56,6 @@ KHEAP           make_kheap          (fcompare fc,size_t nb)
                 kh->dummy = g_malloc(sizeof(char)*nb);
                 kh->min = g_malloc(sizeof(char)*nb);
             }
-        else
-            perror("Invalid compare function");
         return kh;
     }
 
@@ -76,10 +73,9 @@ KHEAP           heapify_arr         (DATA v,fcompare fc,
                 kh->heap = g_malloc(sizeof(char)*nb*length);
                 kh->dummy = g_malloc(sizeof(char)*nb);
                 kh->min = g_malloc(sizeof(char)*nb);
-                memcpy(kh->heap,v,nb*length);   
+                memcpy(kh->heap,v,nb*length);
+                bubble_up_iter(kh,length);   
             }
-        else
-            perror("Invalid compare function");
         return kh;
     }
 
@@ -93,16 +89,10 @@ void            free_kheap          (KHEAP kh)
 
 void            insert_data         (KHEAP kh, DATA d)
     {
-        if(kh)
-            {
-                if(kh->used==kh->size)
-                    double_heap(kh);
-                memcpy(addre(kh,kh->used),d,kh->nb);
-                bubble_up(kh);
-                kh->used++;
-            }
-        else
-            perror("Trying to insert in NULL heap");
+        if(kh->used==kh->size)
+            double_heap(kh);
+        memcpy(addre(kh,kh->used),d,kh->nb);
+        bubble_up_iter(kh,1);
     }
 
 int             check_root          (KHEAP kh, DATA d)
@@ -153,6 +143,15 @@ int             bubble_up           (KHEAP kh)
         
         return r;   
     }
+
+void            bubble_up_iter      (KHEAP kh, int N)
+{
+    int i;
+    for(i = 0; i < N; i++) {
+        bubble_up(kh);
+        kh->used++;
+    }
+}
 
 int             bubble_down         (KHEAP kh)
     {

@@ -1,7 +1,7 @@
 #ifndef KHEAP_H
 #define KHEAP_H
 
-#include <stdlib.h>
+#include <glib.h>
 
 typedef struct kheap *KHEAP;
 
