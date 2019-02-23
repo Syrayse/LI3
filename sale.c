@@ -1,6 +1,7 @@
 #include "sale.h"
 #include <stdlib.h>
 #include <string.h>
+#include <glib.h>
 
 // Type defs
 typedef struct sale {
@@ -44,7 +45,7 @@ SALE set_price_s (SALE s, float price);
 // for the builders
 SALE make_s (void)
 {
-    SALE r = (SALE)malloc(sizeof(struct sale));
+    SALE r = g_malloc(sizeof(struct sale));
     r->client = r->product = NULL;
     r->month = r->filial = r->promo = r->units = 0;
     r->price = -1;
@@ -53,23 +54,21 @@ SALE make_s (void)
 
 void destroy_s (SALE s)
 {
-    if(s) {
-        if(s->product) free(s->product);
-        if(s->client) free(s->client);
-        free(s);
-    }
+    g_free(s->produdct);
+    g_free(s->client);
+    g_free(s);
 }
 
 // for the setters and getters
 //getters
 char* get_client_s (SALE s)
 {
-    return ( s->client ? strdup(s->client) : NULL );
+    return ( s->client ? g_strdup(s->client) : NULL );
 }
 
 char* get_product_s (SALE s)
 {
-    return ( s->product ? strdup(s->product) : NULL );
+    return ( s->product ? g_strdup(s->product) : NULL );
 }
 
 unsigned char get_month_s (SALE s)
@@ -101,14 +100,14 @@ float get_price_s (SALE s)
 SALE set_client_s (SALE s, char* client)
 {
     if(client)
-        s->client = strdup(client);
+        s->client = g_strdup(client);
     return s;
 }
 
 SALE set_product_s (SALE s, char* product)
 {
     if(product)
-        s->product = strdup(product);
+        s->product = g_strdup(product);
     return s;
 }
 
