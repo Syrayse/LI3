@@ -63,12 +63,12 @@ void destroy_s (SALE s)
 //getters
 char* get_client_s (SALE s)
 {
-    return ( s->client ? g_strdup(s->client) : NULL );
+    return g_strdup(s->client);
 }
 
 char* get_product_s (SALE s)
 {
-    return ( s->product ? g_strdup(s->product) : NULL );
+    return g_strdup(s->product);
 }
 
 unsigned char get_month_s (SALE s)
@@ -99,15 +99,13 @@ float get_price_s (SALE s)
 //setters
 SALE set_client_s (SALE s, char* client)
 {
-    if(client)
-        s->client = g_strdup(client);
+    s->client = g_strdup(client);
     return s;
 }
 
 SALE set_product_s (SALE s, char* product)
 {
-    if(product)
-        s->product = g_strdup(product);
+    s->product = g_strdup(product);
     return s;
 }
 
