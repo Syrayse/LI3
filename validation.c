@@ -33,10 +33,6 @@ int         is_valid_product        (char* s)
         );
     }
 
-/*
-Recebe um array de strings que contem todas as partes da string
-N indica o numero de string passadas como argumento.
-*/
 int         is_valid_sale           (char** placer, int N)
     {
         int r = 1;
@@ -53,15 +49,3 @@ int         is_valid_sale           (char** placer, int N)
             r = 0;
         return r;
     }
-
-/*
-int main () {
-    int i = 0;
-    char str[80] = "US1761 132.36 170 H W3608 12 3";
-    char *placer[7];
-    char *token = strtok(str," ");
-    while(token && i < 7){
-        placer[i++] = strdup(token);
-        token = strtok(NULL," ");
-    }
-*/
