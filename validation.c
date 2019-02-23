@@ -8,57 +8,60 @@
 #define     is_between(x,min,max)   ((x>=min) && (x<=max))
 
 // PUBLIC METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int         is_valid_client         (char*, int*);
-int         is_valid_product        (char*, int*);
-int         is_valid_sale           (char*, int*);  //Recieves a tokenized string.
+int         is_valid_client         (char*);
+int         is_valid_product        (char*);
+int         is_valid_sale           (char**,int);
 
 // PRIVATE METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-static int  v_price                  (char*,int*);
-
 // CODE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-// What makes a client word valid?
-int         is_valid_client         (char* s, int* flag)
+int         is_valid_client         (char* s)
     {
-        *flag = strlen(s);
-        return ( (*flag == 5 || (*flag == 6 && s[5] == '\n'))
-                && isupper(s[0])
-                && is_between(atoi(s+1),1000,5000)
-         );
+        return (
+            isupper(s[0])                                           //Vejo se a primeira letra e maiuscula
+            && is_between(atoi(s+1),1000,5000)                      //Vejo se esse numero esta entre 1000 e 5000
+            && (s[5] == '\0')                                       //Vejo se a frase de facto termina quando eu acho que ela deve terminar
+        );
     }
 
-// What makes a product Word valid?
-int         is_valid_product        (char* s, int* flag)
+int         is_valid_product        (char* s)
     {
-        *flag = strlen(s);
-        int i;
-        /*puts("~~~~~");
-        for(i=0;s[i];i++)
-        	printf("%d:%c\n",i,s[i]);
-        puts("~~~~~");*/
-        return ( /*(*flag == 6 || (*flag == 8 && s[6] == '\n'))
-                && */isupper(s[0])
-                && isupper(s[1])
-                && is_between(atoi(s+2),1000,9999)
-         );        
+        return (
+            isupper(s[0])
+            && isupper(s[1])
+            && is_between(atoi(s+2),1000,9999)
+            && (s[6] == '\0')
+        );
     }
-
 
 /*
-int         main ()
+Recebe um array de strings que contem todas as partes da string
+N indica o numero de string passadas como argumento.
+*/
+int         is_valid_sale           (char** placer, int N)
     {
-        int r,tmp = 0;
-        char client[20] = "f0216";
-        char product[20] = "AB9012";
+        int r = 1;
+        if (N == 7) {
+            r = is_valid_product(placer[0])
+                && is_between(atof(placer[1]),0.0,999.99)
+                && is_between(atoi(placer[2]),1,200)
+                && (placer[3][0] == 'N' || placer[3][0] == 'P')
+                && is_valid_client(placer[4])
+                && is_between(atoi(placer[5]),1,12)
+                && is_between(atoi(placer[6]),1,3);
+        }
+        else
+            r = 0;
+        return r;
+    }
 
-        r = is_valid_client(client,&tmp);
-        printf("Client %s is %d, with size %d\n",client,r,tmp);
-
-        r = is_valid_product(product,&tmp);
-        printf("Product %s is %d, with size %d\n",product,r,tmp);
-    
-        printf("%d\n",isupper('A'));
-        printf("atof %f\n",atof("323f3"));    
+/*
+int main () {
+    int i = 0;
+    char str[80] = "US1761 132.36 170 H W3608 12 3";
+    char *placer[7];
+    char *token = strtok(str," ");
+    while(token && i < 7){
+        placer[i++] = strdup(token);
+        token = strtok(NULL," ");
     }
 */
