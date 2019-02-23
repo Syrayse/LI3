@@ -1,6 +1,7 @@
 #include "kheap.h"
 #include <stdio.h>
 #include <string.h>
+#include <glib.h>
 
 // TYPE DEFS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -47,14 +48,14 @@ KHEAP           make_kheap          (fcompare fc,size_t nb)
         KHEAP kh = NULL;
         if(fc)
             {
-                kh = (KHEAP)malloc(sizeof(struct kheap));
+                kh = g_malloc(sizeof(struct kheap));
                 kh->fc = fc;
                 kh->size = BASESIZE;
                 kh->used = 0;
                 kh->nb = nb;
-                kh->heap = (char*)malloc(sizeof(char)*nb*BASESIZE);
-                kh->dummy = (char*)malloc(sizeof(char)*nb);
-                kh->min = (char*)malloc(sizeof(char)*nb);
+                kh->heap = g_malloc(sizeof(char)*nb*BASESIZE);
+                kh->dummy = g_malloc(sizeof(char)*nb);
+                kh->min = g_malloc(sizeof(char)*nb);
             }
         else
             perror("Invalid compare function");
@@ -67,14 +68,14 @@ KHEAP           heapify_arr         (DATA v,fcompare fc,
         KHEAP kh = NULL;
         if(fc)
             {
-                kh = (KHEAP)malloc(sizeof(struct kheap));
+                kh = g_malloc(sizeof(struct kheap));
                 kh->fc = fc;
                 kh->size = length;
                 kh->used = 0;
                 kh->nb = nb;
-                kh->heap = (char*)malloc(sizeof(char)*nb*length);
-                kh->dummy = (char*)malloc(sizeof(char)*nb);
-                kh->min = (char*)malloc(sizeof(char)*nb);
+                kh->heap = g_malloc(sizeof(char)*nb*length);
+                kh->dummy = g_malloc(sizeof(char)*nb);
+                kh->min = g_malloc(sizeof(char)*nb);
                 memcpy(kh->heap,v,nb*length);   
             }
         else
@@ -84,15 +85,10 @@ KHEAP           heapify_arr         (DATA v,fcompare fc,
 
 void            free_kheap          (KHEAP kh)
     {
-        if(kh)
-            {
-                free(kh->min);
-                free(kh->dummy);
-                free(kh->heap);
-                free(kh);
-            }
-        else
-            perror("There is nothing to free");
+        g_free(kh->min);
+        g_free(kh->dummy);
+        g_free(kh->heap);
+        g_free(kh);
     }
 
 void            insert_data         (KHEAP kh, DATA d)
@@ -190,7 +186,7 @@ int             bubble_down         (KHEAP kh)
 
 void            double_heap         (KHEAP kh)
     {
-        kh->heap = (char*)realloc(kh->heap,sizeof(char)*kh->size*2*kh->nb);
+        kh->heap = g_realloc(kh->heap,sizeof(char)*kh->size*2*kh->nb);
         kh->size *= 2;
         //puts("double in size");
     }
