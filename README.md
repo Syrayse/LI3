@@ -6,8 +6,10 @@ Na versão corrente encontram-se definidos e testados os seguintes módulos:
 
 * `validation`
 * `sale`
-* `kheap`
+* `kheap` -> talvez alterar funcionamento interno.
+* `parse`
 
-Objetivo principal a 23/02/2019:
-
-* Criar um módulo de `parse` utilizando os módulos `sale` e `validation`.
+Objetivo principal a 25/02/2019:
+* Pensar numa forma de retirar a necessidade de aplicar a mesma função duas vezes por cada elemento que se pretende verificar quando se está a fazer o parse e a verificação.
+* Aplicar GHash para verificar validação efetiva (para além de semântica).
+* Pensar numa forma eficiente de verificar se o registo de compra/venda é efetivamente válido.
