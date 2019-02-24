@@ -1,8 +1,19 @@
 #ifndef PARSE_H
 #define PARSE_H
 
+/**
+ * \brief Define indicativo da flag de parse de um produto.
+ **/
 #define PRS_PRODUCT -1
+
+/**
+ * \brief Define indicativo da flag de parse de uma venda.
+ **/
 #define PRS_SALE 0
+
+/**
+ * \brief Define indicativo da flag de parse de um cliente.
+ **/
 #define PRS_CLIENT 1
 
 typedef struct parser *PRS_OBJ;
