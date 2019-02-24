@@ -11,6 +11,21 @@ void print_s (SALE s) {
     puts("´´´´´´´´´´´´´´´´´´´´´´´´´´");
 }
 
+/*
+De momento a unica coisa que isto faz é ler de um dado ficheiro
+e à medida que lê cada linha, constroi uma estrutura de dados correspondente.
+e depois destroi.
+
+Com isto é possivel verificar que atualmente o nosso código é capaz de:
+    1) Verificar a validez de qualquer cliente/produto/venda.
+    2) Criar uma estrutura correspondente a cada um destes itens
+
+Porém de momento ainda não existe nenhuma estrutura que mantém e conseguia fazer a gestão
+destas estruturas e as relações entre elas
+
+Falta verificar se as vendas e clientes existem
+talvez usar hashtables? Noutro módulo?
+*/
 
 int main ()
 {
