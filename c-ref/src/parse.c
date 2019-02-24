@@ -20,5 +20,4 @@ int main () {
     printf("valid:\t\t%d\ninvalid:\t%d\ntotal:\t\t%d\n",i,n,n+i);
 
     destroy_vrf(v);
-    fclose(fp);
 }
