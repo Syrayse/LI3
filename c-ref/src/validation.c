@@ -47,11 +47,20 @@ int vrf_obj_str (VRF_OBJ v,char* str, int c)
 
     int r = 0;
     if(v) {
-        switch(c) {
-            case 0: r = (*v->fa[4])(str); break;
-            case 1: r = (*v->fa[0])(str); break;
-            case 2: r = is_valid_sale(v,str); break;
-        }
+        if (c == -1)
+            r = is_valid_sale(v,str);
+        else if (is_between(c,0,6)) r = (*v->fa[c])(str);
+        /*switch(c) {
+            case -1: r = is_valid_sale(v,str); break;
+            case 0: r = is_valid_product(str) ; break;
+            case 1: r = is_valid_price(str) ; break;
+            case 2: r = is_valid_units(str) ; break;
+            case 3: r = is_valid_promo(str) ; break;
+            case 4: r = is_valid_client(str) ; break;
+            case 5: r = is_valid_month(str) ; break;
+            case 6: r = is_valid_filial(str) ; break;
+
+        }*/
     }
     return r;
 }

@@ -9,7 +9,7 @@ int main () {
     char str[1000];
 
     VRF_OBJ v = make_vrf();
-    FILE *fp = fopen("tests/1m_sell2.txt","r");
+    FILE *fp = fopen("tests/Vendas_1M.txt","r");
     
     while( fgets(str,1000,fp) ){
         if ( vrf_obj_str(v,str,VRF_SALE) )
