@@ -28,13 +28,13 @@ unsigned char get_units_s (SALE);
 float get_price_s (SALE);
 
 //setters
-SALE set_client_s (SALE, char*);
-SALE set_product_s (SALE, char*);
-SALE set_month_s (SALE, unsigned char);
-SALE set_filial_s (SALE, unsigned char);
-SALE set_promo_s (SALE, unsigned char);
-SALE set_units_s (SALE, unsigned char);
-SALE set_price_s (SALE, float);
+void set_client_s (SALE, char*);
+void set_product_s (SALE, char*);
+void set_month_s (SALE, unsigned char);
+void set_filial_s (SALE, unsigned char);
+void set_promo_s (SALE, unsigned char);
+void set_units_s (SALE, unsigned char);
+void set_price_s (SALE, float);
 
 //privado
 //None
@@ -97,44 +97,37 @@ float get_price_s (SALE s)
 }
 
 //setters
-SALE set_client_s (SALE s, char* client)
+void set_client_s (SALE s, char* client)
 {
     s->client = g_strdup(client);
-    return s;
 }
 
-SALE set_product_s (SALE s, char* product)
+void set_product_s (SALE s, char* product)
 {
     s->product = g_strdup(product);
-    return s;
 }
 
-SALE set_month_s (SALE s, unsigned char month)
+void set_month_s (SALE s, unsigned char month)
 {
     s->month = month;
-    return s;
 }
 
-SALE set_filial_s (SALE s, unsigned char filial)
+void set_filial_s (SALE s, unsigned char filial)
 {
     s->filial = filial;
-    return s;
 }
 
-SALE set_promo_s (SALE s, unsigned char promo)
+void set_promo_s (SALE s, unsigned char promo)
 {
     s->promo = promo;
-    return s;
 }
 
-SALE set_units_s (SALE s, unsigned char units)
+void set_units_s (SALE s, unsigned char units)
 {
     s->units = units;
-    return s;
 }
 
-SALE set_price_s (SALE s, float price)
+void set_price_s (SALE s, float price)
 {
     s->price = price;
-    return s;
 }
