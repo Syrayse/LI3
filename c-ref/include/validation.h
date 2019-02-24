@@ -10,6 +10,8 @@
 #define VRF_MONTH 5
 #define VRF_FILIAL 6
 
+#define BASE_DELIM " \r\n"
+
 typedef struct verifier *VRF_OBJ;
 
 VRF_OBJ make_vrf (void);

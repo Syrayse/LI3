@@ -2,6 +2,7 @@
 #include "validation.h"
 #include "sale.h"
 #include <glib.h>
+#include <stdio.h>
 
 // STRUCTS / TYPEDEFS
 typedef void (*fchanger)(void*,char*);
@@ -45,7 +46,7 @@ int prs_obj_str (PRS_OBJ p, void* entry, char* str, int flag)
     char*token;
 
     if(p && entry && flag >= -1 && flag <= 1) {
-        token = strtok(str," \n");
+        token = strtok(str,BASE_DELIM);
         switch(flag) {
             case -1: r = prs_product_str(p,entry,token); break;
             case 0: r = prs_sale_str(p,entry,token); break;
@@ -72,7 +73,7 @@ int prs_sale_str (PRS_OBJ p, void* s, char * token)
 
     if(p && token) {
         r = 1;
-        for (i = 0; r && token && i < 7; i++, token = strtok(NULL," \n")){
+        for (i = 0; r && token && i < 7; i++, token = strtok(NULL,BASE_DELIM)){
             if((tmp = vrf_obj_str(p->verif,token,i)))
                 (*p->fv[i])(s,token);
             r = min(r,tmp);
@@ -89,7 +90,7 @@ int prs_single_str (PRS_OBJ p, void* s, char* token, int c)
     if(p && token) {
         r = vrf_obj_str(p->verif,token,c);
         if (r) (*p->str_o)(s,token);
-        token = strtok(NULL," \n");
+        token = strtok(NULL,BASE_DELIM);
     }
 
     return (token ? 0 : r);
@@ -135,12 +136,12 @@ void __est_pdct_s (void* e, char* str)
 
 void __est_price_s (void* e, char* str)
 {
-    set_price_s((SALE)e,(unsigned char)atof(str));
+    set_price_s((SALE)e,atof(str));
 }
 
 void __est_units_s (void* e, char* str)
 {
-    set_promo_s((SALE)e,(unsigned char)atoi(str));
+    set_units_s((SALE)e,(unsigned char)atoi(str));
 }
 
 void __est_promo_s (void* e, char* str)
