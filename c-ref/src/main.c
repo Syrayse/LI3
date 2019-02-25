@@ -30,7 +30,7 @@ talvez usar hashtables? Noutro módulo?
 int main ()
 {
     int i,r;
-    FILE * fp = fopen("tests/Vendas_1M.txt","r");
+    FILE * fp = fopen("tests/5m_sell.txt","r");
     VRF_OBJ v = make_vrf();
     //PRS_OBJ p = make_prs();
     char buff[100];
