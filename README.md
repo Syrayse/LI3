@@ -7,7 +7,7 @@ Na versão corrente encontram-se definidos e testados os seguintes módulos:
 * `validation`
 * `sale`
 * `kheap` -> talvez alterar funcionamento interno.
-* `parse`
+* `parse` -> este módulo foi removido pelo branch `RR/efficiency_up`, que atualizou o módulo `validation` de forma a realizar as funções do antigo módulo `parse`.
 
 ### OBJETIVOS E NOTAS DE APOIO TÉCNICO
 
@@ -25,6 +25,17 @@ Notas sobre a utilização e funções úteis da glib:
 
 Que tipo de utilidade se podia dar a este _value_?
 * Talvez o _value_ possa conter todos os registos de vendas associados a um dado cliente, a um dado produto. De qualquer forma que nos fosse mais agradável.
+
+##### Benchmarking a 25/02/2019 da verificação semântica de todos os registos de vendas.
+RAM: 5,7 GiB
+
+CPU: Intel® Core™ i5-5200U CPU @ 2.20GHz × 4 
+
+GPU: Intel® HD Graphics 5500 (Broadwell GT2)
+
+Utilizando o comando `time` da _bash_ a versão atual demora 0.91s a verificar semânticamente todas as vendas do ficheiro `Vendas_1M.txt`.
+
+Após aplicada a branch `RR/efficiency-up`, exatamente o mesmo procedimento passou a demorar 0.57s.
 
 ### PROJECT'S CHECKPOINTS
 
