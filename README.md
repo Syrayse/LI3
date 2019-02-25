@@ -28,10 +28,16 @@ Que tipo de utilidade se podia dar a este _value_?
 
 ### PROJECT'S CHECKPOINTS
 
-##### Ideia para implementação eficiente da verificação efetiva de um registo de venda
+##### Ideia para retirar a necessidade de fazer _parse_ duas vezes do mesmo valor.
+Na versão corrente deste program há duas vezes por cada registo de venda que são efetuadas funções de parse que sucedem aquando da verificação e no parse efetivo. Funções do género `atof` e `atoi` são executadas duas vezes por registo, e estas aparentam ser dispendiosas. Daí provém a necessidade encurtar o número de execuções destas funções para só uma por registo. A ideia para alcançar este objetivo é criar uma estrutura auxiliar que à medida que válida estes valores coloca-os dentro duma _dummy structure_ que guarda a informação proveniente destas funções "caras". Retirando assim a necessidade de execucões repetidas.
+
+##### Ideia para implementação eficiente da verificação efetiva de um registo de venda.
 Primeiro ler os ficheiros `Clientes.txt` e `Produtos.txt`, criar duas _hash tables_ contendo informação de cada um destes ficheiros, após devidamente validada, e de seguida à medida que se lê cada registo de venda, verificar nas _hash tables_ a existências dos valores descritos. Neste caso verifica se o produto existe e se o cliente existe.
 Tendo em conta que o tempo amortizado de `g_hash_table_contains` é O(1) então espera-se que esta verificação não traga um maior custo à função de _parsing_.
 
+##### Onde verificar este predicado?
+Na função `prs_obj_str` deve ser adicionado um argumento que corresponde a um _tuplo_ de 2 tabelas de _hash_, um representa os clientes todos e outro representa os produtos existentes. Quando a `prs_obj_str` recebe a flag `PRS_CLIENT` ou `PRS_PRODUCT` deve adicionar os elementos que conseguir fazer _parse_ às respetivas tabelas de _hash_. Porém quando recebe a flag `PRS_SALE` e verifica que de facto a string recebida é válida, deve ser efetuado um ultimo teste predicado, que verifica ambas as tabelas de _hash_.
 
-referências:
+### REFERÊNCIAS
+
 https://developer.gnome.org/glib/stable/glib-Hash-Tables.html
