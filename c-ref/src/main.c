@@ -1,4 +1,4 @@
-#include "parse.h"
+#include "validation.h"
 #include "sale.h"
 #include <glib.h>
 #include <stdio.h>
@@ -30,29 +30,29 @@ talvez usar hashtables? Noutro módulo?
 int main ()
 {
     int i,r;
-    FILE * fp = fopen("tests/products1.txt","r");
-    PRS_OBJ p = make_prs();
+    FILE * fp = fopen("tests/Vendas_1M.txt","r");
+    VRF_OBJ v = make_vrf();
+    //PRS_OBJ p = make_prs();
     char buff[100];
-    char *v;
     SALE s = make_s();
-
+    //char *ve;
     i = r = 0;
     if(fp) {
         while( fgets(buff,100,fp) ) {
-            if ( prs_obj_str(p,&v,buff,PRS_PRODUCT) ) {
+            if ( vrf_obj_str(v,s,buff,VRF_SALE) ) {
                 i++;
-                //printf("!%s!\n",v);
+                //printf("!%s!\n",ve);
                 //print_s(s);
-                free(v);
-                //destroy_s(s);
-                //s = make_s();
+                //free(ve);
+                destroy_s(s);
+                s = make_s();
             }
             else r++;
         }
     }
 
     destroy_s(s);
-    destroy_prs(p);
+    destroy_vrf(v);
     fclose(fp);
 
     printf("Valid:\t\t%d\ninvalid:\t%d\ntotal:\t\t%d\n",i,r,r+i);
