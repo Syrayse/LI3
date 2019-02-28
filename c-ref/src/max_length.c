@@ -6,27 +6,25 @@ int max_length() {
     int at, i, max;
 
     char buff [MAX_BUFFER];
-    FILE * fp = fopen("b.txt","r"); // Ficheiro a ler
+    FILE * fp = fopen("tests/Vendas_1M.txt","r"); // Ficheiro a ler
 
-    at=-1;
-    max=0;
+    at = max = 0;
+
     if (fp){
     	while (fread(buff, sizeof(char), MAX_BUFFER, fp)) { // Usei o fread, porque podemos ler a quantidade de bits que quisermos..
-					for (i = 0; i < MAX_BUFFER ; ++i) {
-	    	           	if (buff[i]=='\n') {
-	    	           		max=(max<at)? at : max;
-							printf("O at é %d\n", at);
-							at=-1;
-	    	           	}
-	    	           	at++;
-	    	    }
+			for (i = 0; i < MAX_BUFFER ; ++i, at++) {
+				if (buff[i]=='\n'){
+	           		max=(max<at)? at : max;
+	           		at=-1;
+	           	}
+	    	}
     	}
     }
 
     else exit(1); // Caso o ficheiro não exista
 
-    printf("%d\n", max-1);
+    //printf("%d\n", max);
     fclose(fp);
     
-    return max-1;
+    return max;
 }
