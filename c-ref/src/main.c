@@ -2,6 +2,9 @@
 #include "sale.h"
 #include <glib.h>
 #include <stdio.h>
+#include <time.h>
+
+#define BUFF_SIZE   50
 
 void print_s (SALE s) {
     puts("´´´´´´´´´´´´´´´´´´´´´´´´´´");
@@ -11,39 +14,20 @@ void print_s (SALE s) {
     puts("´´´´´´´´´´´´´´´´´´´´´´´´´´");
 }
 
-/*
-De momento a unica coisa que isto faz é ler de um dado ficheiro
-e à medida que lê cada linha, constroi uma estrutura de dados correspondente.
-e depois destroi.
-
-Com isto é possivel verificar que atualmente o nosso código é capaz de:
-    1) Verificar a validez de qualquer cliente/produto/venda.
-    2) Criar uma estrutura correspondente a cada um destes itens
-
-Porém de momento ainda não existe nenhuma estrutura que mantém e conseguia fazer a gestão
-destas estruturas e as relações entre elas
-
-Falta verificar se as vendas e clientes existem
-talvez usar hashtables? Noutro módulo?
-*/
-
-int main ()
-{
-    int i,r;
+void doWork() {
+    int r,i,tmp,max,bs = BUFF_SIZE;
+    r = i = max = 0;
     FILE * fp = fopen("tests/5m_sell.txt","r");
     VRF_OBJ v = make_vrf();
-    //PRS_OBJ p = make_prs();
-    char buff[100];
+    char * buff = g_malloc(sizeof(char)*bs);
     SALE s = make_s();
-    //char *ve;
-    i = r = 0;
+
     if(fp) {
-        while( fgets(buff,100,fp) ) {
+        while ( fgets(buff,bs,fp) ) {
+            tmp = strlen(buff);
+            max = tmp > max ? tmp : max;
             if ( vrf_obj_str(v,s,buff,VRF_SALE) ) {
                 i++;
-                //printf("!%s!\n",ve);
-                //print_s(s);
-                //free(ve);
                 destroy_s(s);
                 s = make_s();
             }
@@ -51,9 +35,24 @@ int main ()
         }
     }
 
+    g_free(buff);
     destroy_s(s);
     destroy_vrf(v);
     fclose(fp);
 
+    printf("biggest line is: %d\n",max);
     printf("Valid:\t\t%d\ninvalid:\t%d\ntotal:\t\t%d\n",i,r,r+i);
+}
+
+// CPU TIME
+int main (void)
+{
+    clock_t start,end;
+    double cpu_time_used;
+    start = clock();
+    doWork();
+    end = clock();
+    cpu_time_used = ((double)(end-start)) / CLOCKS_PER_SEC;
+    printf("CPU Time:%f\n",cpu_time_used);
+    return 0;
 }
