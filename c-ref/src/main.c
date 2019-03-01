@@ -31,19 +31,10 @@ destas estruturas e as relações entre elas
 Falta verificar se as vendas e clientes existem
 talvez usar hashtables? Noutro módulo?
 */
-
-int main()
-{
-
-    int r, i, tmp, max, bs = BUFF_SIZE;
-    r = i = max = 0;
-    FILE *fp = fopen("tests/Vendas_1M.txt", "r");
-=======
 void doWork() {
     int r,i,tmp,max,bs = BUFF_SIZE;
     r = i = max = 0;
     FILE * fp = fopen("tests/5m_sell.txt","r");
->>>>>>> 12944e8e378bfaa53516ff884ec6d9b19af4cad5
     VRF_OBJ v = make_vrf();
     char *buff = g_malloc(sizeof(char) * bs);
     SALE s = make_s();
