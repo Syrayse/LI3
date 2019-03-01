@@ -15,7 +15,6 @@ void print_s(SALE s)
     puts("´´´´´´´´´´´´´´´´´´´´´´´´´´");
 }
 
-<<<<<<< HEAD
 /*
 De momento a unica coisa que isto faz é ler de um dado ficheiro
 e à medida que lê cada linha, constroi uma estrutura de dados correspondente.
