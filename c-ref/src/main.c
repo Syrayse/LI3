@@ -38,7 +38,7 @@ void doWork() {
     g_free(buff);
     destroy_s(s);
     destroy_vrf(v);
-    fclose(fp);
+    if(fp) fclose(fp);
 
     printf("biggest line is: %d\n",max);
     printf("Valid:\t\t%d\ninvalid:\t%d\ntotal:\t\t%d\n",i,r,r+i);
