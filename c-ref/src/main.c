@@ -17,7 +17,7 @@ void print_s (SALE s) {
 void doWork() {
     int r,i,tmp,max,bs = BUFF_SIZE;
     r = i = max = 0;
-    FILE * fp = fopen("tests/5m_sell.txt","r");
+    FILE * fp = fopen("tests/Vendas_1M.txt","r");
     VRF_OBJ v = make_vrf();
     char * buff = g_malloc(sizeof(char)*bs);
     SALE s = make_s();
@@ -38,7 +38,7 @@ void doWork() {
     g_free(buff);
     destroy_s(s);
     destroy_vrf(v);
-    fclose(fp);
+    if(fp) fclose(fp);
 
     printf("biggest line is: %d\n",max);
     printf("Valid:\t\t%d\ninvalid:\t%d\ntotal:\t\t%d\n",i,r,r+i);
