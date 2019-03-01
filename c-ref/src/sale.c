@@ -9,26 +9,26 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-SALE make_s (void);
-void destroy_s (SALE);
+SALE make_s(void);
+void destroy_s(SALE);
 
 /* Getters */
-char* get_client_s (SALE);
-char* get_product_s (SALE);
-unsigned char get_month_s (SALE);
-unsigned char get_filial_s (SALE);
-unsigned char get_promo_s (SALE);
-unsigned char get_units_s (SALE);
-float get_price_s (SALE);
+char *get_client_s(SALE);
+char *get_product_s(SALE);
+unsigned char get_month_s(SALE);
+unsigned char get_filial_s(SALE);
+unsigned char get_promo_s(SALE);
+unsigned char get_units_s(SALE);
+float get_price_s(SALE);
 
 /* Setters */
-void set_client_s (SALE, char*);
-void set_product_s (SALE, char*);
-void set_month_s (SALE, unsigned char);
-void set_filial_s (SALE, unsigned char);
-void set_promo_s (SALE, unsigned char);
-void set_units_s (SALE, unsigned char);
-void set_price_s (SALE, float);
+void set_client_s(SALE, char *);
+void set_product_s(SALE, char *);
+void set_month_s(SALE, unsigned char);
+void set_filial_s(SALE, unsigned char);
+void set_promo_s(SALE, unsigned char);
+void set_units_s(SALE, unsigned char);
+void set_price_s(SALE, float);
 
 /* Metodos privados */
 // None
@@ -38,22 +38,27 @@ void set_price_s (SALE, float);
 /**
  * \brief Estrutura de dados que descreve um registo de venda/compra. 
  **/
-typedef struct sale {
-    char *client                /**< Código do cliente */
-        ,*product;              /**< Código do produto */
-    unsigned char month                  /**< Mes da venda */ 
-        ,filial                 /**< Filial da venda */
-        ,promo                  /**< Código promocional da venda */
-        ,units;                  /**< unidades vendidas */
-    float price;                /**< Preco de cada unidade vendida */
-} *SALE;
+typedef struct sale
+{
+    char *client /**< Código do cliente */
+        ,
+        *product;       /**< Código do produto */
+    unsigned char month /**< Mes da venda */
+        ,
+        filial /**< Filial da venda */
+        ,
+        promo /**< Código promocional da venda */
+        ,
+        units;   /**< unidades vendidas */
+    float price; /**< Preco de cada unidade vendida */
+} * SALE;
 
 // ------------------------------------------------------------------------------
 
 /**
  * \brief Cria estrutura onde é armazenado um registo de venda.
  **/
-SALE make_s (void)
+SALE make_s(void)
 {
     SALE r = g_malloc(sizeof(struct sale));
     r->client = r->product = NULL;
@@ -65,9 +70,10 @@ SALE make_s (void)
 /**
  * \brief Destrói estrutura de dados que armazena um registo de venda.
  **/
-void destroy_s (SALE s)
+void destroy_s(SALE s)
 {
-    if(s) {
+    if (s)
+    {
         g_free(s->product);
         g_free(s->client);
     }
@@ -81,7 +87,7 @@ void destroy_s (SALE s)
  * 
  * @returns O cliente que efetuou a compra.
  **/
-char* get_client_s (SALE s)
+char *get_client_s(SALE s)
 {
     return g_strdup(s->client);
 }
@@ -93,7 +99,7 @@ char* get_client_s (SALE s)
  * 
  * @returns O código do produto.
  **/
-char* get_product_s (SALE s)
+char *get_product_s(SALE s)
 {
     return g_strdup(s->product);
 }
@@ -105,7 +111,7 @@ char* get_product_s (SALE s)
  * 
  * @returns O mẽs da venda.
  **/
-unsigned char get_month_s (SALE s)
+unsigned char get_month_s(SALE s)
 {
     return s->month;
 }
@@ -117,7 +123,7 @@ unsigned char get_month_s (SALE s)
  * 
  * @returns Filial onde ocorreu a venda.
  **/
-unsigned char get_filial_s (SALE s)
+unsigned char get_filial_s(SALE s)
 {
     return s->filial;
 }
@@ -129,7 +135,7 @@ unsigned char get_filial_s (SALE s)
  * 
  * @returns O código promocional de uma venda.
  **/
-unsigned char get_promo_s (SALE s)
+unsigned char get_promo_s(SALE s)
 {
     return s->promo;
 }
@@ -141,8 +147,8 @@ unsigned char get_promo_s (SALE s)
  * 
  * @returns O número de unidades vendidas.
  **/
-unsigned char get_units_s (SALE s)
-{   
+unsigned char get_units_s(SALE s)
+{
     return s->units;
 }
 
@@ -153,7 +159,7 @@ unsigned char get_units_s (SALE s)
  * 
  * @returns O preço da venda.
  **/
-float get_price_s (SALE s)
+float get_price_s(SALE s)
 {
     return s->price;
 }
@@ -164,7 +170,7 @@ float get_price_s (SALE s)
  * @param s Registo de venda.
  * @param client Código do comprador.
  **/
-void set_client_s (SALE s, char* client)
+void set_client_s(SALE s, char *client)
 {
     s->client = g_strdup(client);
 }
@@ -175,7 +181,7 @@ void set_client_s (SALE s, char* client)
  * @param s Registo de venda.
  * @param product Código do produto vendido.
  **/
-void set_product_s (SALE s, char* product)
+void set_product_s(SALE s, char *product)
 {
     s->product = g_strdup(product);
 }
@@ -186,7 +192,7 @@ void set_product_s (SALE s, char* product)
  * @param s Registo de venda.
  * @param month Mês associado à venda.
  **/
-void set_month_s (SALE s, unsigned char month)
+void set_month_s(SALE s, unsigned char month)
 {
     s->month = month;
 }
@@ -197,7 +203,7 @@ void set_month_s (SALE s, unsigned char month)
  * @param s Registo de venda.
  * @param filial Identificador da filial.
  **/
-void set_filial_s (SALE s, unsigned char filial)
+void set_filial_s(SALE s, unsigned char filial)
 {
     s->filial = filial;
 }
@@ -208,7 +214,7 @@ void set_filial_s (SALE s, unsigned char filial)
  * @param s Registo de venda.
  * @param promo Código promocional.
  **/
-void set_promo_s (SALE s, unsigned char promo)
+void set_promo_s(SALE s, unsigned char promo)
 {
     s->promo = promo;
 }
@@ -219,7 +225,7 @@ void set_promo_s (SALE s, unsigned char promo)
  * @param s Registo de venda.
  * @param units Unidades vendidas.
  **/
-void set_units_s (SALE s, unsigned char units)
+void set_units_s(SALE s, unsigned char units)
 {
     s->units = units;
 }
@@ -230,7 +236,7 @@ void set_units_s (SALE s, unsigned char units)
  * @param s Registo de venda.
  * @param price Preço ao qual a venda foi efetuada.
  **/
-void set_price_s (SALE s, float price)
+void set_price_s(SALE s, float price)
 {
     s->price = price;
 }
