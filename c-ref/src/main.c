@@ -2,6 +2,7 @@
 #include "sale.h"
 #include <glib.h>
 #include <stdio.h>
+#include <time.h>
 
 #define BUFF_SIZE   50
 
@@ -13,28 +14,10 @@ void print_s (SALE s) {
     puts("´´´´´´´´´´´´´´´´´´´´´´´´´´");
 }
 
-/*
-De momento a unica coisa que isto faz é ler de um dado ficheiro
-e à medida que lê cada linha, constroi uma estrutura de dados correspondente.
-e depois destroi.
-
-Com isto é possivel verificar que atualmente o nosso código é capaz de:
-    1) Verificar a validez de qualquer cliente/produto/venda.
-    2) Criar uma estrutura correspondente a cada um destes itens
-
-Porém de momento ainda não existe nenhuma estrutura que mantém e conseguia fazer a gestão
-destas estruturas e as relações entre elas
-
-Falta verificar se as vendas e clientes existem
-talvez usar hashtables? Noutro módulo?
-*/
-
-int main ()
-{
-
+void doWork() {
     int r,i,tmp,max,bs = BUFF_SIZE;
     r = i = max = 0;
-    FILE * fp = fopen("tests/Vendas_1M.txt","r");
+    FILE * fp = fopen("tests/5m_sell.txt","r");
     VRF_OBJ v = make_vrf();
     char * buff = g_malloc(sizeof(char)*bs);
     SALE s = make_s();
@@ -59,4 +42,17 @@ int main ()
 
     printf("biggest line is: %d\n",max);
     printf("Valid:\t\t%d\ninvalid:\t%d\ntotal:\t\t%d\n",i,r,r+i);
+}
+
+// CPU TIME
+int main (void)
+{
+    clock_t start,end;
+    double cpu_time_used;
+    start = clock();
+    doWork();
+    end = clock();
+    cpu_time_used = ((double)(end-start)) / CLOCKS_PER_SEC;
+    printf("CPU Time:%f\n",cpu_time_used);
+    return 0;
 }
