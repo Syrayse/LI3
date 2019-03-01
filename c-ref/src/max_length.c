@@ -11,7 +11,7 @@ int max_length() {
     at = max = 0;
 
     if (fp){
-    	while (bit = fread(buff, sizeof(char), MAX_BUFFER, fp)) { // Usei o fread, porque podemos ler a quantidade de bits que quisermos..
+    	while ((bit = fread(buff, sizeof(char), MAX_BUFFER, fp))) { // Usei o fread, porque podemos ler a quantidade de bits que quisermos..
 			for (i = 0; i < bit ; ++i, at++) {
 				if (buff[i]=='\n'){
 					at--;
