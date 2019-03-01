@@ -23,8 +23,8 @@
 
 typedef struct verifier *VRF_OBJ;
 
-VRF_OBJ make_vrf (void);
-int vrf_obj_str (VRF_OBJ,void*,char*,int);
-void destroy_vrf (VRF_OBJ);
+VRF_OBJ make_vrf(void);
+int vrf_obj_str(VRF_OBJ, void *, char *, int);
+void destroy_vrf(VRF_OBJ);
 
 #endif
