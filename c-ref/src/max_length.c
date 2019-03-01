@@ -28,3 +28,9 @@ int max_length() {
     
     return max;
 }
+
+/*
+int main () {
+    max_length();
+    //printf("max length:%d\n",max_length());
+}*/
