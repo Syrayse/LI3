@@ -50,22 +50,18 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
     int tmp, max = 0;
     char buff[100];
     FILE *fp = fopen(file, "r");
-    SALE s;
+    SALE v,s = make_s();
 
     if (fp)
     {
-        s = make_s();
+        //s = make_s();
 
         while (fgets(buff, 100, fp))
         {
             tmp = strlen(buff);
             max = tmp > max ? tmp : max;
 
-            if (vrf_obj_str(v, m, s, buff, VRF_SALE))
-            {
-                destroy_s(s);
-                s = make_s();
-            }
+            vrf_obj_str(v, m, s, buff, VRF_SALE);
         }
 
         set_maior_linha(m, max);
@@ -81,9 +77,9 @@ void doWork()
     MAN_b m = make_man();
     VRF_OBJ v = make_vrf();
 
-    gettfile(m, v, "tests/Clientes.txt", VRF_CLIENT);
-
     gettfile(m, v, "tests/Produtos.txt", VRF_PRODUCT);
+
+    gettfile(m, v, "tests/Clientes.txt", VRF_CLIENT);
 
     getvendas(m, v, "tests/Vendas_1M.txt");
 

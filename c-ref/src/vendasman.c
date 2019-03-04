@@ -23,6 +23,7 @@ char *get_last_client(MAN_b);
 int get_client_n_vendas(MAN_b, char *);
 
 void set_maior_linha(MAN_b, int);
+void set_last_client(MAN_b, SALE);
 
 void show_boletim_vendas(MAN_b mn);
 
@@ -68,14 +69,18 @@ void destroy_man(MAN_b b)
 {
     if (b)
     {
+        puts("Freed nothing");
         destroy_msb(b->clients);
+        puts("Freed the first");
         destroy_msb(b->products);
+        puts("Freed the second");
         g_free(b);
     }
 }
 
 int insert_client_man(MAN_b b, char *s)
 {
+    b->nClientesAlph[(int)(*s - 'A')]++;
     return insert_msb(b->clients, s, NULL);
 }
 
@@ -88,14 +93,14 @@ int insert_product_man(MAN_b b, char *s)
 int insert_sale_man(MAN_b b, SALE s)
 {
     int r = validate_s(b->products, b->clients, s);
-
+    //printf("got %d\n",r);
     if (r)
     {
         insert_self_s(b->products, b->clients, s);
 
         b->lastSale = s;
 
-        b->nVendasFiliais[get_filial_s(s)]++;
+        b->nVendasFiliais[get_filial_s(s) - 1]++;
 
         b->totalCashFlow += (get_units_s(s) * get_price_s(s));
     }
@@ -176,16 +181,22 @@ void show_boletim_vendas(MAN_b mn)
     printf("Vendas efectivas: %d\n", get_n_vendas_total(mn));
     client = get_last_client(mn);
     printf("Ultimo cliente: %s\n", client);
-    printf("Numero de vendas regitadas para o cliente %s: %d\n", client, get_client_n_vendas(mn, client));
+    if (client)
+        printf("Numero de vendas regitadas para o cliente %s: %d\n", client, get_client_n_vendas(mn, client));
     printf("Numero de vendas registadas na filial 1: %d\n", get_n_vendas_filial(mn, 1));
     printf("Numero de vendas registadas na filial 2: %d\n", get_n_vendas_filial(mn, 2));
     printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
     show_number_sales(mn);
     printf("Faturacao total: %f\n", get_cashflow_total(mn));
-    g_free(client);
+    //g_free(client);
 }
 
 void set_maior_linha(MAN_b m, int l)
 {
     m->maiorLinha = l;
+}
+
+void set_last_client(MAN_b m, SALE s)
+{
+    m->lastSale = s;
 }

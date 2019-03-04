@@ -32,12 +32,13 @@ APPENDER make_appender()
 
 void update_appender(APPENDER a, void *e)
 {
-    if (!e)
-        return;
-    SALE s = (SALE)e;
-    a->vendas++;
-    a->unitsSold += get_units_s(s);
-    a->totalRevenue += (get_units_s(s) * get_price_s(s));
+    if (e)
+    {
+        SALE s = (SALE)e;
+        a->vendas++;
+        a->unitsSold += get_units_s(s);
+        a->totalRevenue += (get_units_s(s) * get_price_s(s));
+    }
 }
 
 int get_app_vendas(APPENDER a)

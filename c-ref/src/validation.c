@@ -149,7 +149,7 @@ int _set_v_client_str_only(char *token, void *entry)
 {
     int r = is_valid_client(token);
     if (r)
-        insert_client_man((MAN_b)entry, token);
+        insert_client_man((MAN_b)entry, g_strdup(token));
     return r;
 }
 
@@ -157,7 +157,7 @@ int _set_v_product_str_only(char *token, void *entry)
 {
     int r = is_valid_product(token);
     if (r)
-        insert_product_man((MAN_b)entry, token);
+        insert_product_man((MAN_b)entry, g_strdup(token));
     return r;
 }
 

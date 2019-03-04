@@ -5,6 +5,7 @@
 
 #include "sale.h"
 #include <glib.h>
+#include <stdio.h>
 
 // ------------------------------------------------------------------------------
 
@@ -83,12 +84,14 @@ void destroy_s(SALE s)
 
 int validate_s(MainStructB products, MainStructB clients, SALE s)
 {
+    //printf("%s\n", s->client);
     return (exists_msb(products, s->product) && exists_msb(clients, s->client));
 }
 
-int insert_self_s(MainStructB products, MainStructB clients, SALE s)
+void insert_self_s(MainStructB products, MainStructB clients, SALE s)
 {
-    return (insert_msb(products, s->product, s) || insert_msb(clients, s->client, s));
+    insert_msb(products, s->product, s);
+    insert_msb(clients, s->client, s);
 }
 
 /**
