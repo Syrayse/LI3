@@ -5,6 +5,7 @@
 
 #include "validation.h"
 #include "sale.h"
+#include "vendasman.h"
 #include <glib.h>
 #include <stdio.h>
 
@@ -12,13 +13,13 @@
 
 /* Metodos publicos */
 VRF_OBJ make_vrf(void);
-int vrf_obj_str(VRF_OBJ, void *, char *, int);
+int vrf_obj_str(VRF_OBJ, void *, void *, char *, int);
 void destroy_vrf(VRF_OBJ);
 
 /* Metodos privados */
+int cover_is_valid_sale(VRF_OBJ v, char *s, void *main, void *entry);
 int _set_v_client_str_only(char *s, void *entry);
 int _set_v_product_str_only(char *s, void *entry);
-int __set_v_str_only(char *s, void *entry, int (*fv)(char *));
 int _set_sale_valid_client(char *, void *);
 int _set_sale_valid_product(char *, void *);
 int is_valid_client(char *);
@@ -96,7 +97,7 @@ VRF_OBJ make_vrf(void)
  * 
  * @returns A validade da string segundo c.
  **/
-int vrf_obj_str(VRF_OBJ v, void *entry, char *str, int c)
+int vrf_obj_str(VRF_OBJ v, void *main, void *entry, char *str, int c)
 {
 
     int r = 0;
@@ -107,13 +108,13 @@ int vrf_obj_str(VRF_OBJ v, void *entry, char *str, int c)
         switch (c)
         {
         case -1:
-            r = is_valid_sale(v, entry, token);
+            r = cover_is_valid_sale(v, token, main, entry);
             break;
         case 0:
-            r = (*v->fv_pct)(token, entry);
+            r = (*v->fv_pct)(token, main);
             break;
         case 1:
-            r = (*v->fv_cl)(token, entry);
+            r = (*v->fv_cl)(token, main);
             break;
         }
     }
@@ -131,27 +132,32 @@ void destroy_vrf(VRF_OBJ v)
     g_free(v);
 }
 
+int cover_is_valid_sale(VRF_OBJ v, char *token, void *main, void *entry)
+{
+    int tmp, r = is_valid_sale(v, entry, token);
+
+    if (r)
+    {
+        tmp = insert_sale_man((MAN_b)main, (SALE)entry);
+        r = min(r, tmp);
+    }
+
+    return r;
+}
+
 int _set_v_client_str_only(char *token, void *entry)
 {
-    return __set_v_str_only(token, entry, is_valid_client);
+    int r = is_valid_client(token);
+    if (r)
+        insert_client_man((MAN_b)entry, g_strdup(token));
+    return r;
 }
 
 int _set_v_product_str_only(char *token, void *entry)
 {
-    return __set_v_str_only(token, entry, is_valid_product);
-}
-
-int __set_v_str_only(char *token, void *entry, int (*fv)(char *))
-{
-    int r = (fv && (*fv)(token));
+    int r = is_valid_product(token);
     if (r)
-        *((char **)entry) = g_strdup(token);
-    token = strtok(NULL, " \n");
-    if (r && token)
-    {
-        r = 0;
-        g_free(*((char **)entry));
-    }
+        insert_product_man((MAN_b)entry, g_strdup(token));
     return r;
 }
 

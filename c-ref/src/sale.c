@@ -5,12 +5,14 @@
 
 #include "sale.h"
 #include <glib.h>
+#include <stdio.h>
 
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
 SALE make_s(void);
 void destroy_s(SALE);
+int validate_s(MainStructB, MainStructB, SALE);
 
 /* Getters */
 char *get_client_s(SALE);
@@ -78,6 +80,18 @@ void destroy_s(SALE s)
         g_free(s->client);
     }
     g_free(s);
+}
+
+int validate_s(MainStructB products, MainStructB clients, SALE s)
+{
+    //printf("%s\n", s->client);
+    return (exists_msb(products, s->product) && exists_msb(clients, s->client));
+}
+
+void insert_self_s(MainStructB products, MainStructB clients, SALE s)
+{
+    insert_msb(products, s->product, s);
+    insert_msb(clients, s->client, s);
 }
 
 /**
