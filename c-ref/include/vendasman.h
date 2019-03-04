@@ -21,4 +21,8 @@ float get_cashflow_total(MAN_b);
 char *get_last_client(MAN_b);
 int get_client_n_vendas(MAN_b, char *);
 
+void set_maior_linha(MAN_b, int);
+
+void show_boletim_vendas(MAN_b mn);
+
 #endif

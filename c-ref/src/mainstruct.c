@@ -34,7 +34,7 @@ void destroy_msb(MainStructB m)
 {
     if (m)
     {
-        g_hash_table_destroy(m);
+        g_hash_table_destroy(m->table);
         g_free(m);
     }
 }
@@ -43,7 +43,7 @@ int insert_msb(MainStructB m, void *key, void *value)
 {
     void *tmp;
     //Se já existir o elemento
-    if (tmp = g_hash_table_lookup(m->table, key))
+    if ((tmp = g_hash_table_lookup(m->table, key)))
         update_appender(tmp, value);
     else
         g_hash_table_insert(m->table, key, make_appender());
@@ -68,7 +68,7 @@ int exists_msb(MainStructB m, void *key)
 int get_client_v(MainStructB b, char *s)
 {
     int r = -1;
-    void *tmp = g_hash_table_contains(b, s);
+    void *tmp = g_hash_table_lookup(b->table, s);
     if (tmp)
         r = get_app_vendas(tmp);
     return r;

@@ -1,6 +1,7 @@
 #include "vendasman.h"
 #include "mainstruct.h"
-#include <glib.c>
+#include <glib.h>
+#include <stdio.h>
 
 // ------------------------------------------------------------------------------
 
@@ -20,6 +21,10 @@ int get_n_clientes_alph(MAN_b, char);
 float get_cashflow_total(MAN_b);
 char *get_last_client(MAN_b);
 int get_client_n_vendas(MAN_b, char *);
+
+void set_maior_linha(MAN_b, int);
+
+void show_boletim_vendas(MAN_b mn);
 
 /* Metodos privados */
 
@@ -152,5 +157,35 @@ char *get_last_client(MAN_b b)
 
 int get_client_n_vendas(MAN_b b, char *client)
 {
-    return get_client_v(b, client);
+    return get_client_v(b->clients, client);
+}
+
+void show_number_sales(MAN_b mn)
+{
+    char c;
+    for (c = 'A'; c <= 'Z'; c++)
+        printf("%c:%d\n", c, get_n_clientes_alph(mn, c));
+}
+
+void show_boletim_vendas(MAN_b mn)
+{
+    char *client;
+    printf("FIM DA LEITURA DO Vendas_1M.txt\n");
+    printf("Produtos envolvidos: %d\n", get_n_produtos(mn));
+    printf("Clientes envolvidos: %d\n", get_n_clientes_total(mn));
+    printf("Vendas efectivas: %d\n", get_n_vendas_total(mn));
+    client = get_last_client(mn);
+    printf("Ultimo cliente: %s\n", client);
+    printf("Numero de vendas regitadas para o cliente %s: %d\n", client, get_client_n_vendas(mn, client));
+    printf("Numero de vendas registadas na filial 1: %d\n", get_n_vendas_filial(mn, 1));
+    printf("Numero de vendas registadas na filial 2: %d\n", get_n_vendas_filial(mn, 2));
+    printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
+    show_number_sales(mn);
+    printf("Faturacao total: %f\n", get_cashflow_total(mn));
+    g_free(client);
+}
+
+void set_maior_linha(MAN_b m, int l)
+{
+    m->maiorLinha = l;
 }

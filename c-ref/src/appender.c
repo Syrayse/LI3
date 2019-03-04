@@ -1,12 +1,14 @@
 #include "sale.h"
+#include "appender.h"
 #include <glib.h>
 
 // ------------------------------------------------------------------------------
 
+/* Metodos publicos */
 APPENDER make_appender();
-void update_appender(void *);
+void update_appender(APPENDER, void *);
 int get_app_vendas(APPENDER);
-void destroy_appender(APPENDER);
+void destroy_appender(void *);
 
 // ------------------------------------------------------------------------------
 
@@ -43,8 +45,8 @@ int get_app_vendas(APPENDER a)
     return a->vendas;
 }
 
-void destroy_appender(APPENDER a)
+void destroy_appender(void *a)
 {
     if (a)
-        g_free(a);
+        g_free((APPENDER)a);
 }
