@@ -1,11 +1,15 @@
 #ifndef SALE_H
 #define SALE_H
 
+#include "mainstruct.h"
+
 typedef struct sale *SALE;
 
 //Construtores e desconstrutores
 SALE make_s(void);
 void destroy_s(SALE);
+int validate_s(MainStructB, MainStructB, SALE);
+int insert_self_s(MainStructB, SALE);
 
 //setters e getters
 //getters
