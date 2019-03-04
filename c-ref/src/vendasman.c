@@ -42,7 +42,7 @@ void show_boletim_vendas(MAN_b mn);
 typedef struct manb
 {
     MainStructB clients, products;
-    SALE lastSale;
+    char *lastClient;
     int maiorLinha,
         nVendasFiliais[3],
         nClientesAlph['Z' - 'A' + 1];
@@ -55,7 +55,7 @@ MAN_b make_man(void)
     MAN_b b = g_malloc(sizeof(struct manb));
     b->clients = make_msb();
     b->products = make_msb();
-    b->lastSale = NULL;
+    b->lastClient = NULL;
     b->maiorLinha = -1;
     for (i = 0; i < 3; i++)
         b->nVendasFiliais[i] = 0;
@@ -69,11 +69,8 @@ void destroy_man(MAN_b b)
 {
     if (b)
     {
-        puts("Freed nothing");
         destroy_msb(b->clients);
-        puts("Freed the first");
         destroy_msb(b->products);
-        puts("Freed the second");
         g_free(b);
     }
 }
@@ -98,7 +95,9 @@ int insert_sale_man(MAN_b b, SALE s)
     {
         insert_self_s(b->products, b->clients, s);
 
-        b->lastSale = s;
+        if (b->lastClient)
+            g_free(b->lastClient);
+        b->lastClient = get_client_s(s);
 
         b->nVendasFiliais[get_filial_s(s) - 1]++;
 
@@ -154,10 +153,7 @@ float get_cashflow_total(MAN_b b)
 
 char *get_last_client(MAN_b b)
 {
-    char *r = NULL;
-    if (b->lastSale)
-        r = get_client_s(b->lastSale);
-    return r;
+    return b->lastClient;
 }
 
 int get_client_n_vendas(MAN_b b, char *client)
@@ -176,6 +172,7 @@ void show_boletim_vendas(MAN_b mn)
 {
     char *client;
     printf("FIM DA LEITURA DO Vendas_1M.txt\n");
+    printf("A maior linha tem tamanho %d\n", get_maior_linha(mn));
     printf("Produtos envolvidos: %d\n", get_n_produtos(mn));
     printf("Clientes envolvidos: %d\n", get_n_clientes_total(mn));
     printf("Vendas efectivas: %d\n", get_n_vendas_total(mn));
@@ -194,9 +191,4 @@ void show_boletim_vendas(MAN_b mn)
 void set_maior_linha(MAN_b m, int l)
 {
     m->maiorLinha = l;
-}
-
-void set_last_client(MAN_b m, SALE s)
-{
-    m->lastSale = s;
 }

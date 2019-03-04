@@ -50,7 +50,7 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
     int tmp, max = 0;
     char buff[100];
     FILE *fp = fopen(file, "r");
-    SALE v,s = make_s();
+    SALE s = make_s();
 
     if (fp)
     {
