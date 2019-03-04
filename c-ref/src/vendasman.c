@@ -185,7 +185,8 @@ void show_boletim_vendas(MAN_b mn)
     printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
     show_number_sales(mn);
     printf("Faturacao total: %f\n", get_cashflow_total(mn));
-    //g_free(client);
+    if (client)
+        g_free(client);
 }
 
 void set_maior_linha(MAN_b m, int l)

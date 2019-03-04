@@ -54,7 +54,6 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
 
     if (fp)
     {
-        //s = make_s();
 
         while (fgets(buff, 100, fp))
         {
@@ -62,6 +61,9 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
             max = tmp > max ? tmp : max;
 
             vrf_obj_str(v, m, s, buff, VRF_SALE);
+
+            destroy_s(s);
+            s = make_s();
         }
 
         set_maior_linha(m, max);
