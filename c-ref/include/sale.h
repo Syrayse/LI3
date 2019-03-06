@@ -8,6 +8,7 @@ typedef struct sale *SALE;
 //Construtores e desconstrutores
 SALE make_s(void);
 void destroy_s(SALE);
+void clean_s(SALE);
 int validate_s(MainStructB, MainStructB, SALE);
 void insert_self_s(MainStructB, MainStructB, SALE);
 

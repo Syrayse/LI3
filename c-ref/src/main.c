@@ -60,10 +60,11 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
             tmp = strlen(buff);
             max = tmp > max ? tmp : max;
 
-            vrf_obj_str(v, m, s, buff, VRF_SALE);
-
-            destroy_s(s);
-            s = make_s();
+            if (vrf_obj_str(v, m, s, buff, VRF_SALE))
+            {
+                destroy_s(s);
+                s = make_s();
+            }
         }
 
         set_maior_linha(m, max);

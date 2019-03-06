@@ -141,6 +141,8 @@ int cover_is_valid_sale(VRF_OBJ v, char *token, void *main, void *entry)
         tmp = insert_sale_man((MAN_b)main, (SALE)entry);
         r = min(r, tmp);
     }
+    else
+        clean_s((SALE)entry);
 
     return r;
 }

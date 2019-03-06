@@ -36,7 +36,6 @@ void destroy_msb(MainStructB m)
     if (m)
     {
         g_hash_table_destroy(m->table);
-        //g_hash_table_destroy(m->table);
         g_free(m);
     }
 }

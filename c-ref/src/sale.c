@@ -12,6 +12,7 @@
 /* Metodos publicos */
 SALE make_s(void);
 void destroy_s(SALE);
+void clean_s(SALE);
 int validate_s(MainStructB, MainStructB, SALE);
 
 /* Getters */
@@ -69,16 +70,22 @@ SALE make_s(void)
     return r;
 }
 
-/**
- * \brief Destrói estrutura de dados que armazena um registo de venda.
- **/
-void destroy_s(SALE s)
+void clean_s(SALE s)
 {
     if (s)
     {
         g_free(s->product);
         g_free(s->client);
+        s->product = s->client = NULL;
     }
+}
+
+/**
+ * \brief Destrói estrutura de dados que armazena um registo de venda.
+ **/
+void destroy_s(SALE s)
+{
+    clean_s(s);
     g_free(s);
 }
 
