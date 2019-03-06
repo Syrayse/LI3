@@ -91,7 +91,6 @@ void destroy_s(SALE s)
 
 int validate_s(MainStructB products, MainStructB clients, SALE s)
 {
-    //printf("%s\n", s->client);
     return (exists_msb(products, s->product) && exists_msb(clients, s->client));
 }
 

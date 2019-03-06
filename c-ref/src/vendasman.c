@@ -97,6 +97,7 @@ int insert_sale_man(MAN_b b, SALE s)
 
         if (b->lastClient)
             g_free(b->lastClient);
+            
         b->lastClient = get_client_s(s);
 
         b->nVendasFiliais[get_filial_s(s) - 1]++;
