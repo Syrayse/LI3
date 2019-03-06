@@ -78,6 +78,8 @@ APPENDER make_appender()
 
 void update_appender(APPENDER a, void *e)
 {
+    if (!e)
+        return;
     SALE s = (SALE)e;
     float rev = (get_units_s(s) * get_price_s(s));
     int f, m, p = get_promo_s(s);
