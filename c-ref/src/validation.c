@@ -142,9 +142,6 @@ int cover_is_valid_sale(VRF_OBJ v, char *token, void *main, void *entry)
         r = min(r, tmp);
     }
 
-    if (!r)
-        clean_s((SALE)entry);
-
     return r;
 }
 
