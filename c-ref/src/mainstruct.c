@@ -72,6 +72,6 @@ int get_client_v(MainStructB b, char *s)
     int r = -1;
     void *tmp = g_hash_table_lookup(b->table, s);
     if (tmp)
-        r = get_app_vendas(tmp);
+        r = get_t_vendas(tmp);
     return r;
 }
