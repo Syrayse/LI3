@@ -1,6 +1,9 @@
 #ifndef VALIDATION_H
 #define VALIDATION_H
 
+#include "mainstruct.h"
+#include "sale.h"
+
 /**
  * \brief Define indicativo de que se pretende verificar a validez de uma venda.
  **/
@@ -26,5 +29,6 @@ typedef struct verifier *VRF_OBJ;
 VRF_OBJ make_vrf(void);
 int vrf_obj_str(VRF_OBJ, void *, void *, char *, int);
 void destroy_vrf(VRF_OBJ);
+int validate_s(MainStructB, MainStructB, SALE);
 
 #endif

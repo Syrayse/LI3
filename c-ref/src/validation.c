@@ -4,7 +4,6 @@
  **/
 
 #include "validation.h"
-#include "sale.h"
 #include "vendasman.h"
 #include <glib.h>
 #include <stdio.h>
@@ -15,6 +14,7 @@
 VRF_OBJ make_vrf(void);
 int vrf_obj_str(VRF_OBJ, void *, void *, char *, int);
 void destroy_vrf(VRF_OBJ);
+int validate_s(MainStructB, MainStructB, SALE);
 
 /* Metodos privados */
 int cover_is_valid_sale(VRF_OBJ v, char *s, void *main, void *entry);
@@ -130,6 +130,11 @@ int vrf_obj_str(VRF_OBJ v, void *main, void *entry, char *str, int c)
 void destroy_vrf(VRF_OBJ v)
 {
     g_free(v);
+}
+
+int validate_s(MainStructB products, MainStructB clients, SALE s)
+{
+    return process_paralelo_s(products, clients, s, exists_msb, exists_msb);
 }
 
 int cover_is_valid_sale(VRF_OBJ v, char *token, void *main, void *entry)

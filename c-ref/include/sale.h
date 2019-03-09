@@ -3,17 +3,23 @@
 
 #include "mainstruct.h"
 
+/**
+ * \brief Typedef para função que recebe dois tipos abstratos e retorna um booleano.
+ **/
+typedef int (*pc)(MainStructB, void*);
+
 typedef struct sale *SALE;
 
 //Construtores e desconstrutores
 SALE make_s(void);
 void destroy_s(SALE);
 void clean_s(SALE);
-int validate_s(MainStructB, MainStructB, SALE);
+int process_paralelo_s(MainStructB, MainStructB, SALE, pc, pc);
 void insert_self_s(MainStructB, MainStructB, SALE);
 
 //setters e getters
 //getters
+void copy_client_s(SALE src, char *dest);
 char *get_client_s(SALE s);
 char *get_product_s(SALE s);
 unsigned char get_month_s(SALE s);

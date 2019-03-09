@@ -1,3 +1,4 @@
+#include "validation.h"
 #include "vendasman.h"
 #include "mainstruct.h"
 #include <glib.h>
@@ -42,7 +43,7 @@ void show_boletim_vendas(MAN_b mn);
 typedef struct manb
 {
     MainStructB clients, products;
-    char *lastClient;
+    char lastClient[7];
     int maiorLinha,
         nVendasFiliais[3],
         nClientesAlph['Z' - 'A' + 1];
@@ -55,7 +56,7 @@ MAN_b make_man(void)
     MAN_b b = g_malloc(sizeof(struct manb));
     b->clients = make_msb();
     b->products = make_msb();
-    b->lastClient = NULL;
+    b->lastClient[0] = '\0';
     b->maiorLinha = -1;
     for (i = 0; i < 3; i++)
         b->nVendasFiliais[i] = 0;
@@ -95,11 +96,9 @@ int insert_sale_man(MAN_b b, SALE s)
     {
         insert_self_s(b->products, b->clients, s);
 
-        if (b->lastClient)
-            g_free(b->lastClient);
-            
-        b->lastClient = get_client_s(s);
+        copy_client_s(s, b->lastClient);
 
+        
         b->nVendasFiliais[get_filial_s(s) - 1]++;
 
         b->totalCashFlow += (get_units_s(s) * get_price_s(s));
@@ -171,23 +170,19 @@ void show_number_sales(MAN_b mn)
 
 void show_boletim_vendas(MAN_b mn)
 {
-    char *client;
     printf("FIM DA LEITURA DO Vendas_1M.txt\n");
     printf("A maior linha tem tamanho %d\n", get_maior_linha(mn));
     printf("Produtos envolvidos: %d\n", get_n_produtos(mn));
     printf("Clientes envolvidos: %d\n", get_n_clientes_total(mn));
     printf("Vendas efectivas: %d\n", get_n_vendas_total(mn));
-    client = get_last_client(mn);
-    printf("Ultimo cliente: %s\n", client);
-    if (client)
-        printf("Numero de vendas regitadas para o cliente %s: %d\n", client, get_client_n_vendas(mn, client));
+    printf("Ultimo cliente: %s\n", mn->lastClient);
+    if (mn->lastClient[0] != '\0')
+        printf("Numero de vendas regitadas para o cliente %s: %d\n", mn->lastClient, get_client_n_vendas(mn, mn->lastClient));
     printf("Numero de vendas registadas na filial 1: %d\n", get_n_vendas_filial(mn, 1));
     printf("Numero de vendas registadas na filial 2: %d\n", get_n_vendas_filial(mn, 2));
     printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
     show_number_sales(mn);
     printf("Faturacao total: %f\n", get_cashflow_total(mn));
-    if (client)
-        g_free(client);
 }
 
 void set_maior_linha(MAN_b m, int l)

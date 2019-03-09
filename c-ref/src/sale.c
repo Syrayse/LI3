@@ -6,6 +6,7 @@
 #include "sale.h"
 #include <glib.h>
 #include <stdio.h>
+#include <string.h>
 
 // ------------------------------------------------------------------------------
 
@@ -14,8 +15,10 @@ SALE make_s(void);
 void destroy_s(SALE);
 void clean_s(SALE);
 int validate_s(MainStructB, MainStructB, SALE);
+int process_paralelo_s(MainStructB, MainStructB, SALE, pc, pc);
 
 /* Getters */
+void copy_client_s(SALE, char *);
 char *get_client_s(SALE);
 char *get_product_s(SALE);
 unsigned char get_month_s(SALE);
@@ -70,6 +73,9 @@ SALE make_s(void)
     return r;
 }
 
+/**
+ * \brief Liberta todas os elementos da estrutura `SALE` alocados dinamicamente, sem destruir a propria estrutura.
+ **/
 void clean_s(SALE s)
 {
     if (s)
@@ -89,9 +95,14 @@ void destroy_s(SALE s)
     g_free(s);
 }
 
-int validate_s(MainStructB products, MainStructB clients, SALE s)
+int process_paralelo_s(MainStructB prd_st, MainStructB cl_st, SALE s, pc prdct, pc clt)
 {
-    return (exists_msb(products, s->product) && exists_msb(clients, s->client));
+    return ((*prdct)(prd_st, s->product) && (*clt)(cl_st, s->client));
+}
+
+void copy_client_s(SALE src, char *dest)
+{
+    strcpy(dest, src->client);
 }
 
 void insert_self_s(MainStructB products, MainStructB clients, SALE s)
