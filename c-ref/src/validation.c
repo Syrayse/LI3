@@ -5,6 +5,7 @@
 
 #include "validation.h"
 #include "vendasman.h"
+#include "util.h"
 #include <glib.h>
 #include <stdio.h>
 
@@ -30,18 +31,6 @@ int is_valid_units(char *, void *);
 int is_valid_promo(char *, void *);
 int is_valid_month(char *, void *);
 int is_valid_filial(char *, void *);
-
-// ------------------------------------------------------------------------------
-
-/**
- * \brief Verifica se x se encontra entre dois limites.
- **/
-#define is_between(x, min, max) ((x >= min) && (x <= max))
-
-/**
- * \brief Mínimo entre dois números.
- **/
-#define min(a, b) ((a) < (b) ? (a) : (b))
 
 // ------------------------------------------------------------------------------
 

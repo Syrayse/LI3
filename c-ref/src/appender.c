@@ -1,5 +1,6 @@
 #include "sale.h"
 #include "appender.h"
+#include "util.h"
 #include <glib.h>
 
 // ------------------------------------------------------------------------------
@@ -32,13 +33,6 @@ void destroy_appender(void *);
 /* Metodos privados */
 int get_t_vendas_month_iter(APPENDER a, int month, int (*)(APPENDER, int, int));
 float get_t_rev_month_iter(APPENDER a, int month, float (*)(APPENDER, int, int));
-// ------------------------------------------------------------------------------
-
-#define indP(a) ((a) == ('N') ? 0 : 1)
-
-#define N_MONTHS 12
-#define N_FILIAIS 3
-#define N_PROMOS 2
 
 // ------------------------------------------------------------------------------
 

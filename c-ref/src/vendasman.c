@@ -1,6 +1,7 @@
 #include "validation.h"
 #include "vendasman.h"
 #include "mainstruct.h"
+#include "util.h"
 #include <glib.h>
 #include <stdio.h>
 
@@ -32,14 +33,6 @@ void show_boletim_vendas(MAN_b mn);
 
 // ------------------------------------------------------------------------------
 
-#define min(a, b) ((a) < (b) ? (a) : (b))
-
-#define max(a, b) ((a) > (b) ? (a) : (b))
-
-#define is_between(a, min, max) (((a) >= (min)) && ((a) <= (max)))
-
-// ------------------------------------------------------------------------------
-
 typedef struct manb
 {
     MainStructB clients, products;
@@ -49,6 +42,8 @@ typedef struct manb
         nClientesAlph['Z' - 'A' + 1];
     float totalCashFlow;
 } * MAN_b;
+
+// ------------------------------------------------------------------------------
 
 MAN_b make_man(void)
 {
@@ -98,7 +93,6 @@ int insert_sale_man(MAN_b b, SALE s)
 
         copy_client_s(s, b->lastClient);
 
-        
         b->nVendasFiliais[get_filial_s(s) - 1]++;
 
         b->totalCashFlow += (get_units_s(s) * get_price_s(s));
