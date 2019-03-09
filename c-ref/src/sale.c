@@ -14,8 +14,8 @@
 SALE make_s(void);
 void destroy_s(SALE);
 void clean_s(SALE);
-int validate_s(MainStructB, MainStructB, SALE);
-int process_paralelo_s(MainStructB, MainStructB, SALE, pc, pc);
+int validate_s(DBase, DBase, SALE);
+int process_paralelo_s(DBase, DBase, SALE, pc, pc);
 
 /* Getters */
 void copy_client_s(SALE, char *);
@@ -63,6 +63,8 @@ typedef struct sale
 
 /**
  * \brief Cria estrutura onde é armazenado um registo de venda.
+ * 
+ * @returns Um registo de venda utilizavél.
  **/
 SALE make_s(void)
 {
@@ -75,6 +77,8 @@ SALE make_s(void)
 
 /**
  * \brief Liberta todas os elementos da estrutura `SALE` alocados dinamicamente, sem destruir a propria estrutura.
+ *
+ * @param s Registo de venda a limpar.
  **/
 void clean_s(SALE s)
 {
@@ -88,6 +92,8 @@ void clean_s(SALE s)
 
 /**
  * \brief Destrói estrutura de dados que armazena um registo de venda.
+ * 
+ * @param s Registo de venda a libertar da memória.
  **/
 void destroy_s(SALE s)
 {
@@ -95,20 +101,47 @@ void destroy_s(SALE s)
     g_free(s);
 }
 
-int process_paralelo_s(MainStructB prd_st, MainStructB cl_st, SALE s, pc prdct, pc clt)
+/**
+ * \brief Função que efetua um processamento duplo de duas funções associadas associado a `DBase`.
+ * 
+ * @param prd_st Base de dados dos produtos.
+ * @param cl_st Base de dados dos clientes.
+ * @param s Registo de vendas usado no processamento.
+ * @param prdct Função que processa o registo de venda na base de dados dos produtos.
+ * @param clt Função que processa o registo de venda na base de dados dos clientes.
+ * 
+ * @returns O resultado do operador lógico `&&` aplicado às funções processadas.
+ * 
+ * @see DBase
+ * @see validate_s 
+ **/
+int process_paralelo_s(DBase prd_st, DBase cl_st, SALE s, pc prdct, pc clt)
 {
     return ((*prdct)(prd_st, s->product) && (*clt)(cl_st, s->client));
 }
 
+/**
+ * \brief Cópia o nome de um cliente para uma string.
+ * 
+ * @param src Registo de venda que contem o código do cliente.
+ * @param dest String onde será colocado o código do cliente.
+ **/
 void copy_client_s(SALE src, char *dest)
 {
     strcpy(dest, src->client);
 }
 
-void insert_self_s(MainStructB products, MainStructB clients, SALE s)
+/**
+ * \brief Processa a introdução de um registo de venda nas bases de dados necessárias.
+ * 
+ * @param products Base de dados associada aos produtos.
+ * @param clients Base de dados associada aos clientes.
+ * @param s Registo que se pretende colocar na base de dados. 
+ **/
+void insert_self_s(DBase products, DBase clients, SALE s)
 {
-    insert_msb(products, s->product, s);
-    insert_msb(clients, s->client, s);
+    insert_dbase(products, s->product, s);
+    insert_dbase(clients, s->client, s);
 }
 
 /**

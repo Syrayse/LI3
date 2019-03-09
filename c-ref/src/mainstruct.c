@@ -6,32 +6,38 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-MainStructB make_msb();
-void destroy_msb(MainStructB);
-int insert_msb(MainStructB, void *, void *);
-int remove_msb(MainStructB, void *);
-int get_size_msb(MainStructB);
-int exists_msb(MainStructB, void *);
+DBase make_dbase();
+void destroy_dbase(DBase);
+int insert_dbase(DBase, void *, void *);
+int remove_dbase(DBase, void *);
+int get_size_dbase(DBase);
+int exists_dbase(DBase, void *);
 
 /* Metodos privados */
 
 // ------------------------------------------------------------------------------
 
-typedef struct mainstructb
+typedef struct data_base
 {
-    GHashTable *table;
-} * MainStructB;
+    GHashTable *table;  /**< Estrutura de dados em uso */
+} * DBase;
 
 // ------------------------------------------------------------------------------
 
-MainStructB make_msb()
+/**
+ * \brief Aloca espaço em memória para a a estrutura de base de dados.
+ **/
+DBase make_dbase()
 {
-    MainStructB m = g_malloc(sizeof(struct mainstructb));
+    DBase m = g_malloc(sizeof(struct data_base));
     m->table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, destroy_appender);
     return m;
 }
 
-void destroy_msb(MainStructB m)
+/**
+ * \brief Liberta o espaço em memória alocado para a estrutura de base de dados.
+ **/
+void destroy_dbase(DBase m)
 {
     if (m)
     {
@@ -40,7 +46,10 @@ void destroy_msb(MainStructB m)
     }
 }
 
-int insert_msb(MainStructB m, void *key, void *value)
+/**
+ * \brief Coloca na base de dados, numa dada key, um value, ou utilzia este para atualizar a informação que já lá se encontra.
+ **/
+int insert_dbase(DBase m, void *key, void *value)
 {
     void *tmp;
     //Se já existir o elemento
@@ -51,22 +60,35 @@ int insert_msb(MainStructB m, void *key, void *value)
     return tmp ? 1 : 0;
 }
 
-int remove_msb(MainStructB m, void *key)
+/**
+ * \brief Remove uma `key` da base de dados. 
+ **/
+int remove_dbase(DBase m, void *key)
 {
     return g_hash_table_remove(m->table, key);
 }
 
-int get_size_msb(MainStructB m)
+/**
+ * \brief Calcula o tamanho da base de dados.
+ **/
+int get_size_dbase(DBase m)
 {
     return g_hash_table_size(m->table);
 }
 
-int exists_msb(MainStructB m, void *key)
+/**
+ * \brief Verifica se uma chave existe na base de dados.
+ **/
+int exists_dbase(DBase m, void *key)
 {
     return g_hash_table_contains(m->table, key);
 }
-
-int get_client_v(MainStructB b, char *s)
+/**
+ * \brief Retorna o numero de vendas de um elemento na base de dados.
+ * 
+ * retorna -1 se o cliente não existir.
+ **/
+int get_client_v(DBase b, char *s)
 {
     int r = -1;
     void *tmp = g_hash_table_lookup(b->table, s);

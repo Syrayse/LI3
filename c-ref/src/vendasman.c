@@ -33,24 +33,31 @@ void show_boletim_vendas(MAN_b mn);
 
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Estrutura de dados que encapsula a gestão principal.
+ **/
 typedef struct manb
 {
-    MainStructB clients, products;
-    char lastClient[7];
-    int maiorLinha,
-        nVendasFiliais[3],
-        nClientesAlph['Z' - 'A' + 1];
-    float totalCashFlow;
+    DBase clients,                    /**< Base de dados dos clientes */
+        products;                     /**< Base de dados dos produtos */
+    char lastClient[7];               /**< Ultimo cliente lido */
+    int maiorLinha,                   /**< Maior linha lida */
+        nVendasFiliais[3],            /**< Numero de vendas por filial */
+        nClientesAlph['Z' - 'A' + 1]; /**< Numero de clientes letra */
+    float totalCashFlow;              /**< Lucro total da empresa */
 } * MAN_b;
 
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Cria em memória uma estrutura de gestão principal.
+ **/
 MAN_b make_man(void)
 {
     int i;
     MAN_b b = g_malloc(sizeof(struct manb));
-    b->clients = make_msb();
-    b->products = make_msb();
+    b->clients = make_dbase();
+    b->products = make_dbase();
     b->lastClient[0] = '\0';
     b->maiorLinha = -1;
     for (i = 0; i < 3; i++)
@@ -61,32 +68,42 @@ MAN_b make_man(void)
     return b;
 }
 
+/**
+ * \brief Liberta de memoria uma estrutura de gestão principal.
+ **/
 void destroy_man(MAN_b b)
 {
     if (b)
     {
-        destroy_msb(b->clients);
-        destroy_msb(b->products);
+        destroy_dbase(b->clients);
+        destroy_dbase(b->products);
         g_free(b);
     }
 }
 
+/**
+ * \brief Insere uma dado cliente na respetiva base de dados.
+ **/
 int insert_client_man(MAN_b b, char *s)
 {
     b->nClientesAlph[(int)(*s - 'A')]++;
-    return insert_msb(b->clients, s, NULL);
+    return insert_dbase(b->clients, s, NULL);
 }
 
+/**
+ * \brief Insere uma dado produto na respetiva base de dados.
+ **/
 int insert_product_man(MAN_b b, char *s)
 {
-    return insert_msb(b->products, s, NULL);
+    return insert_dbase(b->products, s, NULL);
 }
 
-// Asumme que a sale é válida, retorna 1 se a venda for valida, 0 caso contrario.
+/**
+ * \brief Tenta inserir uma venda na base de dados, só se esta for válida.
+ **/
 int insert_sale_man(MAN_b b, SALE s)
 {
     int r = validate_s(b->products, b->clients, s);
-    //printf("got %d\n",r);
     if (r)
     {
         insert_self_s(b->products, b->clients, s);
@@ -101,16 +118,25 @@ int insert_sale_man(MAN_b b, SALE s)
     return r;
 }
 
+/**
+ * \brief Calcula a maior linha lida.
+ **/
 int get_maior_linha(MAN_b b)
 {
     return b->maiorLinha;
 }
 
+/**
+ * \brief Retorna o numero de produtos na base de dados.
+ **/
 int get_n_produtos(MAN_b b)
 {
-    return get_size_msb(b->products);
+    return get_size_dbase(b->products);
 }
 
+/**
+ * \brief Calcula o numero de vendas lidas.
+ **/
 int get_n_vendas_total(MAN_b b)
 {
     int i, r = 0;
@@ -119,6 +145,9 @@ int get_n_vendas_total(MAN_b b)
     return r;
 }
 
+/**
+ * \brief Calcula o numero de vendas por filial.
+ **/
 int get_n_vendas_filial(MAN_b b, int filial)
 {
     int r = -1;
@@ -127,11 +156,17 @@ int get_n_vendas_filial(MAN_b b, int filial)
     return r;
 }
 
+/**
+ * \brief Retorna o numero de clientes na base de dados.
+ **/
 int get_n_clientes_total(MAN_b b)
 {
-    return get_size_msb(b->clients);
+    return get_size_dbase(b->clients);
 }
 
+/**
+ * \brief Calcula o numero de clientes que começa por uma dada letra.
+ **/
 int get_n_clientes_alph(MAN_b b, char inicial)
 {
     int r = -1;
@@ -140,21 +175,39 @@ int get_n_clientes_alph(MAN_b b, char inicial)
     return r;
 }
 
+/**
+ * \brief Calcula o numero total obtido.
+ **/
 float get_cashflow_total(MAN_b b)
 {
     return b->totalCashFlow;
 }
 
+/**
+ * \brief Retorna o ultimo cliente lido.
+ **/
 char *get_last_client(MAN_b b)
 {
     return b->lastClient;
 }
 
+/**
+ * \brief Calcula o numero de vendas de um dado client.
+ **/
 int get_client_n_vendas(MAN_b b, char *client)
 {
     return get_client_v(b->clients, client);
 }
 
+/**
+ * \brief Atribui a maior linha à gestão principal.
+ **/
+void set_maior_linha(MAN_b m, int l)
+{
+    m->maiorLinha = l;
+}
+
+// DEBUG functions below and should not be included in a final version.
 void show_number_sales(MAN_b mn)
 {
     char c;
@@ -177,9 +230,4 @@ void show_boletim_vendas(MAN_b mn)
     printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
     show_number_sales(mn);
     printf("Faturacao total: %f\n", get_cashflow_total(mn));
-}
-
-void set_maior_linha(MAN_b m, int l)
-{
-    m->maiorLinha = l;
 }

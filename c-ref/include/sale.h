@@ -6,7 +6,7 @@
 /**
  * \brief Typedef para função que recebe dois tipos abstratos e retorna um booleano.
  **/
-typedef int (*pc)(MainStructB, void*);
+typedef int (*pc)(DBase, void*);
 
 typedef struct sale *SALE;
 
@@ -14,8 +14,8 @@ typedef struct sale *SALE;
 SALE make_s(void);
 void destroy_s(SALE);
 void clean_s(SALE);
-int process_paralelo_s(MainStructB, MainStructB, SALE, pc, pc);
-void insert_self_s(MainStructB, MainStructB, SALE);
+int process_paralelo_s(DBase, DBase, SALE, pc, pc);
+void insert_self_s(DBase, DBase, SALE);
 
 //setters e getters
 //getters

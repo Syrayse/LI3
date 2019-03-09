@@ -36,16 +36,24 @@ float get_t_rev_month_iter(APPENDER a, int month, float (*)(APPENDER, int, int))
 
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Estrutura de dados que contém informção estatistica de cada cliente/produto.
+ **/
 typedef struct appendix
 {
-    int nVendasTotal,
-        nVendasFilialMonth[N_FILIAIS][N_MONTHS + 1][2];
-    float totalRevenue,
-        monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][2];
+    int nVendasTotal,                                   /**< Número de registos de vendas associados */
+        nVendasFilialMonth[N_FILIAIS][N_MONTHS + 1][2]; /**< Numero de registos de vendas associados por filial e mễs */
+    float totalRevenue,                                 /**< Rendimento total associado */
+        monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][2];   /**< Rendimento total associado por filial e mês*/
 } * APPENDER;
 
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Criar em memória estrutura onde são armazenados os dados estatisticos.
+ * 
+ * @returns A estrutura alocada.
+ **/
 APPENDER make_appender()
 {
     int l, c, k;
@@ -70,6 +78,12 @@ APPENDER make_appender()
     return a;
 }
 
+/**
+ * \brief Atualiza os dados estatisticos consoante um registo de venda.
+ * 
+ * @param a Contentor de informação estatistica que ira ser atualizado.
+ * @param e Registo de venda que servirá para atualizar a informação.
+ **/
 void update_appender(APPENDER a, void *e)
 {
     if (!e)
@@ -91,42 +105,109 @@ void update_appender(APPENDER a, void *e)
     a->monthlyFilialRev[f - 1][m][indP(p)] += rev;
 }
 
+/**
+ * \brief Calcula o número de vendas da `key`.
+ * 
+ * @param a Informação estátistica associada à `key`.
+ * 
+ * @returns O número total de vendas da `key`.
+ **/
 int get_t_vendas(APPENDER a)
 {
     return a->nVendasTotal;
 }
 
+/**
+ * \brief Calcula o número total de vendas da `key` numa certa filial.
+ * 
+ * @param a Informação estátistica associada à `key`.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O nḿero total de vendas da `key` numa certa filial.
+ **/
 int get_t_fil_vendas(APPENDER a, int filial)
 {
     return (a->nVendasFilialMonth[filial - 1][0][0] + a->nVendasFilialMonth[filial - 1][0][1]);
 }
 
+/**
+ * \brief Calcula o número total de vendas com promoção da `key` numa certa filial.
+ * 
+ * @param a Informação estátistica associada à `key`.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O número total de vendas com promoção da `key` numa certa filial.
+ **/
 int get_t_fil_vendas_promo(APPENDER a, int filial)
 {
     return a->nVendasFilialMonth[filial - 1][0][1];
 }
 
+/**
+ * \brief Calcula o número total de vendas sem promoção da `key` numa certa filial.
+ * 
+ * @param a Informação estátistica associada à `key`.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O número total de vendas sem promoção da `key` numa certa filial.
+ **/
 int get_t_fil_vendas_no_promo(APPENDER a, int filial)
 {
     return a->nVendasFilialMonth[filial - 1][0][0];
 }
 
+/**
+ * \brief Calcula o número total de vendas efetuadas num dado mês numa dada filial.
+ * 
+ * @param a Informação estátistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O número total de vendas efetuadas num dados mês numa dada filial.
+ **/
 int get_t_month_fil_vendas(APPENDER a, int month, int filial)
 {
     return (a->nVendasFilialMonth[filial - 1][month][0] +
             a->nVendasFilialMonth[filial - 1][month][1]);
 }
 
+/**
+ * \brief Calcula o número total de vendas com promoção efetuadas num dado mês numa dada filial.
+ * 
+ * @param a Informação estátistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O número total de vendas com promoção efetuadas num dados mês e filial.
+ **/
 int get_t_month_fil_vendas_promo(APPENDER a, int month, int filial)
 {
     return a->nVendasFilialMonth[filial - 1][month][1];
 }
 
+/**
+ * \brief Calcula o número total de vendas sem promoção efetuadas num dado mês numa dada filial.
+ * 
+ * @param a Informação estátistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O número total de vendas sem promoção efetuadas num dado mês e filial.
+ **/
 int get_t_month_fil_vendas_no_promo(APPENDER a, int month, int filial)
 {
     return a->nVendasFilialMonth[filial - 1][month][0];
 }
 
+/**
+ * \brief Calcula o número total de vendas duma dada estatistica mensal, consoante uma função que itera sobre todos os meses. 
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês do qual se pretende obter informação.
+ * @param f Função de iteração por mês.
+ * 
+ * @returns O valor calculado.
+ **/
 int get_t_vendas_month_iter(APPENDER a, int month, int (*f)(APPENDER, int, int))
 {
     int k, r = 0;
@@ -137,6 +218,15 @@ int get_t_vendas_month_iter(APPENDER a, int month, int (*f)(APPENDER, int, int))
     return r;
 }
 
+/**
+ * \brief Calcula o número total de lucro duma dada estatistica mensal, consoante uma função que itera sobre todos o lucro. 
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês do qual se pretende obter informação.
+ * @param f Função de iteração por mês.
+ * 
+ * @returns O valor calculado.
+ **/
 float get_t_rev_month_iter(APPENDER a, int month, float (*f)(APPENDER, int, int))
 {
     int k;
@@ -148,73 +238,190 @@ float get_t_rev_month_iter(APPENDER a, int month, float (*f)(APPENDER, int, int)
     return r;
 }
 
+/**
+ * \brief Calcula o número total de vendas efetuadas num dado mês.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês do qual se pretende obter informação.
+ * 
+ * @returns O número total de vendas efetuadas no mês.
+ * 
+ * @see get_t_vendas_month_iter
+ **/
 int get_t_month_vendas(APPENDER a, int month)
 {
     return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas);
 }
 
+/**
+ * \brief Calcula o número total de vendas com promoção efetuadas num dado mês.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês do qual se pretende obter informação.
+ * 
+ * @returns O número total de vendas com promoção efetuadas no mês.
+ * 
+ * @see get_t_vendas_month_iter
+ **/
 int get_t_month_vendas_promo(APPENDER a, int month)
 {
     return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas_promo);
 }
 
+/**
+ * \brief Calcula o número total de vendas sem promoção efetuadas num dado mês.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês do qual se pretende obter informação.
+ * 
+ * @returns O número total de vendas sem promoção efetuadas no mês.
+ * 
+ * @see get_t_vendas_month_iter
+ **/
 int get_t_month_vendas_no_promo(APPENDER a, int month)
 {
     return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas_no_promo);
 }
 
+/**
+ * \brief Calcula o lucro total associado à `key`.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * 
+ * @returns O lucro total obtido.
+ **/
 float get_t_rev(APPENDER a)
 {
     return a->totalRevenue;
 }
 
+/**
+ * \brief Calcula o lucro total associado à `key` numa filial.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O lucro total obtido em dada filial.
+ **/
 float get_t_fil_rev(APPENDER a, int filial)
 {
     return (a->monthlyFilialRev[filial - 1][0][0] +
             a->monthlyFilialRev[filial - 1][0][1]);
 }
 
+/**
+ * \brief Calcula o lucro total com promoções associado à `key` numa filial.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O lucro total com promoções obtido em dada filial.
+ **/
 float get_t_fil_rev_promo(APPENDER a, int filial)
 {
     return a->monthlyFilialRev[filial - 1][0][1];
 }
 
+/**
+ * \brief Calcula o lucro total sem promoções associado à `key` numa filial.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O lucro total sem promoções obtido em dada filial.
+ **/
 float get_t_fil_rev_no_promo(APPENDER a, int filial)
 {
     return a->monthlyFilialRev[filial - 1][0][0];
 }
 
+/**
+ * \brief Calcula o lucro total obtido num dado mês e filial.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O lucro total obtido num dado mês e filial.
+ **/
 float get_t_month_fil_rev(APPENDER a, int month, int filial)
 {
     return (a->monthlyFilialRev[filial - 1][month][0] +
             a->monthlyFilialRev[filial - 1][month][1]);
 }
 
+/**
+ * \brief Calcula o lucro total com promoção obtido num dado mês e filial.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O lucro total com promoção obtido num dado mês e filial.
+ **/
 float get_t_month_fil_rev_promo(APPENDER a, int month, int filial)
 {
     return a->monthlyFilialRev[filial - 1][month][1];
 }
 
+/**
+ * \brief Calcula o lucro total sem promoção obtido num dado mês e filial.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * @param filial Filial que se pretende verificar.
+ * 
+ * @returns O lucro total sem promoção obtido num dado mês e filial.
+ **/
 float get_t_month_fil_rev_no_promo(APPENDER a, int month, int filial)
 {
     return a->monthlyFilialRev[filial - 1][month][0];
 }
 
+/**
+ * \brief Calcula o lucro total obtido num dado mês.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * 
+ * @returns O lucro total obtido num dado mês. 
+ **/
 float get_t_month_rev(APPENDER a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev);
 }
 
+/**
+ * \brief Calcula o lucro total com promoção obtido num dado mês.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * 
+ * @returns O lucro total com promoção obtido num dado mês. 
+ **/
 float get_t_month_rev_promo(APPENDER a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev_promo);
 }
 
+/**
+ * \brief Calcula o lucro total sem promoção obtido num dado mês.
+ * 
+ * @param a Informação estatistica associada à `key`.
+ * @param month Mês que se pretende verificar.
+ * 
+ * @returns O lucro total sem promoção obtido num dado mês. 
+ **/
 float get_t_month_rev_no_promo(APPENDER a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev_no_promo);
 }
 
+/**
+ * \brief Liberta a memória de um dado contento de informção estatistica.
+ * 
+ * @param a Contentor a libertar.
+ **/
 void destroy_appender(void *a)
 {
     if (a)
