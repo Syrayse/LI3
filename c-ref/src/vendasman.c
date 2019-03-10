@@ -261,8 +261,8 @@ void show_boletim_vendas(MAN_b mn)
 
     tmp = get_overall_clients(mn->clients, &t);
 
-    //for (i = 0; i < t; i++)
-    //    printf("%s\n", (char *)tmp[i]);
+    /*for (i = 0; i < t; i++)
+        printf("%s\n", (char *)tmp[i]);*/
 
     g_free(tmp);
 

@@ -50,11 +50,8 @@ Devido ao aumento da complexidade associada a esta segunda fase, apresenta-se a 
 * Realizar a tarefa __(8)__.
 * Realizar a tarefa __(11)__.
 
-
 #### Rui 'Small Dick Joe' Reis
 * Realizar a tarefa __(4)__.
-* Realizar a tarefa __(5)__.
-* Realizar a tarefa __(6)__. __DONE__
 * Realizar a tarefa __(9)__.
 * Realizar a tarefa __(10)__.
 * Realizar a tarefa __(12)__.
