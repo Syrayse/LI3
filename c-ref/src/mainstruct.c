@@ -11,6 +11,7 @@ void destroy_dbase(DBase);
 int insert_dbase(DBase, void *, void *);
 int remove_dbase(DBase, void *);
 int get_size_dbase(DBase);
+int get_not_sold_dbase(DBase);
 int exists_dbase(DBase, void *);
 
 /* Metodos privados */
@@ -19,7 +20,8 @@ int exists_dbase(DBase, void *);
 
 typedef struct data_base
 {
-    GHashTable *table;  /**< Estrutura de dados em uso */
+    int n_notsold;
+    GHashTable *table; /**< Estrutura de dados em uso */
 } * DBase;
 
 // ------------------------------------------------------------------------------
@@ -31,6 +33,7 @@ DBase make_dbase()
 {
     DBase m = g_malloc(sizeof(struct data_base));
     m->table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, destroy_appender);
+    m->n_notsold = 0;
     return m;
 }
 
@@ -54,9 +57,19 @@ int insert_dbase(DBase m, void *key, void *value)
     void *tmp;
     //Se já existir o elemento
     if ((tmp = g_hash_table_lookup(m->table, key)))
-        update_appender(tmp, value);
+    {
+        if (value)
+        {
+            if (!get_t_vendas(tmp))
+                m->n_notsold--;
+            update_appender(tmp, value);
+        }
+    }
     else
+    {
         g_hash_table_insert(m->table, key, make_appender());
+        m->n_notsold++;
+    }
     return tmp ? 1 : 0;
 }
 
@@ -74,6 +87,11 @@ int remove_dbase(DBase m, void *key)
 int get_size_dbase(DBase m)
 {
     return g_hash_table_size(m->table);
+}
+
+int get_not_sold_dbase(DBase m)
+{
+    return m->n_notsold;
 }
 
 /**

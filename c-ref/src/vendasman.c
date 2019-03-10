@@ -23,6 +23,8 @@ int get_n_clientes_alph(MAN_b, char);
 float get_cashflow_total(MAN_b);
 char *get_last_client(MAN_b);
 int get_client_n_vendas(MAN_b, char *);
+int get_not_sold_client(MAN_b);
+int get_not_sold_product(MAN_b);
 
 void set_maior_linha(MAN_b, int);
 void set_last_client(MAN_b, SALE);
@@ -86,8 +88,10 @@ void destroy_man(MAN_b b)
  **/
 int insert_client_man(MAN_b b, char *s)
 {
-    b->nClientesAlph[(int)(*s - 'A')]++;
-    return insert_dbase(b->clients, s, NULL);
+    int r = insert_dbase(b->clients, s, NULL);
+    if (!r)
+        b->nClientesAlph[(int)(*s - 'A')]++;
+    return r;
 }
 
 /**
@@ -207,6 +211,16 @@ void set_maior_linha(MAN_b m, int l)
     m->maiorLinha = l;
 }
 
+int get_not_sold_client(MAN_b m)
+{
+    return get_not_sold_dbase(m->clients);
+}
+
+int get_not_sold_product(MAN_b m)
+{
+    return get_not_sold_dbase(m->products);
+}
+
 // DEBUG functions below and should not be included in a final version.
 void show_number_sales(MAN_b mn)
 {
@@ -230,4 +244,8 @@ void show_boletim_vendas(MAN_b mn)
     printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
     show_number_sales(mn);
     printf("Faturacao total: %f\n", get_cashflow_total(mn));
+
+    puts("\nFASE 2 SPECS");
+    printf("Numero de clientes que não efeturam compras:%d\n", get_not_sold_client(mn));
+    printf("Numero de produtos que nao foram vendidos em:%d\n", get_not_sold_product(mn));
 }
