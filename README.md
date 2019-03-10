@@ -25,7 +25,7 @@ Não incluido o sistema de I/O que é pedido nas várias queries do enunciado.
 3. Dado um mês e um código de produto determinar o número total de vendas e o total facturado com esse produto em tal mês, distinguido entre modo N e modo P, permitir resultado global ou por filial. __CURRENTLY IMPLEMENTED, pelos módulos `appender` e `mainstruct`__.
 4. Determinar a lista ordenada dos códigos dos produtos (e o seu total) que ninguém comprou, valores totais ou por filial. __NOT IMPLEMENTED__.
 5. Determinar a lista ordenada de códigos de clientes que realizaram compras em todas as filiais. __NOT IMPLEMENTED__.
-6. Determinar o número de clientes registados que não realizaram compras bem como o número de produtos que ninguém comprou. __NOT IMPLEMENTED__.
+6. Determinar o número de clientes registados que não realizaram compras bem como o número de produtos que ninguém comprou. __CURRENTLY IMPLEMENTED, desde 10/03/2019__.
 7. Dado um código de cliente, criar uma tabela com o numero total de produtos comprados por mes e por filial. __CURRENTLY IMPLEMENTED, na API do `appender` só falta o I/O com o utilizador__.
 8. Dado um intervalo fechado de meses, por exemplo [1..3], determinar  total de vendas registadas nesse intervalo e o total facturado. __NOT IMPLEMENTED__.
 9. Dado um código de produto e uma filial, determinar os códigos (e número total) dos clientes que o compraram, distinguindo entre compra N e compra P. __NOT IMPLEMENTED__.
@@ -54,7 +54,7 @@ Devido ao aumento da complexidade associada a esta segunda fase, apresenta-se a 
 #### Rui 'Small Dick Joe' Reis
 * Realizar a tarefa __(4)__.
 * Realizar a tarefa __(5)__.
-* Realizar a tarefa __(6)__.
+* Realizar a tarefa __(6)__. __DONE__
 * Realizar a tarefa __(9)__.
 * Realizar a tarefa __(10)__.
 * Realizar a tarefa __(12)__.
