@@ -51,10 +51,10 @@ int is_empty_kheap(KHEAP);
 
 //Private
 //Gestão
-int bubble_up(KHEAP);
-int bubble_down(KHEAP);
-void double_heap(KHEAP);
-void swap_arr(DATA *arr, int i, int j);
+static int bubble_up(KHEAP);
+static int bubble_down(KHEAP);
+static void double_heap(KHEAP);
+static void swap_arr(DATA *arr, int i, int j);
 // Funções ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 KHEAP make_kheap(fcompare fc)
@@ -144,7 +144,7 @@ int is_empty_kheap(KHEAP kh)
 
 //Retorna a quantidade de elementos que teve de passar por ao fazer bubble up do ultimo elemento.
 //so preciso reduzir o tamanho depois.
-int bubble_up(KHEAP kh)
+static int bubble_up(KHEAP kh)
 {
     int p = kh->used, r = 0;
 
@@ -160,7 +160,7 @@ int bubble_up(KHEAP kh)
 
 //Retorna a quantidade elementos que teve de passar ao fazer bubble down do primeiro elemento
 //é preciso reduzir o tamanho primeiro.
-int bubble_down(KHEAP kh)
+static int bubble_down(KHEAP kh)
 {
     int i, p, minI, r, order;
     p = r = order = 0;
@@ -194,13 +194,13 @@ int bubble_down(KHEAP kh)
     return r;
 }
 
-void double_heap(KHEAP kh)
+static void double_heap(KHEAP kh)
 {
     kh->heap = (DATA *)realloc(kh->heap, sizeof(DATA) * kh->size * 2);
     kh->size *= 2;
 }
 
-void swap_arr(DATA *arr, int i, int j)
+static void swap_arr(DATA *arr, int i, int j)
 {
     DATA tmp = arr[i];
     arr[i] = arr[j];

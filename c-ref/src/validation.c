@@ -18,19 +18,19 @@ void destroy_vrf(VRF_OBJ);
 int validate_s(DBase, DBase, SALE);
 
 /* Metodos privados */
-int cover_is_valid_sale(VRF_OBJ v, char *s, void *main, void *entry);
-int _set_v_client_str_only(char *s, void *entry);
-int _set_v_product_str_only(char *s, void *entry);
-int _set_sale_valid_client(char *, void *);
-int _set_sale_valid_product(char *, void *);
-int is_valid_client(char *);
-int is_valid_product(char *);
-int is_valid_sale(VRF_OBJ, void *, char *);
-int is_valid_price(char *, void *);
-int is_valid_units(char *, void *);
-int is_valid_promo(char *, void *);
-int is_valid_month(char *, void *);
-int is_valid_filial(char *, void *);
+static int cover_is_valid_sale(VRF_OBJ v, char *s, void *main, void *entry);
+static int _set_v_client_str_only(char *s, void *entry);
+static int _set_v_product_str_only(char *s, void *entry);
+static int _set_sale_valid_client(char *, void *);
+static int _set_sale_valid_product(char *, void *);
+static int is_valid_client(char *);
+static int is_valid_product(char *);
+static int is_valid_sale(VRF_OBJ, void *, char *);
+static int is_valid_price(char *, void *);
+static int is_valid_units(char *, void *);
+static int is_valid_promo(char *, void *);
+static int is_valid_month(char *, void *);
+static int is_valid_filial(char *, void *);
 
 // ------------------------------------------------------------------------------
 
@@ -153,7 +153,7 @@ int validate_s(DBase products, DBase clients, SALE s)
  * @see insert_sale_man
  * @see is_valid_sale
  **/
-int cover_is_valid_sale(VRF_OBJ v, char *token, void *main, void *entry)
+static int cover_is_valid_sale(VRF_OBJ v, char *token, void *main, void *entry)
 {
     int tmp, r = is_valid_sale(v, entry, token);
 
@@ -176,14 +176,13 @@ int cover_is_valid_sale(VRF_OBJ v, char *token, void *main, void *entry)
  * @see is_valid_client
  * @see insert_client_man
  **/
-int _set_v_client_str_only(char *token, void *entry)
+static int _set_v_client_str_only(char *token, void *entry)
 {
     int r = is_valid_client(token);
     if (r)
         insert_client_man((MAN_b)entry, g_strdup(token));
     return r;
 }
-
 
 /**
  * \brief Verifica se uma string de nome de produto está corretamente escrita e coloca em memória.
@@ -195,7 +194,7 @@ int _set_v_client_str_only(char *token, void *entry)
  * @see is_valid_product
  * @see insert_product_man
  **/
-int _set_v_product_str_only(char *token, void *entry)
+static int _set_v_product_str_only(char *token, void *entry)
 {
     int r = is_valid_product(token);
     if (r)
@@ -213,7 +212,7 @@ int _set_v_product_str_only(char *token, void *entry)
  * @see is_valid_client
  * @see insert_client_man
  **/
-int _set_sale_valid_client(char *s, void *entry)
+static int _set_sale_valid_client(char *s, void *entry)
 {
     int r = is_valid_client(s);
     if (r)
@@ -231,7 +230,7 @@ int _set_sale_valid_client(char *s, void *entry)
  * @see is_valid_product
  * @see insert_product_man
  **/
-int _set_sale_valid_product(char *s, void *entry)
+static int _set_sale_valid_product(char *s, void *entry)
 {
     int r = is_valid_product(s);
     if (r)
@@ -247,7 +246,7 @@ int _set_sale_valid_product(char *s, void *entry)
  * 
  * @returns A validade da string associada ao cliente.
  **/
-int is_valid_client(char *s)
+static int is_valid_client(char *s)
 {
     return (
         g_ascii_isupper(s[0]) && is_between(atoi(s + 1), 1000, 5000) && (s[5] == '\0'));
@@ -261,7 +260,7 @@ int is_valid_client(char *s)
  * 
  * @returns A validade da string associada ao produto.
  **/
-int is_valid_product(char *s)
+static int is_valid_product(char *s)
 {
     return (
         g_ascii_isupper(s[0]) && g_ascii_isupper(s[1]) && is_between(atoi(s + 2), 1000, 9999) && (s[6] == '\0'));
@@ -276,7 +275,7 @@ int is_valid_product(char *s)
  * 
  * @returns A validade da string associada à venda.
  **/
-int is_valid_sale(VRF_OBJ v, void *entry, char *token)
+static int is_valid_sale(VRF_OBJ v, void *entry, char *token)
 {
     int i, tmp, r = 1;
 
@@ -297,7 +296,7 @@ int is_valid_sale(VRF_OBJ v, void *entry, char *token)
  * 
  * @returns A validade da string associada ao preço.
  **/
-int is_valid_price(char *s, void *entry)
+static int is_valid_price(char *s, void *entry)
 {
     float f = atof(s);
     int r = is_between(f, 0.0, 999.99);
@@ -314,7 +313,7 @@ int is_valid_price(char *s, void *entry)
  * 
  * @returns A validade da string associada à unidades.
  **/
-int is_valid_units(char *s, void *entry)
+static int is_valid_units(char *s, void *entry)
 {
     int r, f = atoi(s);
     r = is_between(f, 1, 200);
@@ -331,13 +330,14 @@ int is_valid_units(char *s, void *entry)
  * 
  * @returns A validade da string associada à promoção.
  **/
-int is_valid_promo(char *s, void *entry)
+static int is_valid_promo(char *s, void *entry)
 {
     int r = (*s == 'N' || *s == 'P');
     if (r)
         set_promo_s((SALE)entry, *s);
     return r;
 }
+
 /**
  * \brief
  *      Função que verifica que a string associada a um código de mês é válida.
@@ -346,7 +346,7 @@ int is_valid_promo(char *s, void *entry)
  * 
  * @returns A validade da string associada à mês.
  **/
-int is_valid_month(char *s, void *entry)
+static int is_valid_month(char *s, void *entry)
 {
     int r, f = atoi(s);
     r = is_between(f, 1, 12);
@@ -363,7 +363,7 @@ int is_valid_month(char *s, void *entry)
  * 
  * @returns A validade da string associada à filial.
  **/
-int is_valid_filial(char *s, void *entry)
+static int is_valid_filial(char *s, void *entry)
 {
     int r, f = atoi(s);
     r = is_between(f, 1, 3);

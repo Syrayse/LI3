@@ -32,8 +32,8 @@ float get_t_month_rev_no_promo(APPENDER, int month);
 void destroy_appender(void *);
 
 /* Metodos privados */
-int get_t_vendas_month_iter(APPENDER a, int month, int (*)(APPENDER, int, int));
-float get_t_rev_month_iter(APPENDER a, int month, float (*)(APPENDER, int, int));
+static int get_t_vendas_month_iter(APPENDER a, int month, int (*)(APPENDER, int, int));
+static float get_t_rev_month_iter(APPENDER a, int month, float (*)(APPENDER, int, int));
 
 // ------------------------------------------------------------------------------
 
@@ -223,7 +223,7 @@ int get_t_month_fil_vendas_no_promo(APPENDER a, int month, int filial)
  * 
  * @returns O valor calculado.
  **/
-int get_t_vendas_month_iter(APPENDER a, int month, int (*f)(APPENDER, int, int))
+static int get_t_vendas_month_iter(APPENDER a, int month, int (*f)(APPENDER, int, int))
 {
     int k, r = 0;
 
@@ -242,7 +242,7 @@ int get_t_vendas_month_iter(APPENDER a, int month, int (*f)(APPENDER, int, int))
  * 
  * @returns O valor calculado.
  **/
-float get_t_rev_month_iter(APPENDER a, int month, float (*f)(APPENDER, int, int))
+static float get_t_rev_month_iter(APPENDER a, int month, float (*f)(APPENDER, int, int))
 {
     int k;
     float r = 0;
