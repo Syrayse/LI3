@@ -6,6 +6,7 @@ typedef struct appendix *APPENDER;
 
 APPENDER make_appender();
 void update_appender(APPENDER, void *);
+int is_sold_by_all(APPENDER);
 int get_t_vendas(APPENDER);
 int get_t_fil_vendas(APPENDER, int filial);
 int get_t_fil_vendas_promo(APPENDER, int filial);

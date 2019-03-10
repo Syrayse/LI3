@@ -3,6 +3,7 @@
 #include "mainstruct.h"
 #include "util.h"
 #include <glib.h>
+#include <gmodule.h>
 #include <stdio.h>
 
 // ------------------------------------------------------------------------------
@@ -231,6 +232,8 @@ void show_number_sales(MAN_b mn)
 
 void show_boletim_vendas(MAN_b mn)
 {
+    void **tmp;
+    size_t t = 0;
     printf("FIM DA LEITURA DO Vendas_1M.txt\n");
     printf("A maior linha tem tamanho %d\n", get_maior_linha(mn));
     printf("Produtos envolvidos: %d\n", get_n_produtos(mn));
@@ -248,4 +251,20 @@ void show_boletim_vendas(MAN_b mn)
     puts("\nFASE 2 SPECS");
     printf("Numero de clientes que não efeturam compras:%d\n", get_not_sold_client(mn));
     printf("Numero de produtos que nao foram vendidos em:%d\n", get_not_sold_product(mn));
+
+    /*
+    tmp = get_overall_clients(mn->products, &t);
+    g_free(tmp);
+
+    printf("%ld produtos foram vendidos em todas as filiais\n", t);
+    */
+
+    tmp = get_overall_clients(mn->clients, &t);
+
+    //for (i = 0; i < t; i++)
+    //    printf("%s\n", (char *)tmp[i]);
+
+    g_free(tmp);
+
+    printf("%ld clientes compraram em todas as filiais\n", t);
 }

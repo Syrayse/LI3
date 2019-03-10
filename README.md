@@ -24,7 +24,7 @@ Não incluido o sistema de I/O que é pedido nas várias queries do enunciado.
 2. Determinar a lista ordenada e o nº total de produtos cujo código se inicia por uma dada letra (maiúscula). __NOT IMPLEMENTED__.
 3. Dado um mês e um código de produto determinar o número total de vendas e o total facturado com esse produto em tal mês, distinguido entre modo N e modo P, permitir resultado global ou por filial. __CURRENTLY IMPLEMENTED, pelos módulos `appender` e `mainstruct`__.
 4. Determinar a lista ordenada dos códigos dos produtos (e o seu total) que ninguém comprou, valores totais ou por filial. __NOT IMPLEMENTED__.
-5. Determinar a lista ordenada de códigos de clientes que realizaram compras em todas as filiais. __NOT IMPLEMENTED__.
+5. Determinar a lista ordenada de códigos de clientes que realizaram compras em todas as filiais. __CURRENTLY IMPLEMENTED, desde 10/03/2019__.
 6. Determinar o número de clientes registados que não realizaram compras bem como o número de produtos que ninguém comprou. __CURRENTLY IMPLEMENTED, desde 10/03/2019__.
 7. Dado um código de cliente, criar uma tabela com o numero total de produtos comprados por mes e por filial. __CURRENTLY IMPLEMENTED, na API do `appender` só falta o I/O com o utilizador__.
 8. Dado um intervalo fechado de meses, por exemplo [1..3], determinar  total de vendas registadas nesse intervalo e o total facturado. __NOT IMPLEMENTED__.

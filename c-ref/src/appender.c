@@ -8,6 +8,7 @@
 /* Metodos publicos */
 APPENDER make_appender();
 void update_appender(APPENDER, void *);
+int is_sold_by_all(APPENDER);
 int get_t_vendas(APPENDER);
 int get_t_fil_vendas(APPENDER, int filial);
 int get_t_fil_vendas_promo(APPENDER, int filial);
@@ -103,6 +104,20 @@ void update_appender(APPENDER a, void *e)
     a->totalRevenue += rev;
     a->monthlyFilialRev[f - 1][0][indP(p)] += rev;
     a->monthlyFilialRev[f - 1][m][indP(p)] += rev;
+}
+
+/**
+ * \brief verifica se há um registo em cada uma das filiais.
+ **/
+int is_sold_by_all(APPENDER a)
+{
+    int i, r = 1;
+    for (i = 1; r && i <= N_FILIAIS; i++)
+    {
+        if (get_t_fil_vendas(a, i) == 0)
+            r = 0;
+    }
+    return r;
 }
 
 /**

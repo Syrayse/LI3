@@ -36,4 +36,10 @@
  **/
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
+typedef void (*freefunc)(void *);
+
+typedef int (*fcompar)(const void *, const void *);
+
+int strcmp_client(const void *, const void *);
+
 #endif
