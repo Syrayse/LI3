@@ -1,5 +1,7 @@
 #include "mainstruct.h"
 #include "appender.h"
+#include "gArray.h"
+#include "util.h"
 #include <glib.h>
 #include <stdio.h>
 
@@ -13,9 +15,12 @@ int remove_dbase(DBase, void *);
 int get_size_dbase(DBase);
 int get_not_sold_dbase(DBase);
 int exists_dbase(DBase, void *);
+int get_client_v(DBase b, char *s);
+void **get_overall_clients(DBase b, size_t *h);
+void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h);
 
 /* Metodos privados */
-
+static void insert_sold_by_all(void *key, void *value, void *user_data);
 // ------------------------------------------------------------------------------
 
 typedef struct data_base
@@ -113,4 +118,32 @@ int get_client_v(DBase b, char *s)
     if (tmp)
         r = get_t_vendas(tmp);
     return r;
+}
+
+void **get_overall_clients(DBase b, size_t *h)
+{
+    return dump_ordered_abstract(b, insert_sold_by_all, h);
+}
+
+void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h)
+{
+    void **tmp;
+
+    GrowingArray g = make_garray(sizeof(char *), NULL);
+
+    g_hash_table_foreach(b->table, f, g);
+
+    sort_garray(g, strcmp_client);
+
+    tmp = dump_elems_garray(g, h);
+
+    destroy_garray(g);
+
+    return tmp;
+}
+
+static void insert_sold_by_all(void *key, void *value, void *user_data)
+{
+    if (user_data && is_sold_by_all((APPENDER)value))
+        insert_elem_garray((GrowingArray)user_data, key);
 }

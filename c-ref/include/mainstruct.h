@@ -1,6 +1,8 @@
 #ifndef MAINSTRUCT_H
 #define MAINSTRUCT_H
 
+#include <glib.h>
+
 typedef struct data_base *DBase;
 
 DBase make_dbase();
@@ -10,6 +12,8 @@ int remove_dbase(DBase, void *);
 int get_size_dbase(DBase);
 int get_not_sold_dbase(DBase);
 int exists_dbase(DBase, void *);
-int get_client_v(DBase, char *);
+int get_client_v(DBase b, char *s);
+void **get_overall_clients(DBase b, size_t *h);
+void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h);
 
 #endif
