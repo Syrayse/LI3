@@ -73,16 +73,16 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
     }
 }
 
-void doWork()
+void doWork(char* produtos, char* clientes, char* vendas)
 {
     MAN_b m = make_man();
     VRF_OBJ v = make_vrf();
 
-    gettfile(m, v, "tests/Produtos.txt", VRF_PRODUCT);
+    gettfile(m, v, produtos, VRF_PRODUCT);
 
-    gettfile(m, v, "tests/Clientes.txt", VRF_CLIENT);
+    gettfile(m, v, clientes, VRF_CLIENT);
 
-    getvendas(m, v, "tests/Vendas_1M.txt");
+    getvendas(m, v, vendas);
 
     show_boletim_vendas(m);
 
@@ -90,13 +90,25 @@ void doWork()
     destroy_vrf(v);
 }
 
-// CPU TIME
-int main(void)
+// CPU TIME && Ler ficheiros
+int main(int argc, char** argv)
 {
     clock_t start, end;
     double cpu_time_used;
     start = clock();
-    doWork();
+    
+    if(argc >= 4)
+    {
+        char* produtos = argv[1];
+        char* clientes = argv[2];
+        char* vendas = argv[3];
+        doWork(produtos, clientes, vendas);
+    }
+    else
+    {
+        doWork("tests/Produtos.txt", "tests/Clientes.txt", "tests/Vendas_1M.txt");
+    }
+
     end = clock();
     cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
     printf("CPU Time:%f\n", cpu_time_used);
