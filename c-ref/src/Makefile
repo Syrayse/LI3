@@ -18,5 +18,9 @@ program: $(SOURCES_OBJ)
 	$(CC) $(CFLAGS) $(wildcard $(ODIR)/*.o) -o program $(LIBS)
 
 clean:
-	rm obj/*.o
-	rm program
+	rm -f obj/*.o
+	rm -f program
+	rm -rf docs/*
+
+doc:
+	doxygen Doxyfile
