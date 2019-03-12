@@ -59,23 +59,28 @@ void destroy_dbase(DBase m)
  **/
 int insert_dbase(DBase m, void *key, void *value)
 {
-    void *tmp;
+    int r = 1;
+    void *tmp = g_hash_table_lookup(m->table, key);
+    APPENDER t = NULL;
     //Se já existir o elemento
-    if ((tmp = g_hash_table_lookup(m->table, key)))
+
+    if (!tmp)
     {
-        if (value)
-        {
-            if (!get_t_vendas(tmp))
-                m->n_notsold--;
-            update_appender(tmp, value);
-        }
-    }
-    else
-    {
-        g_hash_table_insert(m->table, key, make_appender());
+        r = 0;
+        t = make_appender();
+        g_hash_table_insert(m->table, key, t);
         m->n_notsold++;
+        tmp = (void *)t;
     }
-    return tmp ? 1 : 0;
+
+    if (value)
+    {
+        if (!get_t_vendas(tmp))
+            m->n_notsold--;
+        update_appender(tmp, value);
+    }
+
+    return r;
 }
 
 /**

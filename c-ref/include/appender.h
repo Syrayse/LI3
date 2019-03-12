@@ -17,16 +17,16 @@ int get_t_month_fil_vendas_no_promo(APPENDER, int month, int filial);
 int get_t_month_vendas(APPENDER, int month);
 int get_t_month_vendas_promo(APPENDER, int month);
 int get_t_month_vendas_no_promo(APPENDER, int month);
-float get_t_rev(APPENDER);
-float get_t_fil_rev(APPENDER, int filial);
-float get_t_fil_rev_promo(APPENDER, int filial);
-float get_t_fil_rev_no_promo(APPENDER, int filial);
-float get_t_month_fil_rev(APPENDER, int month, int filial);
-float get_t_month_fil_rev_promo(APPENDER, int month, int filial);
-float get_t_month_fil_rev_no_promo(APPENDER, int month, int filial);
-float get_t_month_rev(APPENDER, int month);
-float get_t_month_rev_promo(APPENDER, int month);
-float get_t_month_rev_no_promo(APPENDER, int month);
+double get_t_rev(APPENDER);
+double get_t_fil_rev(APPENDER, int filial);
+double get_t_fil_rev_promo(APPENDER, int filial);
+double get_t_fil_rev_no_promo(APPENDER, int filial);
+double get_t_month_fil_rev(APPENDER, int month, int filial);
+double get_t_month_fil_rev_promo(APPENDER, int month, int filial);
+double get_t_month_fil_rev_no_promo(APPENDER, int month, int filial);
+double get_t_month_rev(APPENDER, int month);
+double get_t_month_rev_promo(APPENDER, int month);
+double get_t_month_rev_no_promo(APPENDER, int month);
 void destroy_appender(void *);
 
 #endif

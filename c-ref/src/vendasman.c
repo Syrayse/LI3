@@ -21,7 +21,7 @@ int get_n_vendas_total(MAN_b);
 int get_n_vendas_filial(MAN_b, int);
 int get_n_clientes_total(MAN_b);
 int get_n_clientes_alph(MAN_b, char);
-float get_cashflow_total(MAN_b);
+double get_cashflow_total(MAN_b);
 char *get_last_client(MAN_b);
 int get_client_n_vendas(MAN_b, char *);
 int get_not_sold_client(MAN_b);
@@ -47,7 +47,7 @@ typedef struct manb
     int maiorLinha,                   /**< Maior linha lida */
         nVendasFiliais[3],            /**< Numero de vendas por filial */
         nClientesAlph['Z' - 'A' + 1]; /**< Numero de clientes letra */
-    float totalCashFlow;              /**< Lucro total da empresa */
+    double totalCashFlow;             /**< Lucro total da empresa */
 } * MAN_b;
 
 // ------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ MAN_b make_man(void)
         b->nVendasFiliais[i] = 0;
     for (i = 0; i < 'Z' - 'A' + 1; i++)
         b->nClientesAlph[i] = 0;
-    b->totalCashFlow = 0;
+    b->totalCashFlow = 0.0;
     return b;
 }
 
@@ -117,7 +117,9 @@ int insert_sale_man(MAN_b b, SALE s)
 
         b->nVendasFiliais[get_filial_s(s) - 1]++;
 
-        b->totalCashFlow += (get_units_s(s) * get_price_s(s));
+        //printf("%.2f & ",b->totalCashFlow);
+        b->totalCashFlow = b->totalCashFlow + get_rev_s(s);
+        //printf("%.2f & %.2f\n", b->totalCashFlow,get_rev_s(s));
     }
 
     return r;
@@ -183,7 +185,7 @@ int get_n_clientes_alph(MAN_b b, char inicial)
 /**
  * \brief Calcula o numero total obtido.
  **/
-float get_cashflow_total(MAN_b b)
+double get_cashflow_total(MAN_b b)
 {
     return b->totalCashFlow;
 }
@@ -246,23 +248,21 @@ void show_boletim_vendas(MAN_b mn)
     printf("Numero de vendas registadas na filial 2: %d\n", get_n_vendas_filial(mn, 2));
     printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
     show_number_sales(mn);
+
     printf("Faturacao total: %f\n", get_cashflow_total(mn));
+    printf("Expected: 44765588910.5209\n");
+    printf("Offset: %f\n", 44765588910.5209 - get_cashflow_total(mn));
 
     puts("\nFASE 2 SPECS");
     printf("Numero de clientes que não efeturam compras:%d\n", get_not_sold_client(mn));
     printf("Numero de produtos que nao foram vendidos em:%d\n", get_not_sold_product(mn));
 
-    /*
     tmp = get_overall_clients(mn->products, &t);
     g_free(tmp);
 
     printf("%ld produtos foram vendidos em todas as filiais\n", t);
-    */
 
     tmp = get_overall_clients(mn->clients, &t);
-
-    /*for (i = 0; i < t; i++)
-        printf("%s\n", (char *)tmp[i]);*/
 
     g_free(tmp);
 
