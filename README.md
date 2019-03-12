@@ -39,8 +39,6 @@ Devido ao aumento da complexidade associada a esta segunda fase, apresenta-se a 
 
 #### Ana 'Jónni' Almeida
 
-* Realizar a tarefa __(1)__.
-* Escolher a melhor ferramenta para gerar documentação automatica, e criar guia para os outros membros perceberem como cada função deve estar comentada de forma a gerar a melhor documentação na respetiva ferramenta.
 * Idealizar o design do programa que vai comunicar com o utilizador. Como apresentar a informação ao utilizador? Que delimitações devem ser feitas de tal modo que o utilizador consiga aceder a todas as estatisticas sobre o seu supermercado? Pensar no paradigma de _navegadores_ e _cursores_ que é falado no enunciado de LI3.
 
 #### André 'Pistolas' Figueiredo
