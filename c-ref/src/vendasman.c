@@ -138,7 +138,7 @@ int get_maior_linha(MAN_b b)
  **/
 int get_n_produtos(MAN_b b)
 {
-    return get_size_dbase(b->products);
+    return get_total_size_dbase(b->products);
 }
 
 /**
@@ -168,7 +168,7 @@ int get_n_vendas_filial(MAN_b b, int filial)
  **/
 int get_n_clientes_total(MAN_b b)
 {
-    return get_size_dbase(b->clients);
+    return get_total_size_dbase(b->clients);
 }
 
 /**
@@ -257,12 +257,12 @@ void show_boletim_vendas(MAN_b mn)
     printf("Numero de clientes que não efeturam compras:%d\n", get_not_sold_client(mn));
     printf("Numero de produtos que nao foram vendidos em:%d\n", get_not_sold_product(mn));
 
-    tmp = get_overall_clients(mn->products, &t);
+    tmp = get_overall_clients(mn->products, &t, 0);
     g_free(tmp);
 
     printf("%ld produtos foram vendidos em todas as filiais\n", t);
 
-    tmp = get_overall_clients(mn->clients, &t);
+    tmp = get_overall_clients(mn->clients, &t, 0);
 
     g_free(tmp);
 
