@@ -20,3 +20,6 @@ program: $(SOURCES_OBJ)
 clean:
 	rm obj/*.o
 	rm program
+
+doc:
+	doxygen Doxyfile
