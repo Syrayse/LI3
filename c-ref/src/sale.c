@@ -21,20 +21,21 @@ int process_paralelo_s(DBase, DBase, SALE, pc, pc);
 void copy_client_s(SALE, char *);
 char *get_client_s(SALE);
 char *get_product_s(SALE);
-unsigned char get_month_s(SALE);
-unsigned char get_filial_s(SALE);
-unsigned char get_promo_s(SALE);
-unsigned char get_units_s(SALE);
-float get_price_s(SALE);
+int get_month_s(SALE);
+int get_filial_s(SALE);
+int get_promo_s(SALE);
+int get_units_s(SALE);
+double get_price_s(SALE);
+double get_rev_s(SALE);
 
 /* Setters */
 void set_client_s(SALE, char *);
 void set_product_s(SALE, char *);
-void set_month_s(SALE, unsigned char);
-void set_filial_s(SALE, unsigned char);
-void set_promo_s(SALE, unsigned char);
-void set_units_s(SALE, unsigned char);
-void set_price_s(SALE, float);
+void set_month_s(SALE, int);
+void set_filial_s(SALE, int);
+void set_promo_s(SALE, int);
+void set_units_s(SALE, int);
+void set_price_s(SALE, double);
 
 /* Metodos privados */
 // None
@@ -48,15 +49,15 @@ typedef struct sale
 {
     char *client /**< Código do cliente */
         ,
-        *product;       /**< Código do produto */
-    unsigned char month /**< Mes da venda */
+        *product; /**< Código do produto */
+    int month     /**< Mes da venda */
         ,
         filial /**< Filial da venda */
         ,
         promo /**< Código promocional da venda */
         ,
-        units;   /**< unidades vendidas */
-    float price; /**< Preco de cada unidade vendida */
+        units;    /**< unidades vendidas */
+    double price; /**< Preco de cada unidade vendida */
 } * SALE;
 
 // ------------------------------------------------------------------------------
@@ -71,7 +72,7 @@ SALE make_s(void)
     SALE r = g_malloc(sizeof(struct sale));
     r->client = r->product = NULL;
     r->month = r->filial = r->promo = r->units = 0;
-    r->price = -1;
+    r->price = 0.0;
     return r;
 }
 
@@ -175,7 +176,7 @@ char *get_product_s(SALE s)
  * 
  * @returns O mẽs da venda.
  **/
-unsigned char get_month_s(SALE s)
+int get_month_s(SALE s)
 {
     return s->month;
 }
@@ -187,7 +188,7 @@ unsigned char get_month_s(SALE s)
  * 
  * @returns Filial onde ocorreu a venda.
  **/
-unsigned char get_filial_s(SALE s)
+int get_filial_s(SALE s)
 {
     return s->filial;
 }
@@ -199,7 +200,7 @@ unsigned char get_filial_s(SALE s)
  * 
  * @returns O código promocional de uma venda.
  **/
-unsigned char get_promo_s(SALE s)
+int get_promo_s(SALE s)
 {
     return s->promo;
 }
@@ -211,7 +212,7 @@ unsigned char get_promo_s(SALE s)
  * 
  * @returns O número de unidades vendidas.
  **/
-unsigned char get_units_s(SALE s)
+int get_units_s(SALE s)
 {
     return s->units;
 }
@@ -223,9 +224,14 @@ unsigned char get_units_s(SALE s)
  * 
  * @returns O preço da venda.
  **/
-float get_price_s(SALE s)
+double get_price_s(SALE s)
 {
     return s->price;
+}
+
+double get_rev_s(SALE s)
+{
+    return (s->price * s->units);
 }
 
 /**
@@ -256,7 +262,7 @@ void set_product_s(SALE s, char *product)
  * @param s Registo de venda.
  * @param month Mês associado à venda.
  **/
-void set_month_s(SALE s, unsigned char month)
+void set_month_s(SALE s, int month)
 {
     s->month = month;
 }
@@ -267,7 +273,7 @@ void set_month_s(SALE s, unsigned char month)
  * @param s Registo de venda.
  * @param filial Identificador da filial.
  **/
-void set_filial_s(SALE s, unsigned char filial)
+void set_filial_s(SALE s, int filial)
 {
     s->filial = filial;
 }
@@ -278,7 +284,7 @@ void set_filial_s(SALE s, unsigned char filial)
  * @param s Registo de venda.
  * @param promo Código promocional.
  **/
-void set_promo_s(SALE s, unsigned char promo)
+void set_promo_s(SALE s, int promo)
 {
     s->promo = promo;
 }
@@ -289,7 +295,7 @@ void set_promo_s(SALE s, unsigned char promo)
  * @param s Registo de venda.
  * @param units Unidades vendidas.
  **/
-void set_units_s(SALE s, unsigned char units)
+void set_units_s(SALE s, int units)
 {
     s->units = units;
 }
@@ -300,7 +306,7 @@ void set_units_s(SALE s, unsigned char units)
  * @param s Registo de venda.
  * @param price Preço ao qual a venda foi efetuada.
  **/
-void set_price_s(SALE s, float price)
+void set_price_s(SALE s, double price)
 {
     s->price = price;
 }

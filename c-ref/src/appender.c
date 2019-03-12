@@ -19,21 +19,21 @@ int get_t_month_fil_vendas_no_promo(APPENDER, int month, int filial);
 int get_t_month_vendas(APPENDER, int month);
 int get_t_month_vendas_promo(APPENDER, int month);
 int get_t_month_vendas_no_promo(APPENDER, int month);
-float get_t_rev(APPENDER);
-float get_t_fil_rev(APPENDER, int filial);
-float get_t_fil_rev_promo(APPENDER, int filial);
-float get_t_fil_rev_no_promo(APPENDER, int filial);
-float get_t_month_fil_rev(APPENDER, int month, int filial);
-float get_t_month_fil_rev_promo(APPENDER, int month, int filial);
-float get_t_month_fil_rev_no_promo(APPENDER, int month, int filial);
-float get_t_month_rev(APPENDER, int month);
-float get_t_month_rev_promo(APPENDER, int month);
-float get_t_month_rev_no_promo(APPENDER, int month);
+double get_t_rev(APPENDER);
+double get_t_fil_rev(APPENDER, int filial);
+double get_t_fil_rev_promo(APPENDER, int filial);
+double get_t_fil_rev_no_promo(APPENDER, int filial);
+double get_t_month_fil_rev(APPENDER, int month, int filial);
+double get_t_month_fil_rev_promo(APPENDER, int month, int filial);
+double get_t_month_fil_rev_no_promo(APPENDER, int month, int filial);
+double get_t_month_rev(APPENDER, int month);
+double get_t_month_rev_promo(APPENDER, int month);
+double get_t_month_rev_no_promo(APPENDER, int month);
 void destroy_appender(void *);
 
 /* Metodos privados */
 static int get_t_vendas_month_iter(APPENDER a, int month, int (*)(APPENDER, int, int));
-static float get_t_rev_month_iter(APPENDER a, int month, float (*)(APPENDER, int, int));
+static double get_t_rev_month_iter(APPENDER a, int month, double (*)(APPENDER, int, int));
 
 // ------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ typedef struct appendix
 {
     int nVendasTotal,                                   /**< Número de registos de vendas associados */
         nVendasFilialMonth[N_FILIAIS][N_MONTHS + 1][2]; /**< Numero de registos de vendas associados por filial e mễs */
-    float totalRevenue,                                 /**< Rendimento total associado */
+    double totalRevenue,                                 /**< Rendimento total associado */
         monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][2];   /**< Rendimento total associado por filial e mês*/
 } * APPENDER;
 
@@ -90,7 +90,7 @@ void update_appender(APPENDER a, void *e)
     if (!e)
         return;
     SALE s = (SALE)e;
-    float rev = (get_units_s(s) * get_price_s(s));
+    double rev = get_rev_s(s);
     int f, m, p = get_promo_s(s);
     m = get_month_s(s);
     f = get_filial_s(s);
@@ -242,10 +242,10 @@ static int get_t_vendas_month_iter(APPENDER a, int month, int (*f)(APPENDER, int
  * 
  * @returns O valor calculado.
  **/
-static float get_t_rev_month_iter(APPENDER a, int month, float (*f)(APPENDER, int, int))
+static double get_t_rev_month_iter(APPENDER a, int month, double (*f)(APPENDER, int, int))
 {
     int k;
-    float r = 0;
+    double r = 0;
 
     for (k = 1; k <= N_FILIAIS; k++)
         r += (*f)(a, month, k);
@@ -305,7 +305,7 @@ int get_t_month_vendas_no_promo(APPENDER a, int month)
  * 
  * @returns O lucro total obtido.
  **/
-float get_t_rev(APPENDER a)
+double get_t_rev(APPENDER a)
 {
     return a->totalRevenue;
 }
@@ -318,7 +318,7 @@ float get_t_rev(APPENDER a)
  * 
  * @returns O lucro total obtido em dada filial.
  **/
-float get_t_fil_rev(APPENDER a, int filial)
+double get_t_fil_rev(APPENDER a, int filial)
 {
     return (a->monthlyFilialRev[filial - 1][0][0] +
             a->monthlyFilialRev[filial - 1][0][1]);
@@ -332,7 +332,7 @@ float get_t_fil_rev(APPENDER a, int filial)
  * 
  * @returns O lucro total com promoções obtido em dada filial.
  **/
-float get_t_fil_rev_promo(APPENDER a, int filial)
+double get_t_fil_rev_promo(APPENDER a, int filial)
 {
     return a->monthlyFilialRev[filial - 1][0][1];
 }
@@ -345,7 +345,7 @@ float get_t_fil_rev_promo(APPENDER a, int filial)
  * 
  * @returns O lucro total sem promoções obtido em dada filial.
  **/
-float get_t_fil_rev_no_promo(APPENDER a, int filial)
+double get_t_fil_rev_no_promo(APPENDER a, int filial)
 {
     return a->monthlyFilialRev[filial - 1][0][0];
 }
@@ -359,7 +359,7 @@ float get_t_fil_rev_no_promo(APPENDER a, int filial)
  * 
  * @returns O lucro total obtido num dado mês e filial.
  **/
-float get_t_month_fil_rev(APPENDER a, int month, int filial)
+double get_t_month_fil_rev(APPENDER a, int month, int filial)
 {
     return (a->monthlyFilialRev[filial - 1][month][0] +
             a->monthlyFilialRev[filial - 1][month][1]);
@@ -374,7 +374,7 @@ float get_t_month_fil_rev(APPENDER a, int month, int filial)
  * 
  * @returns O lucro total com promoção obtido num dado mês e filial.
  **/
-float get_t_month_fil_rev_promo(APPENDER a, int month, int filial)
+double get_t_month_fil_rev_promo(APPENDER a, int month, int filial)
 {
     return a->monthlyFilialRev[filial - 1][month][1];
 }
@@ -388,7 +388,7 @@ float get_t_month_fil_rev_promo(APPENDER a, int month, int filial)
  * 
  * @returns O lucro total sem promoção obtido num dado mês e filial.
  **/
-float get_t_month_fil_rev_no_promo(APPENDER a, int month, int filial)
+double get_t_month_fil_rev_no_promo(APPENDER a, int month, int filial)
 {
     return a->monthlyFilialRev[filial - 1][month][0];
 }
@@ -401,7 +401,7 @@ float get_t_month_fil_rev_no_promo(APPENDER a, int month, int filial)
  * 
  * @returns O lucro total obtido num dado mês. 
  **/
-float get_t_month_rev(APPENDER a, int month)
+double get_t_month_rev(APPENDER a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev);
 }
@@ -414,7 +414,7 @@ float get_t_month_rev(APPENDER a, int month)
  * 
  * @returns O lucro total com promoção obtido num dado mês. 
  **/
-float get_t_month_rev_promo(APPENDER a, int month)
+double get_t_month_rev_promo(APPENDER a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev_promo);
 }
@@ -427,7 +427,7 @@ float get_t_month_rev_promo(APPENDER a, int month)
  * 
  * @returns O lucro total sem promoção obtido num dado mês. 
  **/
-float get_t_month_rev_no_promo(APPENDER a, int month)
+double get_t_month_rev_no_promo(APPENDER a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev_no_promo);
 }

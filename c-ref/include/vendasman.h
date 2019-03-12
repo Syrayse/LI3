@@ -17,7 +17,7 @@ int get_n_vendas_total(MAN_b);
 int get_n_vendas_filial(MAN_b, int);
 int get_n_clientes_total(MAN_b);
 int get_n_clientes_alph(MAN_b, char);
-float get_cashflow_total(MAN_b);
+double get_cashflow_total(MAN_b);
 char *get_last_client(MAN_b);
 int get_client_n_vendas(MAN_b, char *);
 

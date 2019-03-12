@@ -298,7 +298,7 @@ static int is_valid_sale(VRF_OBJ v, void *entry, char *token)
  **/
 static int is_valid_price(char *s, void *entry)
 {
-    float f = atof(s);
+    double f = (double)atof(s);
     int r = is_between(f, 0.0, 999.99);
     if (r)
         set_price_s((SALE)entry, f);
@@ -318,7 +318,7 @@ static int is_valid_units(char *s, void *entry)
     int r, f = atoi(s);
     r = is_between(f, 1, 200);
     if (r)
-        set_units_s((SALE)entry, (unsigned char)f);
+        set_units_s((SALE)entry, f);
     return r;
 }
 
@@ -351,7 +351,7 @@ static int is_valid_month(char *s, void *entry)
     int r, f = atoi(s);
     r = is_between(f, 1, 12);
     if (r)
-        set_month_s((SALE)entry, (unsigned char)f);
+        set_month_s((SALE)entry, f);
     return r;
 }
 
@@ -368,6 +368,6 @@ static int is_valid_filial(char *s, void *entry)
     int r, f = atoi(s);
     r = is_between(f, 1, 3);
     if (r)
-        set_filial_s((SALE)entry, (unsigned char)f);
+        set_filial_s((SALE)entry, f);
     return r;
 }
