@@ -13,5 +13,6 @@ void insert_elem_garray(GrowingArray g, void *entry);
 void sort_garray(GrowingArray g, fcompar fc);
 int is_sorted_garray(GrowingArray g);
 void **dump_elems_garray(GrowingArray src, size_t *h);
+int auto_resize_garray(GrowingArray g);
 
 #endif

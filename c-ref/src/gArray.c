@@ -11,6 +11,7 @@ void insert_elem_garray(GrowingArray g, void *entry);
 void sort_garray(GrowingArray g, fcompar fc);
 int is_sorted_garray(GrowingArray g);
 void **dump_elems_garray(GrowingArray src, size_t *h);
+int auto_resize_garray(GrowingArray g);
 
 /* Metodos privados */
 static void double_garray(GrowingArray g);
@@ -106,4 +107,17 @@ static void double_garray(GrowingArray g)
 {
     g->array = g_realloc(g->array, g->key_size * g->max_size * 2);
     g->max_size *= 2;
+}
+
+int auto_resize_garray(GrowingArray g)
+{
+    int r = g->used < g->max_size;
+
+    if (r)
+    {
+        g->array = g_realloc(g->array, sizeof(void *) * g->used);
+        g->max_size = g->used;
+    }
+
+    return r;
 }
