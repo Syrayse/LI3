@@ -1,3 +1,10 @@
+/**
+ * @file vendasman.c 
+ * \brief Ficheiro contendo o código relativo ao módulo @c VENDASMAN.
+ * 
+ * Este módulo representa o principal gestor do SVG, sendo que contém e aplica
+ * toda a informação.
+ **/
 #include "validation.h"
 #include "vendasman.h"
 #include "mainstruct.h"
@@ -117,9 +124,7 @@ int insert_sale_man(MAN_b b, SALE s)
 
         b->nVendasFiliais[get_filial_s(s) - 1]++;
 
-        //printf("%.2f & ",b->totalCashFlow);
         b->totalCashFlow = b->totalCashFlow + get_rev_s(s);
-        //printf("%.2f & %.2f\n", b->totalCashFlow,get_rev_s(s));
     }
 
     return r;
@@ -257,13 +262,23 @@ void show_boletim_vendas(MAN_b mn)
     printf("Numero de clientes que não efeturam compras:%d\n", get_not_sold_client(mn));
     printf("Numero de produtos que nao foram vendidos em:%d\n", get_not_sold_product(mn));
 
-    tmp = get_overall_clients(mn->products, &t, 0);
+    tmp = get_ordered_not_bought(mn->products, &t, 0);
+    printf("|%ld|\n", t);
     g_free(tmp);
 
-    printf("%ld produtos foram vendidos em todas as filiais\n", t);
+    tmp = get_ordered_not_bought(mn->products, &t, 1);
+    printf("|%ld|\n", t);
+    g_free(tmp);
+
+    tmp = get_ordered_not_bought(mn->products, &t, 2);
+    printf("|%ld|\n", t);
+    g_free(tmp);
+
+    tmp = get_ordered_not_bought(mn->products, &t, 3);
+    printf("|%ld|\n", t);
+    g_free(tmp);
 
     tmp = get_overall_clients(mn->clients, &t, 0);
-
     g_free(tmp);
 
     printf("%ld clientes compraram em todas as filiais\n", t);

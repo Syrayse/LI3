@@ -19,15 +19,26 @@ int exists_dbase(DBase, void *);
 int get_client_v(DBase b, char *s);
 void **get_overall_clients(DBase b, size_t *h, char flag);
 void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag);
+void **get_ordered_not_bought(DBase db, size_t *n, int filial);
+void build_dbase_arrays(DBase db);
 
 /* Metodos privados */
 static void insert_sold_by_all(void *key, void *value, void *user_data);
+static void insert_in_dbase_arr(DBase db, int ind, void *key);
+static void insert_not_bought(void *key, void *value, void *user_data);
+
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Estrutura de base de dados principal.
+ * 
+ * Atual contentor de toda a informação do projeto.
+ **/
 typedef struct data_base
 {
     int n_notsold, total_size;
     GHashTable *table['Z' - 'A' + 1]; /**< Estrutura de dados em uso */
+    GrowingArray not_bought[4];
 } * DBase;
 
 // ------------------------------------------------------------------------------
@@ -45,6 +56,7 @@ DBase make_dbase()
         m->table[i] = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, destroy_appender);
 
     m->n_notsold = 0;
+    m->not_bought[0] = NULL;
     return m;
 }
 
@@ -59,6 +71,13 @@ void destroy_dbase(DBase m)
     {
         for (i = 0; i < c; i++)
             g_hash_table_destroy(m->table[i]);
+
+        if (m->not_bought[0])
+        {
+            for (i = 0; i < 4; i++)
+                destroy_garray(m->not_bought[i]);
+        }
+
         g_free(m);
     }
 }
@@ -72,7 +91,6 @@ int insert_dbase(DBase m, void *key, void *value)
     p = conv_str(key);
     void *tmp = g_hash_table_lookup(m->table[p], key);
     APPENDER t = NULL;
-    //Se já existir o elemento
 
     if (!tmp)
     {
@@ -110,11 +128,17 @@ int get_total_size_dbase(DBase m)
     return m->total_size;
 }
 
+/**
+ * \brief Calcula o número de elementos não vendidos.
+ **/
 int get_not_sold_dbase(DBase m)
 {
     return m->n_notsold;
 }
 
+/**
+ * \brief Calcula o numero de chaves com que começam com uma dada letra.
+ **/
 int get_letter_size_dbase(DBase m, char flag)
 {
     return g_hash_table_size(m->table[flag - 'A']);
@@ -174,4 +198,56 @@ static void insert_sold_by_all(void *key, void *value, void *user_data)
 {
     if (user_data && is_sold_by_all((APPENDER)value))
         insert_elem_garray((GrowingArray)user_data, key);
+}
+
+static void insert_in_dbase_arr(DBase db, int ind, void *key)
+{
+    if (db && is_between(ind, 0, 4))
+    {
+        insert_elem_garray(db->not_bought[ind], key);
+    }
+}
+
+static void insert_not_bought(void *key, void *value, void *user_data)
+{
+    int filial, nst = 0;
+    if (user_data)
+    {
+        for (filial = 1; filial <= N_FILIAIS; filial++)
+        {
+            if (!get_t_fil_vendas((APPENDER)value, filial))
+            {
+                insert_in_dbase_arr((DBase)user_data, filial, key);
+                ++nst;
+            }
+
+            if (nst == N_FILIAIS)
+                insert_in_dbase_arr((DBase)user_data, 0, key);
+        }
+    }
+}
+
+void build_dbase_arrays(DBase db)
+{
+    int i, c = 'Z' - 'A' + 1;
+
+    if (!db->not_bought[0])
+    {
+        for (i = 0; i < 4; i++)
+            db->not_bought[i] = make_garray(sizeof(char *), NULL);
+
+        for (i = 0; i < c; i++)
+            g_hash_table_foreach(db->table[i], insert_not_bought, db);
+
+        for (i = 0; i < 4; i++)
+            sort_garray(db->not_bought[i], strcmp_client);
+    }
+}
+
+void **get_ordered_not_bought(DBase db, size_t *n, int filial)
+{
+    if (!db->not_bought[filial])
+        build_dbase_arrays(db);
+
+    return dump_elems_garray(db->not_bought[filial], n);
 }
