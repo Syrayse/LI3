@@ -43,23 +43,24 @@ Devido ao aumento da complexidade associada a esta segunda fase, apresenta-se a 
 
 #### André 'Pistolas' Figueiredo
 
-* Implementar uma forma eficiente de leitura adaptativa, de tal modo, que seja qual for o tamanho da linha que se pretende ler, seja possivel ler sem gerar _segmentation fault_.
-* Realizar a tarefa __(2)__.
-* Realizar a tarefa __(8)__.
-* Realizar a tarefa __(11)__.
+* Realizar a tarefa __(8)__. (fim de semana)
+* Realizar a tarefa __(11)__. (next fim de semana)
 
 #### Rui 'Small Dick Joe' Reis
-* Realizar a tarefa __(4)__.
+
 * Realizar a tarefa __(9)__.
 * Realizar a tarefa __(10)__.
 * Realizar a tarefa __(12)__.
+(domingo)
 
 #### Em grupo, cristão
+
 * Desenvolver módulos _navegadores_ e _cursores_.
 * Benchmarking.
 * Estudo de possiveis leaks de memoria.
 * Debater complexidade de algoritmos atuais e a possibilidade de melhorar.
 * Criar relatorio.
+* Implementar uma forma eficiente de leitura adaptativa, de tal modo, que seja qual for o tamanho da linha que se pretende ler, seja possivel ler sem gerar _segmentation fault_.
 
 #### Nota importante:
 
