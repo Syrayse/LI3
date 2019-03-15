@@ -6,11 +6,13 @@
 /* Metodos publicos */
 StrSet strset_make(freefunc ff);
 void strset_destroy(StrSet set);
-int strset_add(StrSet set, char *elem);
+int strset_add(StrSet set, char *elem, void *value);
 int strset_remove(StrSet set, char *elem);
-void strset_foreach(StrSet set, void (*fe)(void *, void *, void *), void *user_data);
+void strset_foreach(StrSet set, f_foreach fer, void *user_data);
 int strset_contains(StrSet set, char *elem);
 int strset_size(StrSet set);
+int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), void *user_data);
+void *strset_value_of(StrSet set, char *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompar fc, size_t *n);
 
@@ -37,7 +39,7 @@ typedef struct set
 StrSet strset_make(freefunc ff)
 {
     StrSet set = g_malloc(sizeof(struct set));
-    set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ff, NULL);
+    set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ff, g_free);
     return set;
 }
 
@@ -60,12 +62,13 @@ void strset_destroy(StrSet set)
  * 
  * @param set Set onde irá ser adicionado o elemento.
  * @param elem Elemento a ser adicionado.
+ * @param value Informação associada ao elemento adicionado.
  * 
  * @returns 1 se o elemento for adicionado com sucesso, 0 se ele já existir no Set.
  **/
-int strset_add(StrSet set, char *elem)
+int strset_add(StrSet set, char *elem, void *value)
 {
-    return g_hash_table_insert(set->table, elem, NULL);
+    return g_hash_table_insert(set->table, elem, value);
 }
 
 /**
@@ -142,6 +145,41 @@ char **strset_dump(StrSet set, size_t *n)
 char **strset_dump_ordered(StrSet set, fcompar fc, size_t *n)
 {
     return generic_dump(set, n, 0);
+}
+
+/**
+ * \brief Atualiza um elemento no Set, consoante uma dada função de comparação que recebe um value e user_data.
+ * 
+ * @param set Set a verificar.
+ * @param elem Elemento que se pretende atualizar.
+ * @param f_up Função de atualização utilizada.
+ * @param user_data Informação necessára à função de atualização.
+ * 
+ * @returns 1 se o elemento existir, 0 caso contrário.
+ **/
+int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), void *user_data)
+{
+    void *tmp;
+
+    if ((tmp = g_hash_table_lookup(set->table, elem)))
+    {
+        (*f_up)(tmp, user_data);
+    }
+
+    return tmp ? 1 : 0;
+}
+
+/**
+ * \brief Calcula o endereço da informação associada ao elemento.
+ * 
+ * @param set Set que se pretende verificar.
+ * @param elem Elemento do qual se pretende obter a informação.
+ * 
+ * @returns A informação associada ao elemento.
+ **/
+void *strset_value_of(StrSet set, char *elem)
+{
+    return g_hash_table_lookup(set->table, elem);
 }
 
 /**
