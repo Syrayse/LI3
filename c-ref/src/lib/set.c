@@ -211,7 +211,7 @@ static char **generic_dump(StrSet set, size_t *n, int flag)
     strset_foreach(set, insert_str, ga);
 
     if (!flag)
-        sort_garray(ga, strcmp_client);
+        sort_garray(ga, mystrcmp);
 
     return (char **)dump_elems_garray(ga, n);
 }

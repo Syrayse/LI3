@@ -185,7 +185,7 @@ void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
             g_hash_table_foreach(b->table[i], f, g);
     }
 
-    sort_garray(g, strcmp_client);
+    sort_garray(g, mystrcmp);
 
     tmp = dump_elems_garray(g, h);
 
@@ -240,7 +240,7 @@ void build_dbase_arrays(DBase db)
             g_hash_table_foreach(db->table[i], insert_not_bought, db);
 
         for (i = 0; i < 4; i++)
-            sort_garray(db->not_bought[i], strcmp_client);
+            sort_garray(db->not_bought[i], mystrcmp);
     }
 }
 
