@@ -7,10 +7,9 @@
  **/
 #include "validation.h"
 #include "vendasman.h"
-#include "mainstruct.h"
+#include "dbase.h"
 #include "util.h"
 #include <glib.h>
-#include <gmodule.h>
 #include <stdio.h>
 
 // ------------------------------------------------------------------------------

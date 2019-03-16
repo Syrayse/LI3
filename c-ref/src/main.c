@@ -7,31 +7,6 @@
 
 #define BUFF_SIZE 50
 
-void print_s(SALE s)
-{
-    puts("´´´´´´´´´´´´´´´´´´´´´´´´´´");
-    printf("Product %s has bought by %s\n", get_product_s(s), get_client_s(s));
-    printf("%d units by the price of %.2lf /unit\n", get_units_s(s), get_price_s(s));
-    printf("%d month, %d filial, with promo %c\n", get_month_s(s), get_filial_s(s), get_promo_s(s));
-    puts("´´´´´´´´´´´´´´´´´´´´´´´´´´");
-}
-
-/*
-De momento a unica coisa que isto faz é ler de um dado ficheiro
-e à medida que lê cada linha, constroi uma estrutura de dados correspondente.
-e depois destroi.
-
-Com isto é possivel verificar que atualmente o nosso código é capaz de:
-    1) Verificar a validez de qualquer cliente/produto/venda.
-    2) Criar uma estrutura correspondente a cada um destes itens
-
-Porém de momento ainda não existe nenhuma estrutura que mantém e conseguia fazer a gestão
-destas estruturas e as relações entre elas
-
-Falta verificar se as vendas e clientes existem
-talvez usar hashtables? Noutro módulo?
-*/
-
 void gettfile(MAN_b m, VRF_OBJ v, char *file, int flag)
 {
     char buff[50];

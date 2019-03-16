@@ -1,5 +1,5 @@
-#include "mainstruct.h"
-#include "appender.h"
+#include "dbase.h"
+#include "statinfo.h"
 #include "gArray.h"
 #include "util.h"
 #include "set.h"
@@ -25,8 +25,9 @@ static void insert_sold_by_all(void *key, void *value, void *user_data);
 static void insert_in_dbase_arr(DBase db, int ind, void *key);
 static void insert_not_bought(void *key, void *value, void *user_data);
 static void dbase_build_arrays(DBase db);
-static void *my_make_appender(void);
-static void my_update_appender(void *, void *);
+static void *my_statinfo_make(void);
+static void my_statinfo_update(void *, void *);
+static void my_statinfo_destroy(void *a);
 
 // ------------------------------------------------------------------------------
 
@@ -37,7 +38,7 @@ static void my_update_appender(void *, void *);
  **/
 typedef struct data_base
 {
-    int total_size, max_size;
+    int total_size, not_init_n, max_size;
     StrSet *table; /**< Estrutura de dados em uso */
     GrowingArray not_bought[4];
 } * DBase;
@@ -52,12 +53,13 @@ DBase dbase_make()
     int i;
     DBase db = g_malloc(sizeof(struct data_base));
     db->total_size = 0;
+    db->not_init_n = 0;
     db->max_size = 'Z' - 'A' + 1;
 
     db->table = g_malloc(sizeof(StrSet) * db->max_size);
 
     for (i = 0; i < db->max_size; i++)
-        db->table[i] = strset_make(g_free, destroy_appender);
+        db->table[i] = strset_make(g_free, my_statinfo_destroy);
 
     db->not_bought[0] = NULL;
 
@@ -69,11 +71,11 @@ DBase dbase_make()
  **/
 void dbase_destroy(DBase db)
 {
-    int i, c = 'Z' - 'A' + 1;
+    int i;
 
     if (db)
     {
-        for (i = 0; i < c; i++)
+        for (i = 0; i < db->max_size; i++)
             strset_destroy(db->table[i]);
 
         if (db->not_bought[0])
@@ -92,7 +94,17 @@ void dbase_destroy(DBase db)
  **/
 void dbase_add(DBase db, void *key, void *user_data)
 {
-    strset_add_and_update(db->table[conv_str(key)], key, user_data, my_make_appender, my_update_appender);
+    int r = strset_add_and_update(db->table[conv_str(key)], key, user_data, my_statinfo_make, my_statinfo_update);
+
+    if (r)
+    {
+        db->total_size++;
+        db->not_init_n++;
+    }
+    else if(!r)
+    {
+        db->not_init_n--;
+    }
 }
 
 /**
@@ -149,7 +161,7 @@ char **dbase_get_not_sold(DBase db, size_t *n, int filial)
 
 static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
 {
-    int i, c = 'Z' - 'A' + 1;
+    int i;
     void **tmp;
 
     GrowingArray g = garray_make(sizeof(char *), NULL);
@@ -158,7 +170,7 @@ static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
         strset_foreach(b->table[flag - 'A'], f, g);
     else
     {
-        for (i = 0; i < c; i++)
+        for (i = 0; i < b->max_size; i++)
             strset_foreach(b->table[i], f, g);
     }
 
@@ -173,7 +185,7 @@ static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
 
 static void insert_sold_by_all(void *key, void *value, void *user_data)
 {
-    if (user_data && is_sold_by_all((APPENDER)value))
+    if (user_data && statinfo_is_sold_by_all((StatInfo)value))
         garray_add((GrowingArray)user_data, key);
 }
 
@@ -192,7 +204,7 @@ static void insert_not_bought(void *key, void *value, void *user_data)
     {
         for (filial = 1; filial <= N_FILIAIS; filial++)
         {
-            if (!get_t_fil_vendas((APPENDER)value, filial))
+            if (!get_t_fil_vendas((StatInfo)value, filial))
             {
                 insert_in_dbase_arr((DBase)user_data, filial, key);
                 ++nst;
@@ -206,14 +218,14 @@ static void insert_not_bought(void *key, void *value, void *user_data)
 
 static void dbase_build_arrays(DBase db)
 {
-    int i, c = 'Z' - 'A' + 1;
+    int i;
 
     if (!db->not_bought[0])
     {
         for (i = 0; i < 4; i++)
             db->not_bought[i] = garray_make(sizeof(char *), NULL);
 
-        for (i = 0; i < c; i++)
+        for (i = 0; i < db->max_size; i++)
             strset_foreach(db->table[i], insert_not_bought, db);
 
         for (i = 0; i < 4; i++)
@@ -221,12 +233,17 @@ static void dbase_build_arrays(DBase db)
     }
 }
 
-static void *my_make_appender(void)
+static void *my_statinfo_make(void)
 {
-    return (void *)make_appender();
+    return (void *)statinfo_make();
 }
 
-static void my_update_appender(void *app, void *user)
+static void my_statinfo_update(void *app, void *user)
 {
-    update_appender((APPENDER)app, user);
+    statinfo_update((StatInfo)app, user);
+}
+
+static void my_statinfo_destroy(void *a)
+{
+    statinfo_destroy((StatInfo)a);
 }

@@ -1,7 +1,7 @@
 #ifndef SALE_H
 #define SALE_H
 
-#include "mainstruct.h"
+#include "dbase.h"
 
 /**
  * \brief Typedef para função que recebe dois tipos abstratos e retorna um booleano.

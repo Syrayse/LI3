@@ -7,12 +7,11 @@
 StrSet strset_make(freefunc ffkey, freefunc ffvalue);
 void strset_destroy(StrSet set);
 int strset_add(StrSet set, void *elem, void *value);
-void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
+int strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
 int strset_remove(StrSet set, void *elem);
 void strset_foreach(StrSet set, f_foreach fer, void *user_data);
 int strset_contains(StrSet set, void *elem);
 int strset_size(StrSet set);
-void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
 void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
@@ -72,18 +71,25 @@ int strset_add(StrSet set, void *elem, void *value)
     return g_hash_table_insert(set->table, elem, value);
 }
 
-void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu)
+int strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu)
 {
+    int r = -1;
     void *val = NULL;
 
     if (fm && !(val = g_hash_table_lookup(set->table, elem)))
     {
+        r = 1;
         val = (*fm)();
         g_hash_table_insert(set->table, elem, val);
     }
 
     if (fu && user_data)
+    {
         (*fu)(val, user_data);
+        r = 0;
+    }
+
+    return r;
 }
 
 /**

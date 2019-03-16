@@ -1,52 +1,52 @@
 #include "sale.h"
-#include "appender.h"
+#include "statinfo.h"
 #include "util.h"
 #include <glib.h>
 
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-APPENDER make_appender();
-void update_appender(APPENDER, void *);
-int is_sold_by_all(APPENDER);
-int get_t_vendas(APPENDER);
-int get_t_fil_vendas(APPENDER, int filial);
-int get_t_fil_vendas_promo(APPENDER, int filial);
-int get_t_fil_vendas_no_promo(APPENDER, int filial);
-int get_t_month_fil_vendas(APPENDER, int month, int filial);
-int get_t_month_fil_vendas_promo(APPENDER, int month, int filial);
-int get_t_month_fil_vendas_no_promo(APPENDER, int month, int filial);
-int get_t_month_vendas(APPENDER, int month);
-int get_t_month_vendas_promo(APPENDER, int month);
-int get_t_month_vendas_no_promo(APPENDER, int month);
-double get_t_rev(APPENDER);
-double get_t_fil_rev(APPENDER, int filial);
-double get_t_fil_rev_promo(APPENDER, int filial);
-double get_t_fil_rev_no_promo(APPENDER, int filial);
-double get_t_month_fil_rev(APPENDER, int month, int filial);
-double get_t_month_fil_rev_promo(APPENDER, int month, int filial);
-double get_t_month_fil_rev_no_promo(APPENDER, int month, int filial);
-double get_t_month_rev(APPENDER, int month);
-double get_t_month_rev_promo(APPENDER, int month);
-double get_t_month_rev_no_promo(APPENDER, int month);
-void destroy_appender(void *);
+StatInfo statinfo_make();
+void statinfo_destroy(StatInfo);
+void statinfo_update(StatInfo, void *);
+int statinfo_is_sold_by_all(StatInfo);
+int get_t_vendas(StatInfo);
+int get_t_fil_vendas(StatInfo, int filial);
+int get_t_fil_vendas_promo(StatInfo, int filial);
+int get_t_fil_vendas_no_promo(StatInfo, int filial);
+int get_t_month_fil_vendas(StatInfo, int month, int filial);
+int get_t_month_fil_vendas_promo(StatInfo, int month, int filial);
+int get_t_month_fil_vendas_no_promo(StatInfo, int month, int filial);
+int get_t_month_vendas(StatInfo, int month);
+int get_t_month_vendas_promo(StatInfo, int month);
+int get_t_month_vendas_no_promo(StatInfo, int month);
+double get_t_rev(StatInfo);
+double get_t_fil_rev(StatInfo, int filial);
+double get_t_fil_rev_promo(StatInfo, int filial);
+double get_t_fil_rev_no_promo(StatInfo, int filial);
+double get_t_month_fil_rev(StatInfo, int month, int filial);
+double get_t_month_fil_rev_promo(StatInfo, int month, int filial);
+double get_t_month_fil_rev_no_promo(StatInfo, int month, int filial);
+double get_t_month_rev(StatInfo, int month);
+double get_t_month_rev_promo(StatInfo, int month);
+double get_t_month_rev_no_promo(StatInfo, int month);
 
 /* Metodos privados */
-static int get_t_vendas_month_iter(APPENDER a, int month, int (*)(APPENDER, int, int));
-static double get_t_rev_month_iter(APPENDER a, int month, double (*)(APPENDER, int, int));
+static int get_t_vendas_month_iter(StatInfo a, int month, int (*)(StatInfo, int, int));
+static double get_t_rev_month_iter(StatInfo a, int month, double (*)(StatInfo, int, int));
 
 // ------------------------------------------------------------------------------
 
 /**
  * \brief Estrutura de dados que contém informção estatistica de cada cliente/produto.
  **/
-typedef struct appendix
+typedef struct statistical_info
 {
     int nVendasTotal,                                   /**< Número de registos de vendas associados */
         nVendasFilialMonth[N_FILIAIS][N_MONTHS + 1][2]; /**< Numero de registos de vendas associados por filial e mễs */
-    double totalRevenue,                                 /**< Rendimento total associado */
+    double totalRevenue,                                /**< Rendimento total associado */
         monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][2];   /**< Rendimento total associado por filial e mês*/
-} * APPENDER;
+} * StatInfo;
 
 // ------------------------------------------------------------------------------
 
@@ -55,10 +55,10 @@ typedef struct appendix
  * 
  * @returns A estrutura alocada.
  **/
-APPENDER make_appender()
+StatInfo statinfo_make()
 {
     int l, c, k;
-    APPENDER a = g_malloc(sizeof(struct appendix));
+    StatInfo a = g_malloc(sizeof(struct statistical_info));
 
     a->nVendasTotal = 0;
 
@@ -80,12 +80,23 @@ APPENDER make_appender()
 }
 
 /**
+ * \brief Liberta a memória de um dado contento de informção estatistica.
+ * 
+ * @param a Contentor a libertar.
+ **/
+void statinfo_destroy(StatInfo a)
+{
+    if (a)
+        g_free(a);
+}
+
+/**
  * \brief Atualiza os dados estatisticos consoante um registo de venda.
  * 
  * @param a Contentor de informação estatistica que ira ser atualizado.
  * @param e Registo de venda que servirá para atualizar a informação.
  **/
-void update_appender(APPENDER a, void *e)
+void statinfo_update(StatInfo a, void *e)
 {
     if (!e)
         return;
@@ -109,7 +120,7 @@ void update_appender(APPENDER a, void *e)
 /**
  * \brief verifica se há um registo em cada uma das filiais.
  **/
-int is_sold_by_all(APPENDER a)
+int statinfo_is_sold_by_all(StatInfo a)
 {
     int i, r = 1;
     for (i = 1; r && i <= N_FILIAIS; i++)
@@ -127,7 +138,7 @@ int is_sold_by_all(APPENDER a)
  * 
  * @returns O número total de vendas da `key`.
  **/
-int get_t_vendas(APPENDER a)
+int get_t_vendas(StatInfo a)
 {
     return a->nVendasTotal;
 }
@@ -140,7 +151,7 @@ int get_t_vendas(APPENDER a)
  * 
  * @returns O nḿero total de vendas da `key` numa certa filial.
  **/
-int get_t_fil_vendas(APPENDER a, int filial)
+int get_t_fil_vendas(StatInfo a, int filial)
 {
     return (a->nVendasFilialMonth[filial - 1][0][0] + a->nVendasFilialMonth[filial - 1][0][1]);
 }
@@ -153,7 +164,7 @@ int get_t_fil_vendas(APPENDER a, int filial)
  * 
  * @returns O número total de vendas com promoção da `key` numa certa filial.
  **/
-int get_t_fil_vendas_promo(APPENDER a, int filial)
+int get_t_fil_vendas_promo(StatInfo a, int filial)
 {
     return a->nVendasFilialMonth[filial - 1][0][1];
 }
@@ -166,7 +177,7 @@ int get_t_fil_vendas_promo(APPENDER a, int filial)
  * 
  * @returns O número total de vendas sem promoção da `key` numa certa filial.
  **/
-int get_t_fil_vendas_no_promo(APPENDER a, int filial)
+int get_t_fil_vendas_no_promo(StatInfo a, int filial)
 {
     return a->nVendasFilialMonth[filial - 1][0][0];
 }
@@ -180,7 +191,7 @@ int get_t_fil_vendas_no_promo(APPENDER a, int filial)
  * 
  * @returns O número total de vendas efetuadas num dados mês numa dada filial.
  **/
-int get_t_month_fil_vendas(APPENDER a, int month, int filial)
+int get_t_month_fil_vendas(StatInfo a, int month, int filial)
 {
     return (a->nVendasFilialMonth[filial - 1][month][0] +
             a->nVendasFilialMonth[filial - 1][month][1]);
@@ -195,7 +206,7 @@ int get_t_month_fil_vendas(APPENDER a, int month, int filial)
  * 
  * @returns O número total de vendas com promoção efetuadas num dados mês e filial.
  **/
-int get_t_month_fil_vendas_promo(APPENDER a, int month, int filial)
+int get_t_month_fil_vendas_promo(StatInfo a, int month, int filial)
 {
     return a->nVendasFilialMonth[filial - 1][month][1];
 }
@@ -209,7 +220,7 @@ int get_t_month_fil_vendas_promo(APPENDER a, int month, int filial)
  * 
  * @returns O número total de vendas sem promoção efetuadas num dado mês e filial.
  **/
-int get_t_month_fil_vendas_no_promo(APPENDER a, int month, int filial)
+int get_t_month_fil_vendas_no_promo(StatInfo a, int month, int filial)
 {
     return a->nVendasFilialMonth[filial - 1][month][0];
 }
@@ -223,7 +234,7 @@ int get_t_month_fil_vendas_no_promo(APPENDER a, int month, int filial)
  * 
  * @returns O valor calculado.
  **/
-static int get_t_vendas_month_iter(APPENDER a, int month, int (*f)(APPENDER, int, int))
+static int get_t_vendas_month_iter(StatInfo a, int month, int (*f)(StatInfo, int, int))
 {
     int k, r = 0;
 
@@ -242,7 +253,7 @@ static int get_t_vendas_month_iter(APPENDER a, int month, int (*f)(APPENDER, int
  * 
  * @returns O valor calculado.
  **/
-static double get_t_rev_month_iter(APPENDER a, int month, double (*f)(APPENDER, int, int))
+static double get_t_rev_month_iter(StatInfo a, int month, double (*f)(StatInfo, int, int))
 {
     int k;
     double r = 0;
@@ -263,7 +274,7 @@ static double get_t_rev_month_iter(APPENDER a, int month, double (*f)(APPENDER, 
  * 
  * @see get_t_vendas_month_iter
  **/
-int get_t_month_vendas(APPENDER a, int month)
+int get_t_month_vendas(StatInfo a, int month)
 {
     return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas);
 }
@@ -278,7 +289,7 @@ int get_t_month_vendas(APPENDER a, int month)
  * 
  * @see get_t_vendas_month_iter
  **/
-int get_t_month_vendas_promo(APPENDER a, int month)
+int get_t_month_vendas_promo(StatInfo a, int month)
 {
     return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas_promo);
 }
@@ -293,7 +304,7 @@ int get_t_month_vendas_promo(APPENDER a, int month)
  * 
  * @see get_t_vendas_month_iter
  **/
-int get_t_month_vendas_no_promo(APPENDER a, int month)
+int get_t_month_vendas_no_promo(StatInfo a, int month)
 {
     return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas_no_promo);
 }
@@ -305,7 +316,7 @@ int get_t_month_vendas_no_promo(APPENDER a, int month)
  * 
  * @returns O lucro total obtido.
  **/
-double get_t_rev(APPENDER a)
+double get_t_rev(StatInfo a)
 {
     return a->totalRevenue;
 }
@@ -318,7 +329,7 @@ double get_t_rev(APPENDER a)
  * 
  * @returns O lucro total obtido em dada filial.
  **/
-double get_t_fil_rev(APPENDER a, int filial)
+double get_t_fil_rev(StatInfo a, int filial)
 {
     return (a->monthlyFilialRev[filial - 1][0][0] +
             a->monthlyFilialRev[filial - 1][0][1]);
@@ -332,7 +343,7 @@ double get_t_fil_rev(APPENDER a, int filial)
  * 
  * @returns O lucro total com promoções obtido em dada filial.
  **/
-double get_t_fil_rev_promo(APPENDER a, int filial)
+double get_t_fil_rev_promo(StatInfo a, int filial)
 {
     return a->monthlyFilialRev[filial - 1][0][1];
 }
@@ -345,7 +356,7 @@ double get_t_fil_rev_promo(APPENDER a, int filial)
  * 
  * @returns O lucro total sem promoções obtido em dada filial.
  **/
-double get_t_fil_rev_no_promo(APPENDER a, int filial)
+double get_t_fil_rev_no_promo(StatInfo a, int filial)
 {
     return a->monthlyFilialRev[filial - 1][0][0];
 }
@@ -359,7 +370,7 @@ double get_t_fil_rev_no_promo(APPENDER a, int filial)
  * 
  * @returns O lucro total obtido num dado mês e filial.
  **/
-double get_t_month_fil_rev(APPENDER a, int month, int filial)
+double get_t_month_fil_rev(StatInfo a, int month, int filial)
 {
     return (a->monthlyFilialRev[filial - 1][month][0] +
             a->monthlyFilialRev[filial - 1][month][1]);
@@ -374,7 +385,7 @@ double get_t_month_fil_rev(APPENDER a, int month, int filial)
  * 
  * @returns O lucro total com promoção obtido num dado mês e filial.
  **/
-double get_t_month_fil_rev_promo(APPENDER a, int month, int filial)
+double get_t_month_fil_rev_promo(StatInfo a, int month, int filial)
 {
     return a->monthlyFilialRev[filial - 1][month][1];
 }
@@ -388,7 +399,7 @@ double get_t_month_fil_rev_promo(APPENDER a, int month, int filial)
  * 
  * @returns O lucro total sem promoção obtido num dado mês e filial.
  **/
-double get_t_month_fil_rev_no_promo(APPENDER a, int month, int filial)
+double get_t_month_fil_rev_no_promo(StatInfo a, int month, int filial)
 {
     return a->monthlyFilialRev[filial - 1][month][0];
 }
@@ -401,7 +412,7 @@ double get_t_month_fil_rev_no_promo(APPENDER a, int month, int filial)
  * 
  * @returns O lucro total obtido num dado mês. 
  **/
-double get_t_month_rev(APPENDER a, int month)
+double get_t_month_rev(StatInfo a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev);
 }
@@ -414,7 +425,7 @@ double get_t_month_rev(APPENDER a, int month)
  * 
  * @returns O lucro total com promoção obtido num dado mês. 
  **/
-double get_t_month_rev_promo(APPENDER a, int month)
+double get_t_month_rev_promo(StatInfo a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev_promo);
 }
@@ -427,18 +438,7 @@ double get_t_month_rev_promo(APPENDER a, int month)
  * 
  * @returns O lucro total sem promoção obtido num dado mês. 
  **/
-double get_t_month_rev_no_promo(APPENDER a, int month)
+double get_t_month_rev_no_promo(StatInfo a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev_no_promo);
-}
-
-/**
- * \brief Liberta a memória de um dado contento de informção estatistica.
- * 
- * @param a Contentor a libertar.
- **/
-void destroy_appender(void *a)
-{
-    if (a)
-        g_free((APPENDER)a);
 }

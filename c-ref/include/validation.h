@@ -1,7 +1,7 @@
 #ifndef VALIDATION_H
 #define VALIDATION_H
 
-#include "mainstruct.h"
+#include "dbase.h"
 #include "sale.h"
 
 /**
