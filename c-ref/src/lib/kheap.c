@@ -124,6 +124,7 @@ void *kheap_check_root(KHeap kh)
 void *kheap_extract_root(KHeap kh)
 {
     void *d = NULL;
+
     if (kh && kh->used)
     {
         d = kh->heap[0];
@@ -177,7 +178,7 @@ static int bubble_down(KHeap kh)
                 minI = i;
             }
         }
-
+      
         if (kh->fc(kh->heap[p], min) < 0)
         {
             swap_arr(kh->heap, p, minI);
