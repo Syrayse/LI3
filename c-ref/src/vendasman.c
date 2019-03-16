@@ -18,8 +18,8 @@
 /* Metodos publicos */
 MAN_b make_man(void);
 void destroy_man(MAN_b);
-int insert_client_man(MAN_b, char *);
-int insert_product_man(MAN_b, char *);
+void insert_client_man(MAN_b, char *);
+void insert_product_man(MAN_b, char *);
 int insert_sale_man(MAN_b, SALE);
 
 int get_maior_linha(MAN_b);
@@ -27,10 +27,8 @@ int get_n_produtos(MAN_b);
 int get_n_vendas_total(MAN_b);
 int get_n_vendas_filial(MAN_b, int);
 int get_n_clientes_total(MAN_b);
-int get_n_clientes_alph(MAN_b, char);
 double get_cashflow_total(MAN_b);
 char *get_last_client(MAN_b);
-int get_client_n_vendas(MAN_b, char *);
 int get_not_sold_client(MAN_b);
 int get_not_sold_product(MAN_b);
 
@@ -48,13 +46,12 @@ void show_boletim_vendas(MAN_b mn);
  **/
 typedef struct manb
 {
-    DBase clients,                    /**< Base de dados dos clientes */
-        products;                     /**< Base de dados dos produtos */
-    char lastClient[7];               /**< Ultimo cliente lido */
-    int maiorLinha,                   /**< Maior linha lida */
-        nVendasFiliais[3],            /**< Numero de vendas por filial */
-        nClientesAlph['Z' - 'A' + 1]; /**< Numero de clientes letra */
-    double totalCashFlow;             /**< Lucro total da empresa */
+    DBase clients,         /**< Base de dados dos clientes */
+        products;          /**< Base de dados dos produtos */
+    char lastClient[7];    /**< Ultimo cliente lido */
+    int maiorLinha,        /**< Maior linha lida */
+        nVendasFiliais[3]; /**< Numero de vendas por filial */
+    double totalCashFlow;  /**< Lucro total da empresa */
 } * MAN_b;
 
 // ------------------------------------------------------------------------------
@@ -66,14 +63,12 @@ MAN_b make_man(void)
 {
     int i;
     MAN_b b = g_malloc(sizeof(struct manb));
-    b->clients = make_dbase();
-    b->products = make_dbase();
+    b->clients = dbase_make();
+    b->products = dbase_make();
     b->lastClient[0] = '\0';
     b->maiorLinha = -1;
     for (i = 0; i < 3; i++)
         b->nVendasFiliais[i] = 0;
-    for (i = 0; i < 'Z' - 'A' + 1; i++)
-        b->nClientesAlph[i] = 0;
     b->totalCashFlow = 0.0;
     return b;
 }
@@ -85,8 +80,8 @@ void destroy_man(MAN_b b)
 {
     if (b)
     {
-        destroy_dbase(b->clients);
-        destroy_dbase(b->products);
+        dbase_destroy(b->clients);
+        dbase_destroy(b->products);
         g_free(b);
     }
 }
@@ -94,20 +89,17 @@ void destroy_man(MAN_b b)
 /**
  * \brief Insere uma dado cliente na respetiva base de dados.
  **/
-int insert_client_man(MAN_b b, char *s)
+void insert_client_man(MAN_b b, char *s)
 {
-    int r = insert_dbase(b->clients, s, NULL);
-    if (!r)
-        b->nClientesAlph[(int)(*s - 'A')]++;
-    return r;
+    dbase_add(b->clients, s, NULL);
 }
 
 /**
  * \brief Insere uma dado produto na respetiva base de dados.
  **/
-int insert_product_man(MAN_b b, char *s)
+void insert_product_man(MAN_b b, char *s)
 {
-    return insert_dbase(b->products, s, NULL);
+    dbase_add(b->products, s, NULL);
 }
 
 /**
@@ -143,7 +135,7 @@ int get_maior_linha(MAN_b b)
  **/
 int get_n_produtos(MAN_b b)
 {
-    return get_total_size_dbase(b->products);
+    return dbase_size(b->products);
 }
 
 /**
@@ -173,18 +165,7 @@ int get_n_vendas_filial(MAN_b b, int filial)
  **/
 int get_n_clientes_total(MAN_b b)
 {
-    return get_total_size_dbase(b->clients);
-}
-
-/**
- * \brief Calcula o numero de clientes que começa por uma dada letra.
- **/
-int get_n_clientes_alph(MAN_b b, char inicial)
-{
-    int r = -1;
-    if (is_between(inicial, 'A', 'Z'))
-        r = b->nClientesAlph[inicial - 'A'];
-    return r;
+    return dbase_size(b->clients);
 }
 
 /**
@@ -204,14 +185,6 @@ char *get_last_client(MAN_b b)
 }
 
 /**
- * \brief Calcula o numero de vendas de um dado client.
- **/
-int get_client_n_vendas(MAN_b b, char *client)
-{
-    return get_client_v(b->clients, client);
-}
-
-/**
  * \brief Atribui a maior linha à gestão principal.
  **/
 void set_maior_linha(MAN_b m, int l)
@@ -219,27 +192,9 @@ void set_maior_linha(MAN_b m, int l)
     m->maiorLinha = l;
 }
 
-int get_not_sold_client(MAN_b m)
-{
-    return get_not_sold_dbase(m->clients);
-}
-
-int get_not_sold_product(MAN_b m)
-{
-    return get_not_sold_dbase(m->products);
-}
-
-// DEBUG functions below and should not be included in a final version.
-void show_number_sales(MAN_b mn)
-{
-    char c;
-    for (c = 'A'; c <= 'Z'; c++)
-        printf("%c:%d\n", c, get_n_clientes_alph(mn, c));
-}
-
 void show_boletim_vendas(MAN_b mn)
 {
-    void **tmp;
+    char **tmp;
     size_t t = 0;
     printf("FIM DA LEITURA DO Vendas_1M.txt\n");
     printf("A maior linha tem tamanho %d\n", get_maior_linha(mn));
@@ -247,38 +202,33 @@ void show_boletim_vendas(MAN_b mn)
     printf("Clientes envolvidos: %d\n", get_n_clientes_total(mn));
     printf("Vendas efectivas: %d\n", get_n_vendas_total(mn));
     printf("Ultimo cliente: %s\n", mn->lastClient);
-    if (mn->lastClient[0] != '\0')
-        printf("Numero de vendas regitadas para o cliente %s: %d\n", mn->lastClient, get_client_n_vendas(mn, mn->lastClient));
     printf("Numero de vendas registadas na filial 1: %d\n", get_n_vendas_filial(mn, 1));
     printf("Numero de vendas registadas na filial 2: %d\n", get_n_vendas_filial(mn, 2));
     printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
-    show_number_sales(mn);
 
     printf("Faturacao total: %f\n", get_cashflow_total(mn));
     printf("Expected: 44765588910.5209\n");
     printf("Offset: %f\n", 44765588910.5209 - get_cashflow_total(mn));
 
     puts("\nFASE 2 SPECS");
-    printf("Numero de clientes que não efeturam compras:%d\n", get_not_sold_client(mn));
-    printf("Numero de produtos que nao foram vendidos em:%d\n", get_not_sold_product(mn));
 
-    tmp = get_ordered_not_bought(mn->products, &t, 0);
+    tmp = dbase_get_not_sold(mn->products, &t, 0);
     printf("|%ld|\n", t);
     g_free(tmp);
 
-    tmp = get_ordered_not_bought(mn->products, &t, 1);
+    tmp = dbase_get_not_sold(mn->products, &t, 1);
     printf("|%ld|\n", t);
     g_free(tmp);
 
-    tmp = get_ordered_not_bought(mn->products, &t, 2);
+    tmp = dbase_get_not_sold(mn->products, &t, 2);
     printf("|%ld|\n", t);
     g_free(tmp);
 
-    tmp = get_ordered_not_bought(mn->products, &t, 3);
+    tmp = dbase_get_not_sold(mn->products, &t, 3);
     printf("|%ld|\n", t);
     g_free(tmp);
 
-    tmp = get_overall_clients(mn->clients, &t, 0);
+    tmp = dbase_get_overall(mn->clients, &t, 0);
     g_free(tmp);
 
     printf("%ld clientes compraram em todas as filiais\n", t);

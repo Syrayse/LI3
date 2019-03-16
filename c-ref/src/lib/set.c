@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-StrSet strset_make(freefunc ff);
+StrSet strset_make(freefunc ffkey, freefunc ffvalue);
 void strset_destroy(StrSet set);
 int strset_add(StrSet set, void *elem, void *value);
 void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
@@ -12,7 +12,7 @@ int strset_remove(StrSet set, void *elem);
 void strset_foreach(StrSet set, f_foreach fer, void *user_data);
 int strset_contains(StrSet set, void *elem);
 int strset_size(StrSet set);
-int strset_update_elem(StrSet set, void *elem, f_update fu, void *user_data);
+void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
 void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
@@ -37,10 +37,10 @@ typedef struct set
  * 
  * @returns O set criado.
  **/
-StrSet strset_make(freefunc ff)
+StrSet strset_make(freefunc ffkey, freefunc ffvalue)
 {
     StrSet set = g_malloc(sizeof(struct set));
-    set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ff, g_free);
+    set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ffkey, ffvalue);
     return set;
 }
 
@@ -78,13 +78,12 @@ void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, 
 
     if (fm && !(val = g_hash_table_lookup(set->table, elem)))
     {
-        val = *fm;
+        val = (*fm)();
+        g_hash_table_insert(set->table, elem, val);
     }
 
-    g_hash_table_insert(set->table, elem, val);
-
     if (fu && user_data)
-        (*f_update)(val, user_data);
+        (*fu)(val, user_data);
 }
 
 /**
@@ -193,7 +192,7 @@ int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), voi
  * 
  * @returns A informação associada ao elemento.
  **/
-void *strset_value_of(StrSet set, char *elem)
+void *strset_value_of(StrSet set, void *elem)
 {
     return g_hash_table_lookup(set->table, elem);
 }

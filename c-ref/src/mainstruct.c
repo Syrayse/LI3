@@ -12,7 +12,7 @@
 DBase dbase_make();
 void dbase_destroy(DBase);
 void dbase_add(DBase, void *, void *);
-int dbase_remove(Dbase, void *);
+int dbase_remove(DBase, void *);
 int dbase_size(DBase);
 int dbase_size_specific(DBase, char);
 int dbase_contains(DBase, void *);
@@ -21,10 +21,12 @@ char **dbase_get_not_sold(DBase, size_t *, int);
 
 /* Metodos privados */
 static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag);
-//static void insert_sold_by_all(void *key, void *value, void *user_data);
+static void insert_sold_by_all(void *key, void *value, void *user_data);
 static void insert_in_dbase_arr(DBase db, int ind, void *key);
 static void insert_not_bought(void *key, void *value, void *user_data);
 static void dbase_build_arrays(DBase db);
+static void *my_make_appender(void);
+static void my_update_appender(void *, void *);
 
 // ------------------------------------------------------------------------------
 
@@ -52,10 +54,10 @@ DBase dbase_make()
     db->total_size = 0;
     db->max_size = 'Z' - 'A' + 1;
 
-    db->table = g_malloc(sizeof(StrSet) * m->max_size);
+    db->table = g_malloc(sizeof(StrSet) * db->max_size);
 
     for (i = 0; i < db->max_size; i++)
-        db->table[i] = strset_make(NULL);
+        db->table[i] = strset_make(g_free, destroy_appender);
 
     db->not_bought[0] = NULL;
 
@@ -90,15 +92,15 @@ void dbase_destroy(DBase db)
  **/
 void dbase_add(DBase db, void *key, void *user_data)
 {
-    strset_add_and_update(db->table[conv_str(key)], key, user_data, make_appender, update_appender);
+    strset_add_and_update(db->table[conv_str(key)], key, user_data, my_make_appender, my_update_appender);
 }
 
 /**
  * \brief Remove uma `key` da base de dados. 
  **/
-int dbase_remove(Dbase db, void *key)
+int dbase_remove(DBase db, void *key)
 {
-    return g_hash_table_remove(db->table[conv_str(key)], key);
+    return strset_remove(db->table[conv_str(key)], key);
 }
 
 /**
@@ -106,7 +108,14 @@ int dbase_remove(Dbase db, void *key)
  **/
 int dbase_size(DBase m)
 {
-    return m->total_size;
+    int i, r = 0;
+
+    for (i = 0; i < m->max_size; i++)
+    {
+        r += strset_size(m->table[i]);
+    }
+
+    return r;
 }
 
 /**
@@ -114,7 +123,7 @@ int dbase_size(DBase m)
  **/
 int dbase_size_specific(DBase db, char flag)
 {
-    return g_hash_table_size(db->table[flag - 'A']);
+    return strset_size(db->table[flag - 'A']);
 }
 
 /**
@@ -122,10 +131,10 @@ int dbase_size_specific(DBase db, char flag)
  **/
 int dbase_contains(DBase db, void *key)
 {
-    return g_hash_table_contains(db->table[conv_str(key)], key);
+    return strset_contains(db->table[conv_str(key)], key);
 }
 
-char **dbase_get_overall(DBase db, size_t *h, char flag);
+char **dbase_get_overall(DBase db, size_t *h, char flag)
 {
     return (char **)dump_ordered_abstract(db, insert_sold_by_all, h, flag);
 }
@@ -135,7 +144,7 @@ char **dbase_get_not_sold(DBase db, size_t *n, int filial)
     if (!db->not_bought[0])
         dbase_build_arrays(db);
 
-    return (char **)dump_ordered_abstract(db->not_bought[filial], insert_not_bought, n, 0);
+    return (char **)garray_dump_elems(db->not_bought[filial], n);
 }
 
 static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
@@ -162,13 +171,11 @@ static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
     return tmp;
 }
 
-/*
 static void insert_sold_by_all(void *key, void *value, void *user_data)
 {
     if (user_data && is_sold_by_all((APPENDER)value))
         garray_add((GrowingArray)user_data, key);
 }
-*/
 
 static void insert_in_dbase_arr(DBase db, int ind, void *key)
 {
@@ -212,4 +219,14 @@ static void dbase_build_arrays(DBase db)
         for (i = 0; i < 4; i++)
             garray_sort(db->not_bought[i], mystrcmp);
     }
+}
+
+static void *my_make_appender(void)
+{
+    return (void *)make_appender();
+}
+
+static void my_update_appender(void *app, void *user)
+{
+    update_appender((APPENDER)app, user);
 }
