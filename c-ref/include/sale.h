@@ -8,34 +8,30 @@
  **/
 typedef int (*pc)(DBase, void *);
 
-typedef struct sale *SALE;
+typedef struct sale *Sale;
 
-//Construtores e desconstrutores
-SALE make_s(void);
-void destroy_s(SALE);
-void clean_s(SALE);
-int process_paralelo_s(DBase, DBase, SALE, pc, pc);
-void insert_self_s(DBase, DBase, SALE);
+Sale sale_make();
+void sale_destroy(Sale);
+void sale_wipe(Sale);
+int sale_paralel_proc(DBase, DBase, Sale, pc, pc);
+void sale_insert_self(DBase, DBase, Sale);
+void sale_copy_client(Sale, char *);
 
-//setters e getters
-//getters
-void copy_client_s(SALE src, char *dest);
-char *get_client_s(SALE s);
-char *get_product_s(SALE s);
-int get_month_s(SALE s);
-int get_filial_s(SALE s);
-int get_promo_s(SALE s);
-int get_units_s(SALE s);
-double get_price_s(SALE s);
-double get_rev_s(SALE);
+char *sale_get_client(Sale);
+char *sale_get_product(Sale);
+int sale_get_month(Sale s);
+int sale_get_filial(Sale s);
+int sale_get_promo(Sale s);
+int sale_get_units(Sale s);
+double sale_get_price(Sale s);
+double sale_get_rev(Sale);
 
-//setters
-void set_client_s(SALE s, char *client);
-void set_product_s(SALE s, char *product);
-void set_month_s(SALE s, int month);
-void set_filial_s(SALE s, int filial);
-void set_promo_s(SALE s, int promo);
-void set_units_s(SALE s, int units);
-void set_price_s(SALE s, double price);
+void sale_set_client(Sale s, char *client);
+void sale_set_product(Sale s, char *product);
+void sale_set_month(Sale s, int month);
+void sale_set_filial(Sale s, int filial);
+void sale_set_promo(Sale s, int promo);
+void sale_set_units(Sale s, int units);
+void sale_set_price(Sale s, double price);
 
 #endif

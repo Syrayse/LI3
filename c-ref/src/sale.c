@@ -11,31 +11,29 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-SALE make_s(void);
-void destroy_s(SALE);
-void clean_s(SALE);
-int validate_s(DBase, DBase, SALE);
-int process_paralelo_s(DBase, DBase, SALE, pc, pc);
+Sale sale_make();
+void sale_destroy(Sale);
+void sale_wipe(Sale);
+int sale_paralel_proc(DBase, DBase, Sale, pc, pc);
+void sale_insert_self(DBase, DBase, Sale);
+void sale_copy_client(Sale, char *);
 
-/* Getters */
-void copy_client_s(SALE, char *);
-char *get_client_s(SALE);
-char *get_product_s(SALE);
-int get_month_s(SALE);
-int get_filial_s(SALE);
-int get_promo_s(SALE);
-int get_units_s(SALE);
-double get_price_s(SALE);
-double get_rev_s(SALE);
+char *sale_get_client(Sale);
+char *sale_get_product(Sale);
+int sale_get_month(Sale s);
+int sale_get_filial(Sale s);
+int sale_get_promo(Sale s);
+int sale_get_units(Sale s);
+double sale_get_price(Sale s);
+double sale_get_rev(Sale);
 
-/* Setters */
-void set_client_s(SALE, char *);
-void set_product_s(SALE, char *);
-void set_month_s(SALE, int);
-void set_filial_s(SALE, int);
-void set_promo_s(SALE, int);
-void set_units_s(SALE, int);
-void set_price_s(SALE, double);
+void sale_set_client(Sale s, char *client);
+void sale_set_product(Sale s, char *product);
+void sale_set_month(Sale s, int month);
+void sale_set_filial(Sale s, int filial);
+void sale_set_promo(Sale s, int promo);
+void sale_set_units(Sale s, int units);
+void sale_set_price(Sale s, double price);
 
 /* Metodos privados */
 // None
@@ -47,15 +45,11 @@ void set_price_s(SALE, double);
  **/
 typedef struct sale
 {
-    char *client /**< Código do cliente */
-        ,
+    char *client, /**< Código do cliente */
         *product; /**< Código do produto */
-    int month     /**< Mes da venda */
-        ,
-        filial /**< Filial da venda */
-        ,
-        promo /**< Código promocional da venda */
-        ,
+    int month,    /**< Mes da venda */
+        filial,   /**< Filial da venda */
+        promo,    /**< Código promocional da venda */
         units;    /**< unidades vendidas */
     double price; /**< Preco de cada unidade vendida */
 } * SALE;
@@ -67,7 +61,7 @@ typedef struct sale
  * 
  * @returns Um registo de venda utilizavél.
  **/
-SALE make_s(void)
+Sale sale_make()
 {
     SALE r = g_malloc(sizeof(struct sale));
     r->client = r->product = NULL;
@@ -81,7 +75,7 @@ SALE make_s(void)
  *
  * @param s Registo de venda a limpar.
  **/
-void clean_s(SALE s)
+void sale_wipe(Sale s)
 {
     if (s)
     {
@@ -96,9 +90,9 @@ void clean_s(SALE s)
  * 
  * @param s Registo de venda a libertar da memória.
  **/
-void destroy_s(SALE s)
+void sale_destroy(Sale s)
 {
-    clean_s(s);
+    sale_wipe(s);
     g_free(s);
 }
 
@@ -116,7 +110,7 @@ void destroy_s(SALE s)
  * @see DBase
  * @see validate_s 
  **/
-int process_paralelo_s(DBase prd_st, DBase cl_st, SALE s, pc prdct, pc clt)
+int sale_paralel_proc(DBase prd_st, DBase cl_st, SALE s, pc prdct, pc clt)
 {
     return ((*prdct)(prd_st, s->product) && (*clt)(cl_st, s->client));
 }
@@ -127,7 +121,7 @@ int process_paralelo_s(DBase prd_st, DBase cl_st, SALE s, pc prdct, pc clt)
  * @param src Registo de venda que contem o código do cliente.
  * @param dest String onde será colocado o código do cliente.
  **/
-void copy_client_s(SALE src, char *dest)
+void sale_copy_client(Sale src, char *dest)
 {
     strcpy(dest, src->client);
 }
@@ -139,7 +133,7 @@ void copy_client_s(SALE src, char *dest)
  * @param clients Base de dados associada aos clientes.
  * @param s Registo que se pretende colocar na base de dados. 
  **/
-void insert_self_s(DBase products, DBase clients, SALE s)
+void sale_insert_self(DBase products, DBase clients, Sale s)
 {
     dbase_add(products, s->product, s);
     dbase_add(clients, s->client, s);
@@ -152,7 +146,7 @@ void insert_self_s(DBase products, DBase clients, SALE s)
  * 
  * @returns O cliente que efetuou a compra.
  **/
-char *get_client_s(SALE s)
+char *sale_get_client(Sale s)
 {
     return g_strdup(s->client);
 }
@@ -164,7 +158,7 @@ char *get_client_s(SALE s)
  * 
  * @returns O código do produto.
  **/
-char *get_product_s(SALE s)
+char *sale_get_product(Sale s)
 {
     return g_strdup(s->product);
 }
@@ -176,7 +170,7 @@ char *get_product_s(SALE s)
  * 
  * @returns O mẽs da venda.
  **/
-int get_month_s(SALE s)
+int sale_get_month(Sale s)
 {
     return s->month;
 }
@@ -188,7 +182,7 @@ int get_month_s(SALE s)
  * 
  * @returns Filial onde ocorreu a venda.
  **/
-int get_filial_s(SALE s)
+int sale_get_filial(Sale s)
 {
     return s->filial;
 }
@@ -200,7 +194,7 @@ int get_filial_s(SALE s)
  * 
  * @returns O código promocional de uma venda.
  **/
-int get_promo_s(SALE s)
+int sale_get_promo(Sale s)
 {
     return s->promo;
 }
@@ -212,7 +206,7 @@ int get_promo_s(SALE s)
  * 
  * @returns O número de unidades vendidas.
  **/
-int get_units_s(SALE s)
+int sale_get_units(Sale s)
 {
     return s->units;
 }
@@ -224,12 +218,12 @@ int get_units_s(SALE s)
  * 
  * @returns O preço da venda.
  **/
-double get_price_s(SALE s)
+double sale_get_price(Sale s)
 {
     return s->price;
 }
 
-double get_rev_s(SALE s)
+double sale_get_rev(Sale s)
 {
     return (s->price * s->units);
 }
@@ -240,7 +234,7 @@ double get_rev_s(SALE s)
  * @param s Registo de venda.
  * @param client Código do comprador.
  **/
-void set_client_s(SALE s, char *client)
+void sale_set_client(Sale s, char *client)
 {
     s->client = g_strdup(client);
 }
@@ -251,7 +245,7 @@ void set_client_s(SALE s, char *client)
  * @param s Registo de venda.
  * @param product Código do produto vendido.
  **/
-void set_product_s(SALE s, char *product)
+void sale_set_product(Sale s, char *product)
 {
     s->product = g_strdup(product);
 }
@@ -262,7 +256,7 @@ void set_product_s(SALE s, char *product)
  * @param s Registo de venda.
  * @param month Mês associado à venda.
  **/
-void set_month_s(SALE s, int month)
+void sale_set_month(Sale s, int month)
 {
     s->month = month;
 }
@@ -273,7 +267,7 @@ void set_month_s(SALE s, int month)
  * @param s Registo de venda.
  * @param filial Identificador da filial.
  **/
-void set_filial_s(SALE s, int filial)
+void sale_set_filial(Sale s, int filial)
 {
     s->filial = filial;
 }
@@ -284,7 +278,7 @@ void set_filial_s(SALE s, int filial)
  * @param s Registo de venda.
  * @param promo Código promocional.
  **/
-void set_promo_s(SALE s, int promo)
+void sale_set_promo(Sale s, int promo)
 {
     s->promo = promo;
 }
@@ -295,7 +289,7 @@ void set_promo_s(SALE s, int promo)
  * @param s Registo de venda.
  * @param units Unidades vendidas.
  **/
-void set_units_s(SALE s, int units)
+void sale_set_units(Sale s, int units)
 {
     s->units = units;
 }
@@ -306,7 +300,7 @@ void set_units_s(SALE s, int units)
  * @param s Registo de venda.
  * @param price Preço ao qual a venda foi efetuada.
  **/
-void set_price_s(SALE s, double price)
+void sale_set_price(Sale s, double price)
 {
     s->price = price;
 }

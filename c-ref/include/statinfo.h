@@ -1,5 +1,5 @@
-#ifndef APPENDER_H
-#define APPENDER_H
+#ifndef STATINFO_H
+#define STATINFO_H
 
 // Information append to keys.
 typedef struct statistical_info *StatInfo;

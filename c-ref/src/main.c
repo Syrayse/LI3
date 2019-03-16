@@ -25,7 +25,7 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
     int tmp, max = 0;
     char buff[100];
     FILE *fp = fopen(file, "r");
-    SALE s = make_s();
+    Sale s = sale_make();
 
     if (fp)
     {
@@ -37,14 +37,14 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
 
             vrf_obj_str(v, m, s, buff, VRF_SALE);
 
-            clean_s(s);
+            sale_wipe(s);
         }
 
         set_maior_linha(m, max);
 
         fclose(fp);
 
-        destroy_s(s);
+        sale_destroy(s);
     }
 }
 

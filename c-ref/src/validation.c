@@ -15,7 +15,7 @@
 VRF_OBJ make_vrf(void);
 int vrf_obj_str(VRF_OBJ, void *, void *, char *, int);
 void destroy_vrf(VRF_OBJ);
-int validate_s(DBase, DBase, SALE);
+int validate_s(DBase, DBase, Sale);
 
 /* Metodos privados */
 static int cover_is_valid_sale(VRF_OBJ v, char *s, void *main, void *entry);
@@ -133,12 +133,12 @@ void destroy_vrf(VRF_OBJ v)
  * Esta função utilizada um processamento duplo aplicada a cada uma das base da dados de
  * forma a realizar uma verificação dupla.
  * 
- * @see process_paralelo_s
+ * @see sale_paralel_proc
  * @see exists_dbase
  **/
-int validate_s(DBase products, DBase clients, SALE s)
+int validate_s(DBase products, DBase clients, Sale s)
 {
-    return process_paralelo_s(products, clients, s, dbase_contains, dbase_contains);
+    return sale_paralel_proc(products, clients, s, dbase_contains, dbase_contains);
 }
 
 /**
@@ -159,7 +159,7 @@ static int cover_is_valid_sale(VRF_OBJ v, char *token, void *main, void *entry)
 
     if (r)
     {
-        tmp = insert_sale_man((MAN_b)main, (SALE)entry);
+        tmp = insert_sale_man((MAN_b)main, (Sale)entry);
         r = min(r, tmp);
     }
 
@@ -216,7 +216,7 @@ static int _set_sale_valid_client(char *s, void *entry)
 {
     int r = is_valid_client(s);
     if (r)
-        set_client_s((SALE)entry, s);
+        sale_set_client((Sale)entry, s);
     return r;
 }
 
@@ -234,7 +234,7 @@ static int _set_sale_valid_product(char *s, void *entry)
 {
     int r = is_valid_product(s);
     if (r)
-        set_product_s((SALE)entry, s);
+        sale_set_product((Sale)entry, s);
     return r;
 }
 
@@ -301,7 +301,7 @@ static int is_valid_price(char *s, void *entry)
     double f = (double)atof(s);
     int r = is_between(f, 0.0, 999.99);
     if (r)
-        set_price_s((SALE)entry, f);
+        sale_set_price((Sale)entry, f);
     return r;
 }
 
@@ -318,7 +318,7 @@ static int is_valid_units(char *s, void *entry)
     int r, f = atoi(s);
     r = is_between(f, 1, 200);
     if (r)
-        set_units_s((SALE)entry, f);
+        sale_set_units((Sale)entry, f);
     return r;
 }
 
@@ -334,7 +334,7 @@ static int is_valid_promo(char *s, void *entry)
 {
     int r = (*s == 'N' || *s == 'P');
     if (r)
-        set_promo_s((SALE)entry, *s);
+        sale_set_promo((Sale)entry, *s);
     return r;
 }
 
@@ -351,7 +351,7 @@ static int is_valid_month(char *s, void *entry)
     int r, f = atoi(s);
     r = is_between(f, 1, 12);
     if (r)
-        set_month_s((SALE)entry, f);
+        sale_set_month((Sale)entry, f);
     return r;
 }
 
@@ -368,6 +368,6 @@ static int is_valid_filial(char *s, void *entry)
     int r, f = atoi(s);
     r = is_between(f, 1, 3);
     if (r)
-        set_filial_s((SALE)entry, f);
+        sale_set_filial((Sale)entry, f);
     return r;
 }

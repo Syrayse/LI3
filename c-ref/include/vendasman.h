@@ -9,7 +9,7 @@ MAN_b make_man(void);
 void destroy_man(MAN_b);
 void insert_client_man(MAN_b, char *);
 void insert_product_man(MAN_b, char *);
-int insert_sale_man(MAN_b, SALE);
+int insert_sale_man(MAN_b, Sale);
 
 int get_maior_linha(MAN_b);
 int get_n_produtos(MAN_b);

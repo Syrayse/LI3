@@ -100,11 +100,11 @@ void statinfo_update(StatInfo a, void *e)
 {
     if (!e)
         return;
-    SALE s = (SALE)e;
-    double rev = get_rev_s(s);
-    int f, m, p = get_promo_s(s);
-    m = get_month_s(s);
-    f = get_filial_s(s);
+    Sale s = (Sale)e;
+    double rev = sale_get_rev(s);
+    int f, m, p = sale_get_promo(s);
+    m = sale_get_month(s);
+    f = sale_get_filial(s);
 
     // Vendas
     a->nVendasTotal++;

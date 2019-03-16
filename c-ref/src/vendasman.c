@@ -19,7 +19,7 @@ MAN_b make_man(void);
 void destroy_man(MAN_b);
 void insert_client_man(MAN_b, char *);
 void insert_product_man(MAN_b, char *);
-int insert_sale_man(MAN_b, SALE);
+int insert_sale_man(MAN_b, Sale);
 
 int get_maior_linha(MAN_b);
 int get_n_produtos(MAN_b);
@@ -32,7 +32,6 @@ int get_not_sold_client(MAN_b);
 int get_not_sold_product(MAN_b);
 
 void set_maior_linha(MAN_b, int);
-void set_last_client(MAN_b, SALE);
 
 void show_boletim_vendas(MAN_b mn);
 
@@ -104,18 +103,18 @@ void insert_product_man(MAN_b b, char *s)
 /**
  * \brief Tenta inserir uma venda na base de dados, só se esta for válida.
  **/
-int insert_sale_man(MAN_b b, SALE s)
+int insert_sale_man(MAN_b b, Sale s)
 {
     int r = validate_s(b->products, b->clients, s);
     if (r)
     {
-        insert_self_s(b->products, b->clients, s);
+        sale_insert_self(b->products, b->clients, s);
 
-        copy_client_s(s, b->lastClient);
+        sale_copy_client(s, b->lastClient);
 
-        b->nVendasFiliais[get_filial_s(s) - 1]++;
+        b->nVendasFiliais[sale_get_filial(s) - 1]++;
 
-        b->totalCashFlow = b->totalCashFlow + get_rev_s(s);
+        b->totalCashFlow = b->totalCashFlow + sale_get_rev(s);
     }
 
     return r;
