@@ -4,14 +4,15 @@
 
 // ------------------------------------------------------------------------------
 
-GrowingArray make_garray(size_t key_size, freefunc ff);
-void destroy_garray(GrowingArray g);
-size_t get_size_garray(GrowingArray g);
-void insert_elem_garray(GrowingArray g, void *entry);
-void sort_garray(GrowingArray g, fcompar fc);
-int is_sorted_garray(GrowingArray g);
-void **dump_elems_garray(GrowingArray src, size_t *h);
-int auto_resize_garray(GrowingArray g);
+/* Metódos publicos */
+GrowingArray garray_make(size_t key_size, freefunc ff);
+void garray_destroy(GrowingArray g);
+size_t garray_size(GrowingArray g);
+void garray_add(GrowingArray g, void *entry);
+void garray_sort(GrowingArray g, fcompare fc);
+int garray_is_sorted(GrowingArray g);
+void **garray_dump_elems(GrowingArray src, size_t *h);
+int garray_auto_resize(GrowingArray g);
 
 /* Metodos privados */
 static void double_garray(GrowingArray g);
@@ -34,7 +35,7 @@ typedef struct garray
 
 // ------------------------------------------------------------------------------
 
-GrowingArray make_garray(size_t key_size, freefunc ff)
+GrowingArray garray_make(size_t key_size, freefunc ff)
 {
     GrowingArray g = g_malloc(sizeof(struct garray));
     g->sorted = 0;
@@ -46,7 +47,7 @@ GrowingArray make_garray(size_t key_size, freefunc ff)
     return g;
 }
 
-void destroy_garray(GrowingArray g)
+void garray_destroy(GrowingArray g)
 {
     size_t i;
 
@@ -63,19 +64,19 @@ void destroy_garray(GrowingArray g)
     g_free(g);
 }
 
-size_t get_size_garray(GrowingArray g)
+size_t garray_size(GrowingArray g)
 {
     return g->used;
 }
 
-void insert_elem_garray(GrowingArray g, void *entry)
+void garray_add(GrowingArray g, void *entry)
 {
     if (g->used >= g->max_size)
         double_garray(g);
     g->array[g->used++] = entry;
 }
 
-void sort_garray(GrowingArray g, fcompar fc)
+void garray_sort(GrowingArray g, fcompare fc)
 {
     if (!g->sorted)
     {
@@ -84,12 +85,12 @@ void sort_garray(GrowingArray g, fcompar fc)
     }
 }
 
-int is_sorted_garray(GrowingArray g)
+int garray_is_sorted(GrowingArray g)
 {
     return g->sorted;
 }
 
-void **dump_elems_garray(GrowingArray src, size_t *h)
+void **garray_dump_elems(GrowingArray src, size_t *h)
 {
     size_t i;
 
@@ -103,13 +104,7 @@ void **dump_elems_garray(GrowingArray src, size_t *h)
     return e_arr;
 }
 
-static void double_garray(GrowingArray g)
-{
-    g->array = g_realloc(g->array, g->key_size * g->max_size * 2);
-    g->max_size *= 2;
-}
-
-int auto_resize_garray(GrowingArray g)
+int garray_auto_resize(GrowingArray g)
 {
     int r = g->used < g->max_size;
 
@@ -120,4 +115,10 @@ int auto_resize_garray(GrowingArray g)
     }
 
     return r;
+}
+
+static void double_garray(GrowingArray g)
+{
+    g->array = g_realloc(g->array, g->key_size * g->max_size * 2);
+    g->max_size *= 2;
 }

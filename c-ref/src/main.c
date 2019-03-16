@@ -73,7 +73,7 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
     }
 }
 
-void doWork(char* produtos, char* clientes, char* vendas)
+void doWork(char *produtos, char *clientes, char *vendas)
 {
     MAN_b m = make_man();
     VRF_OBJ v = make_vrf();
@@ -91,17 +91,17 @@ void doWork(char* produtos, char* clientes, char* vendas)
 }
 
 // CPU TIME && Ler ficheiros
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     clock_t start, end;
     double cpu_time_used;
     start = clock();
-    
-    if(argc >= 4)
+
+    if (argc >= 4)
     {
-        char* produtos = argv[1];
-        char* clientes = argv[2];
-        char* vendas = argv[3];
+        char *produtos = argv[1];
+        char *clientes = argv[2];
+        char *vendas = argv[3];
         doWork(produtos, clientes, vendas);
     }
     else

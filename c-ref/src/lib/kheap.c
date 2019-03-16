@@ -1,102 +1,108 @@
-/*
-NOTA IMPORTANTE:
-
-Utilizando com exemplo uma heap com 2 ramos, observa-se que todas as operações
-ou são constante ou possuem uma componente logaritmica na base de 2.
-
-O que acontece ao utilizar uma gestão com K ramos, todas as operações ou são
-constante ou possuem um componente logaritmica na base de K, na mesma escala
-do que a versão simplificada de K = 2.
-
-Com K ramos, a Heap funciona como uma arvóre completa tal como quando K = 2.
-*/
-#include <stdlib.h>
-#include <stdio.h>
+/**
+ * @file kheap.c
+ * \brief Módulo de código associado à estrutura de dados heap.
+ **/
 #include "kheap.h"
 
-//Numero de ramos.
-#define K 6
+// ------------------------------------------------------------------------------
 
-//Macro uteis.
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define ant(i, K) (((i)-1) / K)
-#define succ(i, k, o) ((k) * (i) + (o))
-#define BASESIZE 1
+/* Metodos publicos */
+KHeap kheap_make(fcompare, freefunc);
+KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff);
+void kheap_destroy(KHeap);
+void kheap_add(KHeap, void *);
+void *kheap_check_root(KHeap);
+void *kheap_extract_root(KHeap);
+size_t kheap_size(KHeap);
+int kheap_is_empty(KHeap);
 
-// Main struct
+/* Metodos privados */
+static int bubble_up(KHeap);
+static int bubble_down(KHeap);
+static void double_heap(KHeap);
+static void swap_arr(void **arr, int i, int j);
+
+// ------------------------------------------------------------------------------
+
 typedef struct kheap
 {
-    int size, used;
+    size_t size, used;
     fcompare fc;
-    DATA *heap;
-} * KHEAP;
+    freefunc ff;
+    void **heap;
+} * KHeap;
+
+// ------------------------------------------------------------------------------
 
 // Listagem das funções ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//Public
-//Criação && Remoção
-KHEAP make_kheap(fcompare);
-KHEAP heapify_arr(DATA *, fcompare, int);
-void free_kheap(KHEAP);
+/**
+ * \brief Define o número de ramos da Heap.
+ **/
+#define K 6
 
-//Operações base
-void insert_data(KHEAP, DATA);
-DATA check_root(KHEAP);
-DATA extract_root(KHEAP);
+/**
+ * \brief Calcula o antecessor de um elemento da Heap.
+ **/
+#define ant(i, K) (((i)-1) / K)
 
-//Inspecção
-int get_size_kheap(KHEAP);
-int is_empty_kheap(KHEAP);
+/**
+ * \brief Calcula um n-ésimo sucessor de um elemento da Heap.
+ **/
+#define succ(i, k, n) ((k) * (i) + (n))
 
-//Private
-//Gestão
-static int bubble_up(KHEAP);
-static int bubble_down(KHEAP);
-static void double_heap(KHEAP);
-static void swap_arr(DATA *arr, int i, int j);
+/**
+ * \brief Tamanho inicial da estrutura de dados onde se encontra armazenada a Heap.
+ **/
+#define BASESIZE 10
+
 // Funções ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-KHEAP make_kheap(fcompare fc)
+KHeap kheap_make(fcompare fc, freefunc ff)
 {
-    KHEAP kh = NULL;
+    KHeap kh = NULL;
     if (fc)
     {
-        kh = (KHEAP)malloc(sizeof(struct kheap));
+        kh = g_malloc(sizeof(struct kheap));
         kh->fc = fc;
+        kh->ff = ff;
         kh->size = BASESIZE;
         kh->used = 0;
-        kh->heap = (DATA *)malloc(sizeof(DATA) * BASESIZE);
+        kh->heap = g_malloc(sizeof(void *) * BASESIZE);
     }
     return kh;
 }
 
-// O problema com a representação por void* é que para o heapify de array inteiro,
-// deve se converter esse array para um array de void**.
-KHEAP heapify_arr(DATA *d, fcompare fc, int length)
+KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff)
 {
     int i;
-    KHEAP kh = make_kheap(fc);
+    KHeap kh = kheap_make(fc, ff);
     if (kh)
     {
-        //heapify todos os elementos
         for (i = 0; i < length; i++)
-            insert_data(kh, d[i]);
+            kheap_add(kh, d[i]);
     }
     return kh;
 }
 
-void free_kheap(KHEAP kh)
+void kheap_destroy(KHeap kh)
 {
+    int i;
+
     if (kh)
     {
-        free(kh->heap);
-        free(kh);
+        if (kh->ff)
+        {
+            for (i = 0; i < kh->used; i++)
+                (*kh->ff)(kh->heap[i]);
+        }
+
+        g_free(kh->heap);
+        g_free(kh);
     }
 }
 
-//Operações base
-void insert_data(KHEAP kh, DATA d)
+void kheap_add(KHeap kh, void *d)
 {
     if (kh->used == kh->size)
         double_heap(kh);
@@ -105,9 +111,9 @@ void insert_data(KHEAP kh, DATA d)
     kh->used++;
 }
 
-DATA check_root(KHEAP kh)
+void *kheap_check_root(KHeap kh)
 {
-    DATA d = NULL;
+    void *d = NULL;
 
     if (kh && kh->used)
         d = kh->heap[0];
@@ -115,9 +121,10 @@ DATA check_root(KHEAP kh)
     return d;
 }
 
-DATA extract_root(KHEAP kh)
+void *kheap_extract_root(KHeap kh)
 {
-    DATA d = NULL;
+    void *d = NULL;
+
     if (kh && kh->used)
     {
         d = kh->heap[0];
@@ -128,23 +135,17 @@ DATA extract_root(KHEAP kh)
     return d;
 }
 
-//Inspecção
-int get_size_kheap(KHEAP kh)
+size_t kheap_size(KHeap kh)
 {
     return kh->used;
 }
 
-int is_empty_kheap(KHEAP kh)
+int kheap_is_empty(KHeap kh)
 {
     return (kh->used == 0);
 }
 
-//Private
-//Gestão
-
-//Retorna a quantidade de elementos que teve de passar por ao fazer bubble up do ultimo elemento.
-//so preciso reduzir o tamanho depois.
-static int bubble_up(KHEAP kh)
+static int bubble_up(KHeap kh)
 {
     int p = kh->used, r = 0;
 
@@ -158,13 +159,11 @@ static int bubble_up(KHEAP kh)
     return r;
 }
 
-//Retorna a quantidade elementos que teve de passar ao fazer bubble down do primeiro elemento
-//é preciso reduzir o tamanho primeiro.
-static int bubble_down(KHEAP kh)
+static int bubble_down(KHeap kh)
 {
     int i, p, minI, r, order;
     p = r = order = 0;
-    DATA min;
+    void *min;
 
     while (succ(p, K, 1) < kh->used && !order)
     {
@@ -173,15 +172,13 @@ static int bubble_down(KHEAP kh)
 
         for (i = minI + 1; i < kh->used && i <= succ(p, K, K); i++)
         {
-            if (kh->fc(min, kh->heap[i]) < 0) //Encontrei um menor
+            if (kh->fc(min, kh->heap[i]) < 0)
             {
                 min = kh->heap[i];
                 minI = i;
             }
         }
-
-        //Se o menor dos filhos for menor que o pai, troca-se ambos
-        //caso contrário implica que a arvore em questão já é uma heap.
+      
         if (kh->fc(kh->heap[p], min) < 0)
         {
             swap_arr(kh->heap, p, minI);
@@ -194,15 +191,15 @@ static int bubble_down(KHEAP kh)
     return r;
 }
 
-static void double_heap(KHEAP kh)
+static void double_heap(KHeap kh)
 {
-    kh->heap = (DATA *)realloc(kh->heap, sizeof(DATA) * kh->size * 2);
+    kh->heap = g_realloc(kh->heap, sizeof(void *) * kh->size * 2);
     kh->size *= 2;
 }
 
-static void swap_arr(DATA *arr, int i, int j)
+static void swap_arr(void **arr, int i, int j)
 {
-    DATA tmp = arr[i];
+    void *tmp = arr[i];
     arr[i] = arr[j];
     arr[j] = tmp;
 }

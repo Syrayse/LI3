@@ -138,7 +138,7 @@ void destroy_vrf(VRF_OBJ v)
  **/
 int validate_s(DBase products, DBase clients, SALE s)
 {
-    return process_paralelo_s(products, clients, s, exists_dbase, exists_dbase);
+    return process_paralelo_s(products, clients, s, dbase_contains, dbase_contains);
 }
 
 /**

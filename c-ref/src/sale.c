@@ -141,8 +141,8 @@ void copy_client_s(SALE src, char *dest)
  **/
 void insert_self_s(DBase products, DBase clients, SALE s)
 {
-    insert_dbase(products, s->product, s);
-    insert_dbase(clients, s->client, s);
+    dbase_add(products, s->product, s);
+    dbase_add(clients, s->client, s);
 }
 
 /**

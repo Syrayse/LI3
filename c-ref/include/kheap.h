@@ -1,24 +1,18 @@
 #ifndef KHEAP_H
 #define KHEAP_H
 
-typedef void *DATA;
-typedef void (*fremove)(DATA);
-typedef int (*fcompare)(const DATA, const DATA);
+#include "util.h"
+#include <glib.h>
 
-typedef struct kheap *KHEAP;
+typedef struct kheap *KHeap;
 
-//Criação && Remoção
-KHEAP make_kheap(fcompare);
-KHEAP heapify_arr(DATA *, fcompare, int);
-void free_kheap(KHEAP);
-
-//Operações base
-void insert_data(KHEAP, DATA);
-DATA check_root(KHEAP);
-DATA extract_root(KHEAP);
-
-//Inspecção
-int get_size_kheap(KHEAP);
-int is_empty_kheap(KHEAP);
+KHeap kheap_make(fcompare, freefunc);
+KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff);
+void kheap_destroy(KHeap);
+void kheap_add(KHeap, void *);
+void *kheap_check_root(KHeap);
+void *kheap_extract_root(KHeap);
+size_t kheap_size(KHeap);
+int kheap_is_empty(KHeap);
 
 #endif

@@ -6,13 +6,13 @@
 
 typedef struct garray *GrowingArray;
 
-GrowingArray make_garray(size_t key_size, freefunc ff);
-void destroy_garray(GrowingArray g);
-size_t get_size_garray(GrowingArray g);
-void insert_elem_garray(GrowingArray g, void *entry);
-void sort_garray(GrowingArray g, fcompar fc);
-int is_sorted_garray(GrowingArray g);
-void **dump_elems_garray(GrowingArray src, size_t *h);
-int auto_resize_garray(GrowingArray g);
+GrowingArray garray_make(size_t key_size, freefunc ff);
+void garray_destroy(GrowingArray g);
+size_t garray_size(GrowingArray g);
+void garray_add(GrowingArray g, void *entry);
+void garray_sort(GrowingArray g, fcompare fc);
+int garray_is_sorted(GrowingArray g);
+void **garray_dump_elems(GrowingArray src, size_t *h);
+int garray_auto_resize(GrowingArray g);
 
 #endif

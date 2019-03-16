@@ -38,9 +38,9 @@
 
 typedef void (*freefunc)(void *);
 
-typedef int (*fcompar)(const void *, const void *);
+typedef int (*fcompare)(const void *, const void *);
 
-int strcmp_client(const void *, const void *);
+int mystrcmp(const void *, const void *);
 
 int conv_str(const void *);
 

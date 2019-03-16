@@ -7,8 +7,8 @@ typedef struct manb *MAN_b;
 
 MAN_b make_man(void);
 void destroy_man(MAN_b);
-int insert_client_man(MAN_b, char *);
-int insert_product_man(MAN_b, char *);
+void insert_client_man(MAN_b, char *);
+void insert_product_man(MAN_b, char *);
 int insert_sale_man(MAN_b, SALE);
 
 int get_maior_linha(MAN_b);

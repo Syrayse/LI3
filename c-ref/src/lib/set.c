@@ -4,17 +4,18 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-StrSet strset_make(freefunc ff);
+StrSet strset_make(freefunc ffkey, freefunc ffvalue);
 void strset_destroy(StrSet set);
-int strset_add(StrSet set, char *elem, void *value);
-int strset_remove(StrSet set, char *elem);
+int strset_add(StrSet set, void *elem, void *value);
+void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
+int strset_remove(StrSet set, void *elem);
 void strset_foreach(StrSet set, f_foreach fer, void *user_data);
-int strset_contains(StrSet set, char *elem);
+int strset_contains(StrSet set, void *elem);
 int strset_size(StrSet set);
-int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), void *user_data);
-void *strset_value_of(StrSet set, char *elem);
+void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
+void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
-char **strset_dump_ordered(StrSet set, fcompar fc, size_t *n);
+char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
 
 /* Metodos privados */
 static void insert_str(void *key, void *value, void *user_data);
@@ -36,10 +37,10 @@ typedef struct set
  * 
  * @returns O set criado.
  **/
-StrSet strset_make(freefunc ff)
+StrSet strset_make(freefunc ffkey, freefunc ffvalue)
 {
     StrSet set = g_malloc(sizeof(struct set));
-    set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ff, g_free);
+    set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ffkey, ffvalue);
     return set;
 }
 
@@ -66,9 +67,23 @@ void strset_destroy(StrSet set)
  * 
  * @returns 1 se o elemento for adicionado com sucesso, 0 se ele já existir no Set.
  **/
-int strset_add(StrSet set, char *elem, void *value)
+int strset_add(StrSet set, void *elem, void *value)
 {
     return g_hash_table_insert(set->table, elem, value);
+}
+
+void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu)
+{
+    void *val = NULL;
+
+    if (fm && !(val = g_hash_table_lookup(set->table, elem)))
+    {
+        val = (*fm)();
+        g_hash_table_insert(set->table, elem, val);
+    }
+
+    if (fu && user_data)
+        (*fu)(val, user_data);
 }
 
 /**
@@ -79,7 +94,7 @@ int strset_add(StrSet set, char *elem, void *value)
  * 
  * @returns 1 se o elemento for removido com sucesso, 0 se ele não existir no Set.
  **/
-int strset_remove(StrSet set, char *elem)
+int strset_remove(StrSet set, void *elem)
 {
     return g_hash_table_remove(set->table, elem);
 }
@@ -103,7 +118,7 @@ void strset_foreach(StrSet set, void (*fe)(void *, void *, void *), void *user_d
  * 
  * @returns 0 se o elemento não existir, 1 caso contrário.
  **/
-int strset_contains(StrSet set, char *elem)
+int strset_contains(StrSet set, void *elem)
 {
     return g_hash_table_contains(set->table, elem);
 }
@@ -142,7 +157,7 @@ char **strset_dump(StrSet set, size_t *n)
  * 
  * @returns Array contendo todos os elementos do Set original de forma ordenada.
  **/
-char **strset_dump_ordered(StrSet set, fcompar fc, size_t *n)
+char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n)
 {
     return generic_dump(set, n, 0);
 }
@@ -177,7 +192,7 @@ int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), voi
  * 
  * @returns A informação associada ao elemento.
  **/
-void *strset_value_of(StrSet set, char *elem)
+void *strset_value_of(StrSet set, void *elem)
 {
     return g_hash_table_lookup(set->table, elem);
 }
@@ -192,7 +207,7 @@ void *strset_value_of(StrSet set, char *elem)
 static void insert_str(void *key, void *value, void *user_data)
 {
     if (user_data)
-        insert_elem_garray((GrowingArray)user_data, key);
+        garray_add((GrowingArray)user_data, key);
 }
 
 /**
@@ -206,12 +221,12 @@ static void insert_str(void *key, void *value, void *user_data)
  **/
 static char **generic_dump(StrSet set, size_t *n, int flag)
 {
-    GrowingArray ga = make_garray(sizeof(char *), g_free);
+    GrowingArray ga = garray_make(sizeof(char *), g_free);
 
     strset_foreach(set, insert_str, ga);
 
     if (!flag)
-        sort_garray(ga, strcmp_client);
+        garray_sort(ga, mystrcmp);
 
-    return (char **)dump_elems_garray(ga, n);
+    return (char **)garray_dump_elems(ga, n);
 }
