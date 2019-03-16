@@ -2,6 +2,7 @@
 #define KHEAP_H
 
 #include "util.h"
+#include <glib.h>
 
 typedef struct kheap *KHeap;
 
@@ -11,7 +12,7 @@ void kheap_destroy(KHeap);
 void kheap_add(KHeap, void *);
 void *kheap_check_root(KHeap);
 void *kheap_extract_root(KHeap);
-int kheap_size(KHeap);
+size_t kheap_size(KHeap);
 int kheap_is_empty(KHeap);
 
 #endif

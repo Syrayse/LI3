@@ -3,19 +3,17 @@
  * \brief Módulo de código associado à estrutura de dados heap.
  **/
 #include "kheap.h"
-#include <glib.h>
 
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-
 KHeap kheap_make(fcompare, freefunc);
 KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff);
 void kheap_destroy(KHeap);
 void kheap_add(KHeap, void *);
 void *kheap_check_root(KHeap);
 void *kheap_extract_root(KHeap);
-int kheap_size(KHeap);
+size_t kheap_size(KHeap);
 int kheap_is_empty(KHeap);
 
 /* Metodos privados */
@@ -136,7 +134,7 @@ void *kheap_extract_root(KHeap kh)
     return d;
 }
 
-int kheap_size(KHeap kh)
+size_t kheap_size(KHeap kh)
 {
     return kh->used;
 }

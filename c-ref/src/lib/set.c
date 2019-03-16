@@ -6,13 +6,14 @@
 /* Metodos publicos */
 StrSet strset_make(freefunc ff);
 void strset_destroy(StrSet set);
-int strset_add(StrSet set, char *elem, void *value);
-int strset_remove(StrSet set, char *elem);
+int strset_add(StrSet set, void *elem, void *value);
+void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
+int strset_remove(StrSet set, void *elem);
 void strset_foreach(StrSet set, f_foreach fer, void *user_data);
-int strset_contains(StrSet set, char *elem);
+int strset_contains(StrSet set, void *elem);
 int strset_size(StrSet set);
-int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), void *user_data);
-void *strset_value_of(StrSet set, char *elem);
+int strset_update_elem(StrSet set, void *elem, f_update fu, void *user_data);
+void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
 
@@ -66,9 +67,24 @@ void strset_destroy(StrSet set)
  * 
  * @returns 1 se o elemento for adicionado com sucesso, 0 se ele já existir no Set.
  **/
-int strset_add(StrSet set, char *elem, void *value)
+int strset_add(StrSet set, void *elem, void *value)
 {
     return g_hash_table_insert(set->table, elem, value);
+}
+
+void strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu)
+{
+    void *val = NULL;
+
+    if (fm && !(val = g_hash_table_lookup(set->table, elem)))
+    {
+        val = *fm;
+    }
+
+    g_hash_table_insert(set->table, elem, val);
+
+    if (fu && user_data)
+        (*f_update)(val, user_data);
 }
 
 /**
@@ -79,7 +95,7 @@ int strset_add(StrSet set, char *elem, void *value)
  * 
  * @returns 1 se o elemento for removido com sucesso, 0 se ele não existir no Set.
  **/
-int strset_remove(StrSet set, char *elem)
+int strset_remove(StrSet set, void *elem)
 {
     return g_hash_table_remove(set->table, elem);
 }
@@ -103,7 +119,7 @@ void strset_foreach(StrSet set, void (*fe)(void *, void *, void *), void *user_d
  * 
  * @returns 0 se o elemento não existir, 1 caso contrário.
  **/
-int strset_contains(StrSet set, char *elem)
+int strset_contains(StrSet set, void *elem)
 {
     return g_hash_table_contains(set->table, elem);
 }
