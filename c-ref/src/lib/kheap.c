@@ -9,8 +9,8 @@
 
 /* Metodos publicos */
 
-KHeap kheap_make(fcompar);
-KHeap kheap_heapify_array(void **, fcompar, int);
+KHeap kheap_make(fcompare, freefunc);
+KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff);
 void kheap_destroy(KHeap);
 void kheap_add(KHeap, void *);
 void *kheap_check_root(KHeap);
@@ -29,7 +29,8 @@ static void swap_arr(void **arr, int i, int j);
 typedef struct kheap
 {
     size_t size, used;
-    fcompar fc;
+    fcompare fc;
+    freefunc ff;
     void **heap;
 } * KHeap;
 
@@ -59,13 +60,14 @@ typedef struct kheap
 
 // Funções ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-KHeap kheap_make(fcompar fc)
+KHeap kheap_make(fcompare fc, freefunc ff)
 {
     KHeap kh = NULL;
     if (fc)
     {
         kh = g_malloc(sizeof(struct kheap));
         kh->fc = fc;
+        kh->ff = ff;
         kh->size = BASESIZE;
         kh->used = 0;
         kh->heap = g_malloc(sizeof(void *) * BASESIZE);
@@ -73,10 +75,10 @@ KHeap kheap_make(fcompar fc)
     return kh;
 }
 
-KHeap kheap_heapify_array(void **d, fcompar fc, int length)
+KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff)
 {
     int i;
-    KHeap kh = kheap_make(fc);
+    KHeap kh = kheap_make(fc, ff);
     if (kh)
     {
         for (i = 0; i < length; i++)
@@ -87,8 +89,16 @@ KHeap kheap_heapify_array(void **d, fcompar fc, int length)
 
 void kheap_destroy(KHeap kh)
 {
+    int i;
+
     if (kh)
     {
+        if (kh->ff)
+        {
+            for (i = 0; i < kh->used; i++)
+                (*kh->ff)(kh->heap[i]);
+        }
+
         g_free(kh->heap);
         g_free(kh);
     }

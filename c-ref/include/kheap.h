@@ -5,8 +5,8 @@
 
 typedef struct kheap *KHeap;
 
-KHeap kheap_make(fcompar);
-KHeap kheap_heapify_array(void **, fcompar, int);
+KHeap kheap_make(fcompare, freefunc);
+KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff);
 void kheap_destroy(KHeap);
 void kheap_add(KHeap, void *);
 void *kheap_check_root(KHeap);

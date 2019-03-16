@@ -14,7 +14,7 @@ int strset_size(StrSet set);
 int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), void *user_data);
 void *strset_value_of(StrSet set, char *elem);
 char **strset_dump(StrSet set, size_t *n);
-char **strset_dump_ordered(StrSet set, fcompar fc, size_t *n);
+char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
 
 /* Metodos privados */
 static void insert_str(void *key, void *value, void *user_data);
@@ -142,7 +142,7 @@ char **strset_dump(StrSet set, size_t *n)
  * 
  * @returns Array contendo todos os elementos do Set original de forma ordenada.
  **/
-char **strset_dump_ordered(StrSet set, fcompar fc, size_t *n)
+char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n)
 {
     return generic_dump(set, n, 0);
 }
@@ -192,7 +192,7 @@ void *strset_value_of(StrSet set, char *elem)
 static void insert_str(void *key, void *value, void *user_data)
 {
     if (user_data)
-        insert_elem_garray((GrowingArray)user_data, key);
+        garray_add((GrowingArray)user_data, key);
 }
 
 /**
@@ -206,12 +206,12 @@ static void insert_str(void *key, void *value, void *user_data)
  **/
 static char **generic_dump(StrSet set, size_t *n, int flag)
 {
-    GrowingArray ga = make_garray(sizeof(char *), g_free);
+    GrowingArray ga = garray_make(sizeof(char *), g_free);
 
     strset_foreach(set, insert_str, ga);
 
     if (!flag)
-        sort_garray(ga, mystrcmp);
+        garray_sort(ga, mystrcmp);
 
-    return (char **)dump_elems_garray(ga, n);
+    return (char **)garray_dump_elems(ga, n);
 }

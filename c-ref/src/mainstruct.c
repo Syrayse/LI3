@@ -75,7 +75,7 @@ void destroy_dbase(DBase m)
         if (m->not_bought[0])
         {
             for (i = 0; i < 4; i++)
-                destroy_garray(m->not_bought[i]);
+                garray_destroy(m->not_bought[i]);
         }
 
         g_free(m);
@@ -175,7 +175,7 @@ void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
     int i, c = 'Z' - 'A' + 1;
     void **tmp;
 
-    GrowingArray g = make_garray(sizeof(char *), NULL);
+    GrowingArray g = garray_make(sizeof(char *), NULL);
 
     if (flag)
         g_hash_table_foreach(b->table[flag - 'A'], f, g);
@@ -185,11 +185,11 @@ void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
             g_hash_table_foreach(b->table[i], f, g);
     }
 
-    sort_garray(g, mystrcmp);
+    garray_sort(g, mystrcmp);
 
-    tmp = dump_elems_garray(g, h);
+    tmp = garray_dump_elems(g, h);
 
-    destroy_garray(g);
+    garray_destroy(g);
 
     return tmp;
 }
@@ -197,14 +197,14 @@ void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
 static void insert_sold_by_all(void *key, void *value, void *user_data)
 {
     if (user_data && is_sold_by_all((APPENDER)value))
-        insert_elem_garray((GrowingArray)user_data, key);
+        garray_add((GrowingArray)user_data, key);
 }
 
 static void insert_in_dbase_arr(DBase db, int ind, void *key)
 {
     if (db && is_between(ind, 0, 4))
     {
-        insert_elem_garray(db->not_bought[ind], key);
+        garray_add(db->not_bought[ind], key);
     }
 }
 
@@ -234,13 +234,13 @@ void build_dbase_arrays(DBase db)
     if (!db->not_bought[0])
     {
         for (i = 0; i < 4; i++)
-            db->not_bought[i] = make_garray(sizeof(char *), NULL);
+            db->not_bought[i] = garray_make(sizeof(char *), NULL);
 
         for (i = 0; i < c; i++)
             g_hash_table_foreach(db->table[i], insert_not_bought, db);
 
         for (i = 0; i < 4; i++)
-            sort_garray(db->not_bought[i], mystrcmp);
+            garray_sort(db->not_bought[i], mystrcmp);
     }
 }
 
@@ -249,5 +249,5 @@ void **get_ordered_not_bought(DBase db, size_t *n, int filial)
     if (!db->not_bought[filial])
         build_dbase_arrays(db);
 
-    return dump_elems_garray(db->not_bought[filial], n);
+    return garray_dump_elems(db->not_bought[filial], n);
 }
