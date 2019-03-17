@@ -12,11 +12,9 @@ typedef void (*f_update)(void *, void *);
 
 typedef void *(*f_maker)(void);
 
-StrSet strset_make(freefunc ffkey, freefunc ffvalue);
+StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu);
 void strset_destroy(StrSet set);
-int strset_get_not_init_n(StrSet set);
-int strset_add(StrSet set, void *elem, void *value);
-int strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
+int strset_add(StrSet set, void *elem, void *user_data);
 int strset_remove(StrSet set, void *elem);
 void strset_foreach(StrSet set, f_foreach fer, void *user_data);
 int strset_contains(StrSet set, void *elem);

@@ -59,7 +59,7 @@ DBase dbase_make()
     db->table = g_malloc(sizeof(StrSet) * db->max_size);
 
     for (i = 0; i < db->max_size; i++)
-        db->table[i] = strset_make(g_free, my_statinfo_destroy);
+        db->table[i] = strset_make(g_free, my_statinfo_destroy, my_statinfo_make, my_statinfo_update);
 
     db->not_bought[0] = NULL;
 
@@ -94,14 +94,14 @@ void dbase_destroy(DBase db)
  **/
 void dbase_add(DBase db, void *key, void *user_data)
 {
-    int r = strset_add_and_update(db->table[conv_str(key)], key, user_data, my_statinfo_make, my_statinfo_update);
+    int r = strset_add(db->table[conv_str(key)], key, user_data);
 
     if (r)
     {
         db->total_size++;
         db->not_init_n++;
     }
-    else if(!r)
+    else if (!r)
     {
         db->not_init_n--;
     }
