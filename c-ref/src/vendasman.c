@@ -61,8 +61,8 @@ MAN_b make_man(void)
 {
     int i;
     MAN_b b = g_malloc(sizeof(struct manb));
-    b->clients = dbase_make();
-    b->products = dbase_make();
+    b->clients = dbase_make(1);
+    b->products = dbase_make(0);
     b->lastClient[0] = '\0';
     b->maiorLinha = -1;
     for (i = 0; i < 3; i++)

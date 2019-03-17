@@ -9,7 +9,7 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-DBase dbase_make();
+DBase dbase_make(int flag);
 void dbase_destroy(DBase);
 void dbase_add(DBase, void *, void *);
 int dbase_remove(DBase, void *);
@@ -25,7 +25,7 @@ static void insert_sold_by_all(void *key, void *value, void *user_data);
 static void insert_in_dbase_arr(DBase db, int ind, void *key);
 static void insert_not_bought(void *key, void *value, void *user_data);
 static void dbase_build_arrays(DBase db);
-static void *my_statinfo_make(void);
+static void *my_statinfo_make(int flag);
 static void my_statinfo_update(void *, void *);
 static void my_statinfo_destroy(void *a);
 
@@ -38,7 +38,10 @@ static void my_statinfo_destroy(void *a);
  **/
 typedef struct data_base
 {
-    int total_size, not_init_n, max_size;
+    int identity,
+        total_size,
+        not_init_n,
+        max_size;
     StrSet *table; /**< Estrutura de dados em uso */
     GrowingArray not_bought[4];
 } * DBase;
@@ -48,18 +51,19 @@ typedef struct data_base
 /**
  * \brief Aloca espaço em memória para a a estrutura de base de dados.
  **/
-DBase dbase_make()
+DBase dbase_make(int flag)
 {
     int i;
     DBase db = g_malloc(sizeof(struct data_base));
     db->total_size = 0;
     db->not_init_n = 0;
     db->max_size = 'Z' - 'A' + 1;
+    db->identity = flag;
 
     db->table = g_malloc(sizeof(StrSet) * db->max_size);
 
     for (i = 0; i < db->max_size; i++)
-        db->table[i] = strset_make(g_free, my_statinfo_destroy);
+        db->table[i] = strset_make(g_free, my_statinfo_destroy, my_statinfo_make, my_statinfo_update, flag);
 
     db->not_bought[0] = NULL;
 
@@ -94,14 +98,14 @@ void dbase_destroy(DBase db)
  **/
 void dbase_add(DBase db, void *key, void *user_data)
 {
-    int r = strset_add_and_update(db->table[conv_str(key)], key, user_data, my_statinfo_make, my_statinfo_update);
+    int r = strset_add(db->table[conv_str(key)], key, user_data);
 
     if (r)
     {
         db->total_size++;
         db->not_init_n++;
     }
-    else if(!r)
+    else if (!r)
     {
         db->not_init_n--;
     }
@@ -233,9 +237,9 @@ static void dbase_build_arrays(DBase db)
     }
 }
 
-static void *my_statinfo_make(void)
+static void *my_statinfo_make(int flag)
 {
-    return (void *)statinfo_make();
+    return (void *)statinfo_make(flag);
 }
 
 static void my_statinfo_update(void *app, void *user)
