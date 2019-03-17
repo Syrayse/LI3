@@ -16,6 +16,7 @@ void sale_wipe(Sale);
 int sale_paralel_proc(DBase, DBase, Sale, pc, pc);
 void sale_insert_self(DBase, DBase, Sale);
 void sale_copy_client(Sale, char *);
+int sale_exists_abs(Sale, DBase, int);
 
 char *sale_get_client(Sale);
 char *sale_get_product(Sale);

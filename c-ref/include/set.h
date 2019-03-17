@@ -10,9 +10,9 @@ typedef void (*f_foreach)(void *, void *, void *);
 
 typedef void (*f_update)(void *, void *);
 
-typedef void *(*f_maker)(void);
+typedef void *(*f_maker)(int);
 
-StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu);
+StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, int flag);
 void strset_destroy(StrSet set);
 int strset_add(StrSet set, void *elem, void *user_data);
 int strset_remove(StrSet set, void *elem);

@@ -1,12 +1,14 @@
 #include "sale.h"
 #include "statinfo.h"
+#include "specinfo.h"
+#include "set.h"
 #include "util.h"
 #include <glib.h>
 
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-StatInfo statinfo_make();
+StatInfo statinfo_make(int flag);
 void statinfo_destroy(StatInfo);
 void statinfo_update(StatInfo, void *);
 int statinfo_is_sold_by_all(StatInfo);
@@ -34,6 +36,9 @@ double get_t_month_rev_no_promo(StatInfo, int month);
 /* Metodos privados */
 static int get_t_vendas_month_iter(StatInfo a, int month, int (*)(StatInfo, int, int));
 static double get_t_rev_month_iter(StatInfo a, int month, double (*)(StatInfo, int, int));
+static void *my_specinfo_make(int flag);
+static void my_specinfo_destroy(void *si);
+static void my_specinfo_update(void *si, void *e);
 
 // ------------------------------------------------------------------------------
 
@@ -42,10 +47,12 @@ static double get_t_rev_month_iter(StatInfo a, int month, double (*)(StatInfo, i
  **/
 typedef struct statistical_info
 {
-    int nVendasTotal,                                   /**< Número de registos de vendas associados */
+    int identity,
+        nVendasTotal,                                   /**< Número de registos de vendas associados */
         nVendasFilialMonth[N_FILIAIS][N_MONTHS + 1][2]; /**< Numero de registos de vendas associados por filial e mễs */
     double totalRevenue,                                /**< Rendimento total associado */
         monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][2];   /**< Rendimento total associado por filial e mês*/
+    StrSet historic;
 } * StatInfo;
 
 // ------------------------------------------------------------------------------
@@ -55,10 +62,13 @@ typedef struct statistical_info
  * 
  * @returns A estrutura alocada.
  **/
-StatInfo statinfo_make()
+StatInfo statinfo_make(int flag)
 {
     int l, c, k;
     StatInfo a = g_malloc(sizeof(struct statistical_info));
+    a->historic = strset_make(g_free, my_specinfo_destroy, my_specinfo_make, my_specinfo_update, flag);
+
+    a->identity = flag;
 
     a->nVendasTotal = 0;
 
@@ -87,7 +97,10 @@ StatInfo statinfo_make()
 void statinfo_destroy(StatInfo a)
 {
     if (a)
+    {
+        strset_destroy(a->historic);
         g_free(a);
+    }
 }
 
 /**
@@ -102,9 +115,20 @@ void statinfo_update(StatInfo a, void *e)
         return;
     Sale s = (Sale)e;
     double rev = sale_get_rev(s);
-    int f, m, p = sale_get_promo(s);
+    char *tmp;
+    int r, f, m, p = sale_get_promo(s);
     m = sale_get_month(s);
     f = sale_get_filial(s);
+
+    if (a->identity)
+        tmp = sale_get_product(s);
+    else
+        tmp = sale_get_client(s);
+
+    r = strset_add(a->historic, tmp, e);
+
+    if (r == 0)
+        g_free(tmp);
 
     // Vendas
     a->nVendasTotal++;
@@ -441,4 +465,19 @@ double get_t_month_rev_promo(StatInfo a, int month)
 double get_t_month_rev_no_promo(StatInfo a, int month)
 {
     return get_t_rev_month_iter(a, month, get_t_month_fil_rev_no_promo);
+}
+
+static void *my_specinfo_make(int flag)
+{
+    return (void *)specinfo_make(flag);
+}
+
+static void my_specinfo_destroy(void *si)
+{
+    specinfo_destroy((SpecInfo)si);
+}
+
+static void my_specinfo_update(void *si, void *e)
+{
+    specinfo_update((SpecInfo)si, e);
 }

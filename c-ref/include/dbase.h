@@ -5,7 +5,7 @@
 
 typedef struct data_base *DBase;
 
-DBase dbase_make();
+DBase dbase_make(int flag);
 void dbase_destroy(DBase);
 void dbase_add(DBase, void *, void *);
 int dbase_remove(DBase, void *);

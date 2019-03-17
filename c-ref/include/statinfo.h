@@ -4,7 +4,7 @@
 // Information append to keys.
 typedef struct statistical_info *StatInfo;
 
-StatInfo statinfo_make();
+StatInfo statinfo_make(int flag);
 void statinfo_destroy(StatInfo);
 void statinfo_update(StatInfo, void *);
 int statinfo_is_sold_by_all(StatInfo);

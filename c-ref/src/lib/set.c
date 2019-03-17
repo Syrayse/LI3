@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu);
+StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, int flag);
 void strset_destroy(StrSet set);
 int strset_add(StrSet set, void *elem, void *user_data);
 int strset_remove(StrSet set, void *elem);
@@ -26,6 +26,7 @@ typedef struct set
     GHashTable *table;
     f_maker fm;
     f_update fu;
+    int identity;
 } * StrSet;
 
 // ------------------------------------------------------------------------------
@@ -37,12 +38,13 @@ typedef struct set
  * 
  * @returns O set criado.
  **/
-StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu)
+StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, int flag)
 {
     StrSet set = g_malloc(sizeof(struct set));
     set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ffkey, ffvalue);
     set->fm = fm;
     set->fu = fu;
+    set->identity = flag;
     return set;
 }
 
@@ -77,13 +79,13 @@ int strset_add(StrSet set, void *elem, void *user_data)
     if (set->fm && !(val = g_hash_table_lookup(set->table, elem)))
     {
         r = 1;
-        val = (*set->fm)();
+        val = (*set->fm)(set->identity);
         g_hash_table_insert(set->table, elem, val);
     }
 
     if (set->fu && user_data && val)
     {
-        r = 0;
+        r++;
         (*set->fu)(val, user_data);
     }
 
