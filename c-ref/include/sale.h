@@ -2,6 +2,7 @@
 #define SALE_H
 
 #include "dbase.h"
+#include "set.h"
 
 /**
  * \brief Typedef para função que recebe dois tipos abstratos e retorna um booleano.
@@ -17,6 +18,7 @@ int sale_paralel_proc(DBase, DBase, Sale, pc, pc);
 void sale_insert_self(DBase, DBase, Sale);
 void sale_copy_client(Sale, char *);
 int sale_exists_abs(Sale, DBase, int);
+void sale_id_check(Sale s, StrSet set, void *e, int flag);
 
 char *sale_get_client(Sale);
 char *sale_get_product(Sale);

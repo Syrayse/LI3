@@ -2,6 +2,7 @@
 #include "statinfo.h"
 #include "specinfo.h"
 #include "set.h"
+#include "sale.h"
 #include "util.h"
 #include <glib.h>
 
@@ -115,20 +116,11 @@ void statinfo_update(StatInfo a, void *e)
         return;
     Sale s = (Sale)e;
     double rev = sale_get_rev(s);
-    char *tmp;
-    int r, f, m, p = sale_get_promo(s);
+    int f, m, p = sale_get_promo(s);
     m = sale_get_month(s);
     f = sale_get_filial(s);
 
-    if (a->identity)
-        tmp = sale_get_product(s);
-    else
-        tmp = sale_get_client(s);
-
-    r = strset_add(a->historic, tmp, e);
-
-    if (r == 0)
-        g_free(tmp);
+    sale_id_check(s, a->historic, e, a->identity);
 
     // Vendas
     a->nVendasTotal++;

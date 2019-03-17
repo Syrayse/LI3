@@ -83,7 +83,7 @@ int strset_add(StrSet set, void *elem, void *user_data)
     int r = -1;
     void *val = NULL;
 
-    if (set->fm && !(val = g_hash_table_lookup(set->table, elem)))
+    if (!(val = g_hash_table_lookup(set->table, elem)) && set->fm)
     {
         r = 1;
         val = (*set->fm)(set->identity);
@@ -223,7 +223,7 @@ void *strset_value_of(StrSet set, void *elem)
 char **strset_generic_dump(StrSet set, f_foreach ffor, size_t *n, int flag)
 {
     char **r;
-    GrowingArray ga = garray_make(sizeof(char *), g_free);
+    GrowingArray ga = garray_make(sizeof(char *), NULL);
 
     strset_foreach(set, ffor, ga);
 
@@ -244,7 +244,7 @@ char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag)
     GHashTableIter iter;
     gpointer key, value;
 
-    GrowingArray ga = garray_make(sizeof(char *), g_free);
+    GrowingArray ga = garray_make(sizeof(char *), NULL);
 
     g_hash_table_iter_init(&iter, set->table);
     while (g_hash_table_iter_next(&iter, &key, &value))

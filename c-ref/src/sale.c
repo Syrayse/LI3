@@ -4,6 +4,7 @@
  **/
 
 #include "sale.h"
+#include "set.h"
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -18,6 +19,7 @@ int sale_paralel_proc(DBase, DBase, Sale, pc, pc);
 void sale_insert_self(DBase, DBase, Sale);
 void sale_copy_client(Sale, char *);
 int sale_exists_abs(Sale, DBase, int);
+void sale_id_check(Sale, StrSet, void *, int);
 
 char *sale_get_client(Sale);
 char *sale_get_product(Sale);
@@ -148,6 +150,18 @@ int sale_exists_abs(Sale s, DBase db, int flag)
     else
         r = dbase_contains(db, s->product);
     return r;
+}
+
+void sale_id_check(Sale s, StrSet set, void *e, int flag)
+{
+    char *tmp = flag ? s->product : s->client;
+
+    if (!strset_contains(set, tmp))
+    {
+        tmp = g_strdup(tmp);
+    }
+
+    strset_add(set, tmp, e);
 }
 
 /**

@@ -248,8 +248,7 @@ static int _set_sale_valid_product(char *s, void *entry)
  **/
 static int is_valid_client(char *s)
 {
-    return (
-        g_ascii_isupper(s[0]) && is_between(atoi(s + 1), 1000, 5000) && (s[5] == '\0'));
+    return (g_ascii_isupper(s[0]) && is_between(atoi(s + 1), 1000, 5000) && (s[5] == '\0'));
 }
 
 /**
@@ -262,8 +261,7 @@ static int is_valid_client(char *s)
  **/
 static int is_valid_product(char *s)
 {
-    return (
-        g_ascii_isupper(s[0]) && g_ascii_isupper(s[1]) && is_between(atoi(s + 2), 1000, 9999) && (s[6] == '\0'));
+    return (g_ascii_isupper(s[0]) && g_ascii_isupper(s[1]) && is_between(atoi(s + 2), 1000, 9999) && (s[6] == '\0'));
 }
 
 /**

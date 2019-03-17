@@ -97,7 +97,7 @@ void **garray_dump_elems(GrowingArray src, size_t *h)
     void **e_arr = g_malloc(sizeof(void *) * src->used);
 
     for (i = 0; i < src->used; i++)
-        e_arr[i] = src->array[i];
+        e_arr[i] = g_strdup((char *)src->array[i]);
 
     *h = src->used;
 
