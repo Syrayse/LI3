@@ -6,6 +6,7 @@
 /* Metodos publicos */
 StrSet strset_make(freefunc ffkey, freefunc ffvalue);
 void strset_destroy(StrSet set);
+int strset_get_not_init_n(StrSet set);
 int strset_add(StrSet set, void *elem, void *value);
 int strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
 int strset_remove(StrSet set, void *elem);
@@ -15,15 +16,16 @@ int strset_size(StrSet set);
 void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
+char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag);
 
 /* Metodos privados */
-static void insert_str(void *key, void *value, void *user_data);
-static char **generic_dump(StrSet set, size_t *n, int flag);
+//None
 
 // ------------------------------------------------------------------------------
 
 typedef struct set
 {
+    int not_init;
     GHashTable *table;
 } * StrSet;
 
@@ -39,6 +41,7 @@ typedef struct set
 StrSet strset_make(freefunc ffkey, freefunc ffvalue)
 {
     StrSet set = g_malloc(sizeof(struct set));
+    set->not_init = 0;
     set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ffkey, ffvalue);
     return set;
 }
@@ -55,6 +58,11 @@ void strset_destroy(StrSet set)
         g_hash_table_destroy(set->table);
         g_free(set);
     }
+}
+
+int strset_get_not_init_n(StrSet set)
+{
+    return set->not_init;
 }
 
 /**
@@ -81,12 +89,14 @@ int strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f
         r = 1;
         val = (*fm)();
         g_hash_table_insert(set->table, elem, val);
+        set->not_init++;
     }
 
     if (fu && user_data)
     {
-        (*fu)(val, user_data);
         r = 0;
+        (*fu)(val, user_data);
+        set->not_init--;
     }
 
     return r;
@@ -151,7 +161,7 @@ int strset_size(StrSet set)
  **/
 char **strset_dump(StrSet set, size_t *n)
 {
-    return generic_dump(set, n, 1);
+    return strset_dump_if(set, NULL, n, 1);
 }
 
 /**
@@ -165,7 +175,7 @@ char **strset_dump(StrSet set, size_t *n)
  **/
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n)
 {
-    return generic_dump(set, n, 0);
+    return strset_dump_if(set, NULL, n, 0);
 }
 
 /**
@@ -204,19 +214,6 @@ void *strset_value_of(StrSet set, void *elem)
 }
 
 /**
- * \brief Função que coloca um elemento num GrowingArray.
- * 
- * @param key Elemento a ser colocado.
- * @param value Valor do elemento a ser colocado.
- * @param user_data GrowingArray onde serão colocados os elementos.
- **/
-static void insert_str(void *key, void *value, void *user_data)
-{
-    if (user_data)
-        garray_add((GrowingArray)user_data, key);
-}
-
-/**
  * \brief Efetua um dump generico, dependendo do valor da flag efetua ou não ordenação.
  * 
  * @param set Set que irá ser verificado.
@@ -225,14 +222,45 @@ static void insert_str(void *key, void *value, void *user_data)
  * 
  * @returns Array contendo todos os valores obtidos do Set original segundo a flag.
  **/
-static char **generic_dump(StrSet set, size_t *n, int flag)
+char **strset_generic_dump(StrSet set, f_foreach ffor, size_t *n, int flag)
 {
+    char **r;
     GrowingArray ga = garray_make(sizeof(char *), g_free);
 
-    strset_foreach(set, insert_str, ga);
+    strset_foreach(set, ffor, ga);
 
     if (!flag)
         garray_sort(ga, mystrcmp);
 
-    return (char **)garray_dump_elems(ga, n);
+    r = (char **)garray_dump_elems(ga, n);
+
+    garray_destroy(ga);
+
+    return r;
+}
+
+char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag)
+{
+    char **r = NULL;
+
+    GHashTableIter iter;
+    gpointer key, value;
+
+    GrowingArray ga = garray_make(sizeof(char *), g_free);
+
+    g_hash_table_iter_init(&iter, set->table);
+    while (g_hash_table_iter_next(&iter, &key, &value))
+    {
+        if (!p || (value && (*p)(value)))
+            garray_add(ga, key);
+    }
+
+    if (!flag)
+        garray_sort(ga, mystrcmp);
+
+    r = (char **)garray_dump_elems(ga, n);
+
+    garray_destroy(ga);
+
+    return r;
 }

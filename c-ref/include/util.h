@@ -40,6 +40,8 @@ typedef void (*freefunc)(void *);
 
 typedef int (*fcompare)(const void *, const void *);
 
+typedef int (*Predicate)(const void *);
+
 int mystrcmp(const void *, const void *);
 
 int conv_str(const void *);
