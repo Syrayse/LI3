@@ -11,7 +11,7 @@ size_t garray_size(GrowingArray g);
 void garray_add(GrowingArray g, void *entry);
 void garray_sort(GrowingArray g, fcompare fc);
 int garray_is_sorted(GrowingArray g);
-void **garray_dump_elems(GrowingArray src, size_t *h);
+void **garray_dump_elems(GrowingArray src, void *(*f_map)(void *), size_t *h);
 int garray_auto_resize(GrowingArray g);
 
 /* Metodos privados */
@@ -80,7 +80,7 @@ void garray_sort(GrowingArray g, fcompare fc)
 {
     if (!g->sorted)
     {
-        qsort(g->array, g->used, sizeof(char *), fc);
+        qsort(g->array, g->used, g->key_size, fc);
         g->sorted = 1;
     }
 }
@@ -90,14 +90,14 @@ int garray_is_sorted(GrowingArray g)
     return g->sorted;
 }
 
-void **garray_dump_elems(GrowingArray src, size_t *h)
+void **garray_dump_elems(GrowingArray src, void *(*f_map)(void *), size_t *h)
 {
     size_t i;
 
     void **e_arr = g_malloc(sizeof(void *) * src->used);
 
     for (i = 0; i < src->used; i++)
-        e_arr[i] = g_strdup((char *)src->array[i]);
+        e_arr[i] = f_map ? (*f_map)(src->array[i]) : src->array[i];
 
     *h = src->used;
 
@@ -119,6 +119,6 @@ int garray_auto_resize(GrowingArray g)
 
 static void double_garray(GrowingArray g)
 {
-    g->array = g_realloc(g->array, g->key_size * g->max_size * 2);
+    g->array = g_realloc(g->array, sizeof(void *) * g->max_size * 2);
     g->max_size *= 2;
 }

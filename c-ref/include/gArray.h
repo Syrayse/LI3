@@ -12,7 +12,7 @@ size_t garray_size(GrowingArray g);
 void garray_add(GrowingArray g, void *entry);
 void garray_sort(GrowingArray g, fcompare fc);
 int garray_is_sorted(GrowingArray g);
-void **garray_dump_elems(GrowingArray src, size_t *h);
+void **garray_dump_elems(GrowingArray src, void *(*f_map)(void *), size_t *h);
 int garray_auto_resize(GrowingArray g);
 
 #endif

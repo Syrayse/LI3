@@ -1,5 +1,6 @@
 #include "set.h"
 #include "gArray.h"
+#include "specinfo.h"
 
 // ------------------------------------------------------------------------------
 
@@ -14,10 +15,19 @@ int strset_size(StrSet set);
 void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
-char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag);
+
+char **get_all_promo_fil(StrSet set, size_t *n, int filial);
+char **get_all_no_promo_fil(StrSet set, size_t *n, int filial);
+char **get_sort_quant_month(StrSet set, size_t *n, int month);
 
 /* Metodos privados */
-//None
+static char **strset_dump_if(StrSet set, Predicate p, fcompare fc, void *user_data, size_t *n);
+static int filter_filial_promo(const void *a, const void *b);
+static int filter_filial_no_promo(const void *a, const void *b);
+static int filter_month(const void *a, const void *b);
+static void *uncurry_dummy(void *d);
+static int strcmp_dummy(const void *a, const void *b);
+static int compare_quants(const void *a, const void *b);
 
 // ------------------------------------------------------------------------------
 
@@ -29,6 +39,13 @@ typedef struct set
     f_update fu;
     int identity;
 } * StrSet;
+
+typedef struct dummy
+{
+    void *key;
+    void *value;
+    void *user_data;
+} * Dummy;
 
 // ------------------------------------------------------------------------------
 
@@ -159,7 +176,7 @@ int strset_size(StrSet set)
  **/
 char **strset_dump(StrSet set, size_t *n)
 {
-    return strset_dump_if(set, NULL, n, 1);
+    return strset_dump_if(set, NULL, strcmp_dummy, NULL, n);
 }
 
 /**
@@ -173,7 +190,7 @@ char **strset_dump(StrSet set, size_t *n)
  **/
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n)
 {
-    return strset_dump_if(set, NULL, n, 0);
+    return strset_dump_if(set, NULL, strcmp_dummy, NULL, n);
 }
 
 /**
@@ -230,14 +247,53 @@ char **strset_generic_dump(StrSet set, f_foreach ffor, size_t *n, int flag)
     if (!flag)
         garray_sort(ga, mystrcmp);
 
-    r = (char **)garray_dump_elems(ga, n);
+    r = (char **)garray_dump_elems(ga, NULL, n);
 
     garray_destroy(ga);
 
     return r;
 }
 
-char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag)
+char **get_all_promo(StrSet set, size_t *n, int filial)
+{
+    char **r = NULL;
+    int f = filial;
+
+    if (is_between(f, 1, 3))
+    {
+        r = strset_dump_if(set, filter_filial_promo, strcmp_dummy, &f, n);
+    }
+
+    return r;
+}
+
+char **get_all_no_promo(StrSet set, size_t *n, int filial)
+{
+    char **r = NULL;
+    int f = filial;
+
+    if (is_between(f, 1, 3))
+    {
+        r = strset_dump_if(set, filter_filial_no_promo, strcmp_dummy, &f, n);
+    }
+
+    return r;
+}
+
+char **get_sort_quant(StrSet set, size_t *n, int month)
+{
+    char **r = NULL;
+    int m = month;
+
+    if (is_between(m, 1, 12))
+    {
+        r = strset_dump_if(set, filter_month, compare_quants, &m, n);
+    }
+
+    return r;
+}
+
+static char **strset_dump_if(StrSet set, Predicate p, fcompare fc, void *user_data, size_t *n)
 {
     char **r = NULL;
 
@@ -245,20 +301,60 @@ char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag)
     gpointer key, value;
 
     GrowingArray ga = garray_make(sizeof(char *), NULL);
+    Dummy du = g_malloc(sizeof(struct dummy));
 
     g_hash_table_iter_init(&iter, set->table);
     while (g_hash_table_iter_next(&iter, &key, &value))
     {
-        if (!p || (value && (*p)(value)))
-            garray_add(ga, key);
+        du->key = key;
+        du->value = value;
+        du->user_data = user_data;
+        if (!p || (value && user_data && (*p)(value, user_data)))
+            garray_add(ga, du);
     }
 
-    if (!flag)
-        garray_sort(ga, mystrcmp);
+    if (fc)
+        garray_sort(ga, fc);
 
-    r = (char **)garray_dump_elems(ga, n);
+    r = (char **)garray_dump_elems(ga, uncurry_dummy, n);
 
     garray_destroy(ga);
+    g_free(du);
 
     return r;
+}
+
+static int filter_filial_promo(const void *a, const void *b)
+{
+    return (specinfo_get_promo_fil((SpecInfo)a, *(int *)b) > 0);
+}
+
+static int filter_filial_no_promo(const void *a, const void *b)
+{
+    return (specinfo_get_no_promo_fil((SpecInfo)a, *(int *)b) > 0);
+}
+
+static int filter_month(const void *a, const void *b)
+{
+    return (specinfo_get_units_month((SpecInfo)a, *(int *)b) > 0);
+}
+
+static void *uncurry_dummy(void *d)
+{
+    return ((Dummy)d)->value;
+}
+
+static int strcmp_dummy(const void *a, const void *b)
+{
+    Dummy da = (Dummy)a;
+    Dummy db = (Dummy)b;
+    return strcmp(*(const char **)da->key, *(const char **)db->key);
+}
+
+static int compare_quants(const void *a, const void *b)
+{
+    Dummy da = (Dummy)a;
+    Dummy db = (Dummy)b;
+
+    return ((specinfo_get_units_month((SpecInfo)db->value, *(int *)db->user_data)) - (specinfo_get_units_month((SpecInfo)da->value, *(int *)da->user_data)));
 }

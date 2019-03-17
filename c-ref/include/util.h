@@ -40,7 +40,7 @@ typedef void (*freefunc)(void *);
 
 typedef int (*fcompare)(const void *, const void *);
 
-typedef int (*Predicate)(const void *);
+typedef int (*Predicate)(const void *, const void *);
 
 int mystrcmp(const void *, const void *);
 

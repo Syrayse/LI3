@@ -22,6 +22,9 @@ int strset_size(StrSet set);
 void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
-char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag);
+
+char **get_all_promo_fil(StrSet set, size_t *n, int filial);
+char **get_all_no_promo_fil(StrSet set, size_t *n, int filial);
+char **get_sort_quant_month(StrSet set, size_t *n, int month);
 
 #endif
