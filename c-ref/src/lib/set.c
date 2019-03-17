@@ -23,6 +23,7 @@ char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag);
 
 typedef struct set
 {
+    int not_init;
     GHashTable *table;
     f_maker fm;
     f_update fu;
@@ -41,6 +42,7 @@ typedef struct set
 StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, int flag)
 {
     StrSet set = g_malloc(sizeof(struct set));
+    set->not_init = 0;
     set->table = g_hash_table_new_full(g_str_hash, g_str_equal, ffkey, ffvalue);
     set->fm = fm;
     set->fu = fu;
@@ -62,6 +64,11 @@ void strset_destroy(StrSet set)
     }
 }
 
+int strset_get_not_init_n(StrSet set)
+{
+    return set->not_init;
+}
+
 /**
  * \brief Adiciona uma chave ao Set.
  * 
@@ -81,6 +88,7 @@ int strset_add(StrSet set, void *elem, void *user_data)
         r = 1;
         val = (*set->fm)(set->identity);
         g_hash_table_insert(set->table, elem, val);
+        set->not_init++;
     }
 
     if (set->fu && user_data && val)
