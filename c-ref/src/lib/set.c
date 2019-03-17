@@ -15,10 +15,10 @@ int strset_size(StrSet set);
 void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
+char **strset_generic_dump(StrSet set, f_foreach ffor, size_t *n, int flag);
 
 /* Metodos privados */
 static void insert_str(void *key, void *value, void *user_data);
-static char **generic_dump(StrSet set, size_t *n, int flag);
 
 // ------------------------------------------------------------------------------
 
@@ -151,7 +151,7 @@ int strset_size(StrSet set)
  **/
 char **strset_dump(StrSet set, size_t *n)
 {
-    return generic_dump(set, n, 1);
+    return strset_generic_dump(set, insert_str, n, 1);
 }
 
 /**
@@ -165,7 +165,7 @@ char **strset_dump(StrSet set, size_t *n)
  **/
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n)
 {
-    return generic_dump(set, n, 0);
+    return strset_generic_dump(set, insert_str, n, 0);
 }
 
 /**
@@ -204,6 +204,32 @@ void *strset_value_of(StrSet set, void *elem)
 }
 
 /**
+ * \brief Efetua um dump generico, dependendo do valor da flag efetua ou não ordenação.
+ * 
+ * @param set Set que irá ser verificado.
+ * @param n Endereço onde será colocado o número de elementos obtido.
+ * @param flag Flag que explicita a ordenanão ou não-ordenação.
+ * 
+ * @returns Array contendo todos os valores obtidos do Set original segundo a flag.
+ **/
+char **strset_generic_dump(StrSet set, f_foreach ffor, size_t *n, int flag)
+{
+    char **r;
+    GrowingArray ga = garray_make(sizeof(char *), g_free);
+
+    strset_foreach(set, ffor, ga);
+
+    if (!flag)
+        garray_sort(ga, mystrcmp);
+
+    r = (char **)garray_dump_elems(ga, n);
+
+    garray_destroy(ga);
+
+    return r;
+}
+
+/**
  * \brief Função que coloca um elemento num GrowingArray.
  * 
  * @param key Elemento a ser colocado.
@@ -214,25 +240,4 @@ static void insert_str(void *key, void *value, void *user_data)
 {
     if (user_data)
         garray_add((GrowingArray)user_data, key);
-}
-
-/**
- * \brief Efetua um dump generico, dependendo do valor da flag efetua ou não ordenação.
- * 
- * @param set Set que irá ser verificado.
- * @param n Endereço onde será colocado o número de elementos obtido.
- * @param flag Flag que explicita a ordenanão ou não-ordenação.
- * 
- * @returns Array contendo todos os valores obtidos do Set original segundo a flag.
- **/
-static char **generic_dump(StrSet set, size_t *n, int flag)
-{
-    GrowingArray ga = garray_make(sizeof(char *), g_free);
-
-    strset_foreach(set, insert_str, ga);
-
-    if (!flag)
-        garray_sort(ga, mystrcmp);
-
-    return (char **)garray_dump_elems(ga, n);
 }
