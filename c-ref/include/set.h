@@ -14,6 +14,7 @@ typedef void *(*f_maker)(void);
 
 StrSet strset_make(freefunc ffkey, freefunc ffvalue);
 void strset_destroy(StrSet set);
+int strset_get_not_init_n(StrSet set);
 int strset_add(StrSet set, void *elem, void *value);
 int strset_add_and_update(StrSet set, void *elem, void *user_data, f_maker fm, f_update fu);
 int strset_remove(StrSet set, void *elem);
@@ -23,6 +24,6 @@ int strset_size(StrSet set);
 void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
-char **strset_generic_dump(StrSet set, f_foreach ffor, size_t *n, int flag);
+char **strset_dump_if(StrSet set, Predicate p, size_t *n, int flag);
 
 #endif
