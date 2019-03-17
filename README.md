@@ -29,13 +29,10 @@ Não incluido o sistema de I/O que é pedido nas várias queries do enunciado.
 
 #### André 'Pistolas' Figueiredo
 
-* Realizar a tarefa __(8)__. (fim de semana)
 * Realizar a tarefa __(11)__. (next fim de semana)
 
 #### Rui 'Small Dick Joe' Reis
 
-* Realizar a tarefa __(9)__.
-* Realizar a tarefa __(10)__.
 * Realizar a tarefa __(12)__.
 (domingo)
 
