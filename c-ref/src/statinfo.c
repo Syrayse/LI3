@@ -5,6 +5,7 @@
 #include "sale.h"
 #include "util.h"
 #include <glib.h>
+#include <stdio.h>
 
 // ------------------------------------------------------------------------------
 

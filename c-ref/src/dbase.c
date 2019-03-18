@@ -160,7 +160,7 @@ char **dbase_get_not_sold(DBase db, size_t *n, int filial)
     if (!db->not_bought[0])
         dbase_build_arrays(db);
 
-    return (char **)garray_dump_elems(db->not_bought[filial], n);
+    return (char **)garray_dump_elems(db->not_bought[filial], NULL, n);
 }
 
 static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
@@ -180,7 +180,7 @@ static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
 
     garray_sort(g, mystrcmp);
 
-    tmp = garray_dump_elems(g, h);
+    tmp = garray_dump_elems(g, NULL, h);
 
     garray_destroy(g);
 
