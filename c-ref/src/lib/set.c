@@ -309,17 +309,14 @@ static char **strset_dump_if(StrSet set, Predicate p, fcompare fc, void *user_da
     GHashTableIter iter;
     gpointer key, value;
 
-    GrowingArray ga = garray_make(sizeof(char *), NULL);
+    GrowingArray ga = garray_make(sizeof(char *), currier_destroy);
     Dummy du = g_malloc(sizeof(struct dummy));
 
     g_hash_table_iter_init(&iter, set->table);
     while (g_hash_table_iter_next(&iter, &key, &value))
     {
-        du->key = key;
-        du->value = value;
-        du->user_data = user_data;
         if (!p || (value && user_data && (*p)(value, user_data)))
-            garray_add(ga, du);
+            garray_add(ga, currier_make(key, value, user_data));
     }
 
     if (fc)

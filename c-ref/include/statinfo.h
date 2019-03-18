@@ -9,6 +9,8 @@ void statinfo_destroy(StatInfo);
 void statinfo_update(StatInfo, void *);
 int statinfo_is_sold_by_all(StatInfo);
 
+char **get_top_N_actors(StatInfo si, size_t *hold, size_t N);
+
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
 int get_t_fil_vendas(StatInfo, int filial);

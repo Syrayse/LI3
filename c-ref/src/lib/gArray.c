@@ -13,6 +13,7 @@ void garray_sort(GrowingArray g, fcompare fc);
 int garray_is_sorted(GrowingArray g);
 void **garray_dump_elems(GrowingArray src, void *(*f_map)(void *), size_t *h);
 int garray_auto_resize(GrowingArray g);
+void **garray_take_n(GrowingArray g, size_t *hold, size_t N);
 
 /* Metodos privados */
 static void double_garray(GrowingArray g);
@@ -115,6 +116,24 @@ int garray_auto_resize(GrowingArray g)
     }
 
     return r;
+}
+
+void **garray_take_n(GrowingArray g, size_t *hold, size_t N)
+{
+    size_t i, max = min(N, g->used);
+    void **e_arr = NULL;
+
+    if (max > 0)
+    {
+        e_arr = g_malloc(sizeof(void *) * max);
+
+        for (i = 0; i < max; i++)
+            e_arr[i] = g->array[i];
+    }
+
+    *hold = max;
+
+    return e_arr;
 }
 
 static void double_garray(GrowingArray g)

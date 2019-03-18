@@ -130,6 +130,8 @@ void tarefa4(MAN_b mn)
         printf("%s ", r[i]);
     putchar('\n');
 
+    g_free(r);
+
     for (i = 1; i <= 3; i++)
     {
         r = get_products_not_bought(mn, &n, i);
@@ -137,6 +139,7 @@ void tarefa4(MAN_b mn)
         for (j = 0; j < n && j < 5; j++)
             printf("%s ", r[j]);
         putchar('\n');
+        g_free(r);
     }
 }
 
@@ -150,6 +153,7 @@ void tarefa5(MAN_b mn)
     for (i = 0; i < n && i < 5; i++)
         printf("%s ", r[i]);
 
+    g_free(r);
     putchar('\n');
 }
 
@@ -187,6 +191,25 @@ void tarefa8(MAN_b mn, int init, int max)
 {
     printf("\tEntre %d e %d houve %d vendas registadas\n", init, max, get_n_vendas_range(mn, init, max));
     printf("\tEntre %d e %d facturou-se %lf!\n", init, max, get_n_faturacao_range(mn, init, max));
+}
+
+void tarefa12(MAN_b mn, char *client)
+{
+    int i;
+    size_t n = 0;
+    StatInfo si = search_client(mn, client);
+
+    char **r = get_top_N_actors(si, &n, 3);
+
+    printf("\tO top %ld do cliente %s é: ", n, client);
+
+    for (i = 0; i < n; i++)
+    {
+        printf("%s ", r[i]);
+    }
+    putchar('\n');
+
+    g_free(r);
 }
 
 // CPU TIME && Ler ficheiros
@@ -234,6 +257,11 @@ int main(int argc, char **argv)
     start = clock();
     tarefa8(m, 1, 3);
     printf("tarefa 8:\t");
+    c_t(start);
+
+    start = clock();
+    tarefa12(m, "Z5000");
+    printf("tarefa 12:\t");
     c_t(start);
 
     start = clock();

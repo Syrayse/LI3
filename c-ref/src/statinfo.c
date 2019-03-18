@@ -4,8 +4,8 @@
 #include "set.h"
 #include "sale.h"
 #include "util.h"
+#include "kheap.h"
 #include <glib.h>
-#include <stdio.h>
 
 // ------------------------------------------------------------------------------
 
@@ -57,6 +57,8 @@ static double get_t_rev_month_iter(StatInfo a, int month, double (*)(StatInfo, i
 static void *my_specinfo_make(int flag);
 static void my_specinfo_destroy(void *si);
 static void my_specinfo_update(void *si, void *e);
+static int compare_revenue(const void *a, const void *b);
+static void enter_kheap(void *key, void *value, void *user_data);
 
 // ------------------------------------------------------------------------------
 
@@ -553,4 +555,56 @@ static void my_specinfo_destroy(void *si)
 static void my_specinfo_update(void *si, void *e)
 {
     specinfo_update((SpecInfo)si, e);
+}
+
+static int compare_revenue(const void *a, const void *b)
+{
+    int r = 0;
+    SpecInfo sia = (SpecInfo)uncurry_by_value((Currier)a);
+    SpecInfo sib = (SpecInfo)uncurry_by_value((Currier)b);
+    double dif = specinfo_get_cost(sia) - specinfo_get_cost(sib);
+    if (dif > 0.0)
+        r = 1;
+    else if (dif < 0.0)
+        r = -1;
+    return r;
+}
+
+static void enter_kheap(void *key, void *value, void *user_data)
+{
+    Currier c = currier_make(key, value, NULL);
+
+    if (user_data)
+        kheap_add((KHeap)user_data, (void *)c);
+}
+
+char **get_top_N_actors(StatInfo si, size_t *hold, size_t N)
+{
+    size_t i, s;
+    char **r = NULL;
+    Currier d;
+
+    KHeap k = kheap_make(compare_revenue, currier_destroy);
+
+    strset_foreach(si->historic, enter_kheap, k);
+
+    s = min(N, kheap_size(k));
+
+    r = g_malloc(sizeof(char *) * s);
+
+    if (s > 0)
+    {
+        for (i = 0; i < s; i++)
+        {
+            d = (Currier)kheap_extract_root(k);
+            r[i] = (char *)uncurry_by_key(d);
+            currier_destroy(d);
+        }
+    }
+
+    *hold = s;
+
+    kheap_destroy(k);
+
+    return r;
 }
