@@ -2,6 +2,7 @@
 #define VENDASMAN_H
 
 #include "sale.h"
+#include "statinfo.h"
 
 typedef struct manb *MAN_b;
 
@@ -26,6 +27,9 @@ int get_not_sold_product(MAN_b);
 
 void set_maior_linha(MAN_b, int);
 
-void show_boletim_vendas(MAN_b mn);
+char **get_ordered_dbase_dump_products(MAN_b, size_t *n, int flag);
+StatInfo search_product(MAN_b mn, char *product);
+char **get_products_not_bought(MAN_b mn, size_t *n, int filial);
+char **get_clients_not_buying(MAN_b mn, size_t *n);
 
 #endif

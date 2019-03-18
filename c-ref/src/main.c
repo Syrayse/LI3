@@ -1,11 +1,16 @@
 #include "validation.h"
 #include "sale.h"
+#include "statinfo.h"
 #include "vendasman.h"
 #include <glib.h>
 #include <stdio.h>
 #include <time.h>
 
 #define BUFF_SIZE 50
+
+#define cpu_time(start, end) (((double)(end - start)) / CLOCKS_PER_SEC)
+#define show_cpu_time(start, end) (printf("CPU Time:%f\n", cpu_time(start, end)))
+#define c_t(start) (show_cpu_time(start, clock()))
 
 void gettfile(MAN_b m, VRF_OBJ v, char *file, int flag)
 {
@@ -48,7 +53,7 @@ void getvendas(MAN_b m, VRF_OBJ v, char *file)
     }
 }
 
-void doWork(char *produtos, char *clientes, char *vendas)
+MAN_b doWork(char *produtos, char *clientes, char *vendas)
 {
     MAN_b m = make_man();
     VRF_OBJ v = make_vrf();
@@ -59,33 +64,144 @@ void doWork(char *produtos, char *clientes, char *vendas)
 
     getvendas(m, v, vendas);
 
-    show_boletim_vendas(m);
-
-    destroy_man(m);
     destroy_vrf(v);
+
+    return m;
 }
 
-// CPU TIME && Ler ficheiros
-int main(int argc, char **argv)
+MAN_b tarefa1(int argc, char **argv)
 {
-    clock_t start, end;
-    double cpu_time_used;
-    start = clock();
+    MAN_b m = NULL;
 
     if (argc >= 4)
     {
         char *produtos = argv[1];
         char *clientes = argv[2];
         char *vendas = argv[3];
-        doWork(produtos, clientes, vendas);
+        m = doWork(produtos, clientes, vendas);
     }
     else
     {
-        doWork("tests/Produtos.txt", "tests/Clientes.txt", "tests/Vendas_1M.txt");
+        m = doWork("tests/Produtos.txt", "tests/Clientes.txt", "tests/Vendas_1M.txt");
     }
 
-    end = clock();
-    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("CPU Time:%f\n", cpu_time_used);
+    return m;
+}
+
+void tarefa2(MAN_b mn)
+{
+    int i, j;
+    char **arr;
+    size_t n = 0;
+
+    for (i = 0; i < 26; i++)
+    {
+        arr = get_ordered_dbase_dump_products(mn, &n, 'A' + i);
+        printf("%c: size -> %ld\n", 'A' + i, n);
+        printf("Examples: ");
+        for (j = 0; j < n && j < 5; j++)
+            printf("%s ", arr[j]);
+        putchar('\n');
+        g_free(arr);
+    }
+}
+
+void tarefa3(MAN_b mn, char *product)
+{
+    StatInfo si = search_product(mn, product);
+
+    if (si)
+    {
+        printf("\tProduct:\t%s\n", product);
+        printf("\tVendas:\t\t%d\n", get_t_vendas(si));
+        printf("\tRevenue:\t%f\n", get_t_rev(si));
+        printf("\tBuyers:\t\t%d\n", get_n_actors(si));
+    }
+}
+
+void tarefa4(MAN_b mn)
+{
+    int i, j;
+    size_t n = 0;
+    char **r = get_products_not_bought(mn, &n, 0);
+    printf("\tIn total %ld products were not bought, examples: ", n);
+
+    for (i = 0; i < n && i < 5; i++)
+        printf("%s ", r[i]);
+    putchar('\n');
+
+    for (i = 1; i <= 3; i++)
+    {
+        r = get_products_not_bought(mn, &n, i);
+        printf("\tfilial %d, %ld not bought, examples: ", i, n);
+        for (j = 0; j < n && j < 5; j++)
+            printf("%s ", r[j]);
+        putchar('\n');
+    }
+}
+
+void tarefa5(MAN_b mn)
+{
+    int i;
+    size_t n = 0;
+    char **r = get_clients_not_buying(mn, &n);
+    printf("\tIn total %ld clients didn't buy, examples: ", n);
+
+    for (i = 0; i < n && i < 5; i++)
+        printf("%s ", r[i]);
+
+    putchar('\n');
+}
+
+void tarefa6(MAN_b mn)
+{
+    printf("\tIn total %d products didn't sell\n", get_not_sold_product(mn));
+    printf("\tIn total %d clients didn't buy\n", get_not_sold_client(mn));
+}
+
+// CPU TIME && Ler ficheiros
+int main(int argc, char **argv)
+{
+    MAN_b m;
+    clock_t defstart, start;
+
+    defstart = start = clock();
+
+    m = tarefa1(argc, argv);
+    printf("tarefa 1:\t");
+    show_cpu_time(start, clock());
+
+    start = clock();
+    tarefa2(m);
+    printf("tarefa 2:\t");
+    c_t(start);
+
+    start = clock();
+    tarefa3(m, "NR1091");
+    printf("tarefa 3:\t");
+    c_t(start);
+
+    start = clock();
+    tarefa4(m);
+    printf("tarefa 4:\t");
+    c_t(start);
+
+    start = clock();
+    tarefa5(m);
+    printf("tarefa 5:\t");
+    c_t(start);
+
+    start = clock();
+    tarefa6(m);
+    printf("tarefa 6:\t");
+    c_t(start);
+
+    start = clock();
+    destroy_man(m);
+    printf("destroy:\t");
+    c_t(start);
+
+    printf("total:\t\t");
+    c_t(defstart);
     return 0;
 }

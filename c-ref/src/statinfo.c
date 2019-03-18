@@ -14,6 +14,7 @@ StatInfo statinfo_make(int flag);
 void statinfo_destroy(StatInfo);
 void statinfo_update(StatInfo, void *);
 int statinfo_is_sold_by_all(StatInfo);
+int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
 int get_t_fil_vendas(StatInfo, int filial);
 int get_t_fil_vendas_promo(StatInfo, int filial);
@@ -117,16 +118,17 @@ void statinfo_update(StatInfo a, void *e)
         return;
     Sale s = (Sale)e;
     double rev = sale_get_rev(s);
-    int f, m, p = sale_get_promo(s);
+    int f, m, q, p = sale_get_promo(s);
     m = sale_get_month(s);
     f = sale_get_filial(s);
+    q = sale_get_units(s);
 
     sale_id_check(s, a->historic, e, a->identity);
 
     // Vendas
-    a->nVendasTotal++;
-    a->nVendasFilialMonth[f - 1][0][indP(p)]++;
-    a->nVendasFilialMonth[f - 1][m][indP(p)]++;
+    a->nVendasTotal += q;
+    a->nVendasFilialMonth[f - 1][0][indP(p)] += q;
+    a->nVendasFilialMonth[f - 1][m][indP(p)] += q;
 
     // Profit
     a->totalRevenue += rev;
@@ -146,6 +148,11 @@ int statinfo_is_sold_by_all(StatInfo a)
             r = 0;
     }
     return r;
+}
+
+int get_n_actors(StatInfo si)
+{
+    return strset_size(si->historic);
 }
 
 /**
