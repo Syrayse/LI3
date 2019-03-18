@@ -12,7 +12,10 @@ int dbase_remove(DBase, void *);
 int dbase_size(DBase);
 int dbase_size_specific(DBase, char);
 int dbase_contains(DBase, void *);
+void *dbase_lookup(DBase db, void *key);
 char **dbase_get_overall(DBase, size_t *, char);
 char **dbase_get_not_sold(DBase, size_t *, int);
+char **dbase_get_ordered(DBase db, size_t *n, int flag);
+int dbase_get_not_init(DBase db);
 
 #endif

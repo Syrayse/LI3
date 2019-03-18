@@ -16,9 +16,11 @@ int dbase_remove(DBase, void *);
 int dbase_size(DBase);
 int dbase_size_specific(DBase, char);
 int dbase_contains(DBase, void *);
+void *dbase_lookup(DBase, void *);
 char **dbase_get_overall(DBase, size_t *, char);
 char **dbase_get_not_sold(DBase, size_t *, int);
-
+char **dbase_get_ordered(DBase db, size_t *n, int flag);
+int dbase_get_not_init(DBase db);
 /* Metodos privados */
 static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag);
 static void insert_sold_by_all(void *key, void *value, void *user_data);
@@ -28,7 +30,7 @@ static void dbase_build_arrays(DBase db);
 static void *my_statinfo_make(int flag);
 static void my_statinfo_update(void *, void *);
 static void my_statinfo_destroy(void *a);
-
+static void my_garray_add(void *key, void *value, void *user_data);
 // ------------------------------------------------------------------------------
 
 /**
@@ -40,7 +42,6 @@ typedef struct data_base
 {
     int identity,
         total_size,
-        not_init_n,
         max_size;
     StrSet *table; /**< Estrutura de dados em uso */
     GrowingArray not_bought[4];
@@ -56,7 +57,6 @@ DBase dbase_make(int flag)
     int i;
     DBase db = g_malloc(sizeof(struct data_base));
     db->total_size = 0;
-    db->not_init_n = 0;
     db->max_size = 'Z' - 'A' + 1;
     db->identity = flag;
 
@@ -98,17 +98,7 @@ void dbase_destroy(DBase db)
  **/
 void dbase_add(DBase db, void *key, void *user_data)
 {
-    int r = strset_add(db->table[conv_str(key)], key, user_data);
-
-    if (r)
-    {
-        db->total_size++;
-        db->not_init_n++;
-    }
-    else if (!r)
-    {
-        db->not_init_n--;
-    }
+    strset_add(db->table[conv_str(key)], key, user_data);
 }
 
 /**
@@ -150,6 +140,11 @@ int dbase_contains(DBase db, void *key)
     return strset_contains(db->table[conv_str(key)], key);
 }
 
+void *dbase_lookup(DBase db, void *key)
+{
+    return strset_lookup(db->table[conv_str(key)], key);
+}
+
 char **dbase_get_overall(DBase db, size_t *h, char flag)
 {
     return (char **)dump_ordered_abstract(db, insert_sold_by_all, h, flag);
@@ -161,6 +156,11 @@ char **dbase_get_not_sold(DBase db, size_t *n, int filial)
         dbase_build_arrays(db);
 
     return (char **)garray_dump_elems(db->not_bought[filial], NULL, n);
+}
+
+char **dbase_get_ordered(DBase db, size_t *n, int flag)
+{
+    return (char **)dump_ordered_abstract(db, my_garray_add, n, flag);
 }
 
 static void **dump_ordered_abstract(DBase b, GHFunc f, size_t *h, char flag)
@@ -250,4 +250,20 @@ static void my_statinfo_update(void *app, void *user)
 static void my_statinfo_destroy(void *a)
 {
     statinfo_destroy((StatInfo)a);
+}
+
+static void my_garray_add(void *key, void *value, void *user_data)
+{
+    if (user_data) //&& statinfo_is_sold_by_all((StatInfo)value))
+        garray_add((GrowingArray)user_data, key);
+}
+
+int dbase_get_not_init(DBase db)
+{
+    int i, r = 0;
+
+    for (i = 0; i < 26; i++)
+        r += strset_get_not_init_n(db->table[i]);
+
+    return r;
 }

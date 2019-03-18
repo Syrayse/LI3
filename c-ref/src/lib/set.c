@@ -12,9 +12,11 @@ int strset_remove(StrSet set, void *elem);
 void strset_foreach(StrSet set, f_foreach fer, void *user_data);
 int strset_contains(StrSet set, void *elem);
 int strset_size(StrSet set);
+void *strset_lookup(StrSet set, void *key);
 void *strset_value_of(StrSet set, void *elem);
 char **strset_dump(StrSet set, size_t *n);
 char **strset_dump_ordered(StrSet set, fcompare fc, size_t *n);
+int strset_get_not_init_n(StrSet set);
 
 char **get_all_promo_fil(StrSet set, size_t *n, int filial);
 char **get_all_no_promo_fil(StrSet set, size_t *n, int filial);
@@ -110,6 +112,8 @@ int strset_add(StrSet set, void *elem, void *user_data)
 
     if (set->fu && user_data && val)
     {
+        if (r == 1)
+            set->not_init--;
         r++;
         (*set->fu)(val, user_data);
     }
@@ -213,6 +217,11 @@ int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), voi
     }
 
     return tmp ? 1 : 0;
+}
+
+void *strset_lookup(StrSet set, void *key)
+{
+    return g_hash_table_lookup(set->table, key);
 }
 
 /**

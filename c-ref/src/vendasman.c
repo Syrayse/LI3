@@ -8,6 +8,7 @@
 #include "validation.h"
 #include "vendasman.h"
 #include "dbase.h"
+#include "statinfo.h"
 #include "util.h"
 #include <glib.h>
 #include <stdio.h>
@@ -39,6 +40,9 @@ double get_n_faturacao_range(MAN_b, int, int);
 void set_maior_linha(MAN_b, int);
 
 void show_boletim_vendas(MAN_b mn);
+
+// For debug
+char **get_ordered_dbase_dump_products(MAN_b, size_t *n, int flag);
 
 /* Metodos privados */
 
@@ -196,6 +200,16 @@ int get_n_vendas_month(MAN_b b, int mes)
     return r;
 }
 
+int get_not_sold_client(MAN_b mb)
+{
+    return dbase_get_not_init(mb->clients);
+}
+
+int get_not_sold_product(MAN_b mb)
+{
+    return dbase_get_not_init(mb->products);
+}
+
 /**
  * \brief Calcula a faturação de um certo mês.
  **/
@@ -273,31 +287,29 @@ double get_n_faturacao_range(MAN_b b, int mInicio, int mFinal)
     return r;
 }
 
-void show_boletim_vendas(MAN_b mn)
+//Debug
+
+char **get_ordered_dbase_dump_products(MAN_b m, size_t *n, int flag)
 {
-    size_t t = 0;
-    printf("FIM DA LEITURA DO Vendas_1M.txt\n");
-    printf("A maior linha tem tamanho %d\n", get_maior_linha(mn));
-    printf("Produtos envolvidos: %d\n", get_n_produtos(mn));
-    printf("Clientes envolvidos: %d\n", get_n_clientes_total(mn));
-    printf("Vendas efectivas: %d\n", get_n_vendas_total(mn)); //get_n_vendas_month(mn, 13);
-    printf("Ultimo cliente: %s\n", mn->lastClient);
-    printf("Numero de vendas registadas na filial 1: %d\n", get_n_vendas_filial(mn, 1));
-    printf("Numero de vendas registadas na filial 2: %d\n", get_n_vendas_filial(mn, 2));
-    printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
+    return dbase_get_ordered(m->products, n, flag);
+}
 
-    printf("\nFaturacao total: %f\n\n", get_cashflow_total(mn)); //get_n_faturacao_month(mn, 13)
-    printf("Expected: 44765588910.5209\n");
-    printf("Offset: %f\n", 44765588910.5209 - get_cashflow_total(mn));
+StatInfo search_product(MAN_b mn, char *product)
+{
+    return (StatInfo)dbase_lookup(mn->products, product);
+}
 
-    puts("\nFASE 2 SPECS");
+StatInfo search_client(MAN_b mn, char *client)
+{
+    return (StatInfo)dbase_lookup(mn->clients, client);
+}
 
-    printf("%ld clientes compraram em todas as filiais\n", t);
+char **get_products_not_bought(MAN_b mn, size_t *n, int filial)
+{
+    return dbase_get_not_sold(mn->products, n, filial);
+}
 
-    printf("Vendas entre Janeiro e Março: %d\n", get_n_vendas_range(mn, 1, 12));
-    printf("Faturação entre Janeiro e Dezembro: %f\n", get_n_faturacao_month(mn, 13));
-    printf("Faturação entre Janeiro e Dezembro in range: %f\n", get_n_faturacao_range(mn, 1, 12));
-    printf("Vendas entre Janeiro e dezembro: %d\n", get_n_vendas_month(mn, 13));
-    printf("Vendas entre Janeiro e dezembro in range: %d\n", get_n_vendas_range(mn, 1, 12));
-    printf("Offset: %f\n", 44765588910.5209 - get_n_faturacao_range(mn, 1, 12));
+char **get_clients_not_buying(MAN_b mn, size_t *n)
+{
+    return dbase_get_not_sold(mn->clients, n, 0);
 }
