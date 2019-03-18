@@ -1,6 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include "currier.h"
+
 /**
  * \brief Indexador dos códigos promocionais.
  **/
