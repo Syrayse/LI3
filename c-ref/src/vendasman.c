@@ -49,14 +49,14 @@ void show_boletim_vendas(MAN_b mn);
  **/
 typedef struct manb
 {
-    DBase clients,            /**< Base de dados dos clientes */
-        products;             /**< Base de dados dos produtos */
-    char lastClient[7];       /**< Ultimo cliente lido */
-    int maiorLinha,           /**< Maior linha lida */
-        nVendasFiliais[3];    /**< Numero de vendas por filial */
-    double totalCashFlow;     /**< Lucro total da empresa */
-    int nVendasMes[13];       /**< Numero de vendas por cada mes, sendo o índice 13 para o total, aka, vendas anuais */
-    double faturacaoMes[13];  /**< faturação mensal, sendo o índice 13 para o total, aka, faturação anual */
+    DBase clients,                     /**< Base de dados dos clientes */
+        products;                      /**< Base de dados dos produtos */
+    char lastClient[7];                /**< Ultimo cliente lido */
+    int maiorLinha,                    /**< Maior linha lida */
+        nVendasFiliais[N_FILIAIS];     /**< Numero de vendas por filial */
+    double totalCashFlow;              /**< Lucro total da empresa */
+    int nVendasMes[N_MONTHS + 1];      /**< Numero de vendas por cada mes, sendo o índice N_MONTHS para o total, aka, vendas anuais */
+    double faturacaoMes[N_MONTHS + 1]; /**< faturação mensal, sendo o índice N_MONTHS para o total, aka, faturação anual */
 } * MAN_b;
 
 // ------------------------------------------------------------------------------
@@ -72,12 +72,13 @@ MAN_b make_man(void)
     b->products = dbase_make(0);
     b->lastClient[0] = '\0';
     b->maiorLinha = -1;
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < N_FILIAIS; i++)
         b->nVendasFiliais[i] = 0;
-    for (i = 0; i < 13; i++) { //
-    	b->nVendasMes[i]=0; //
-    	b->faturacaoMes[i]=0.0; //
-    } //
+    for (i = 0; i < N_MONTHS + 1; i++)
+    {                             //
+        b->nVendasMes[i] = 0;     //
+        b->faturacaoMes[i] = 0.0; //
+    }                             //
     b->totalCashFlow = 0.0;
     return b;
 }
@@ -116,30 +117,31 @@ void insert_product_man(MAN_b b, char *s)
  **/
 int insert_sale_man(MAN_b b, Sale s)
 {
-	double cf;
-	int month;
+    double cf;
+    int month;
     int r = validate_s(b->products, b->clients, s);
+
     if (r)
     {
         sale_insert_self(b->products, b->clients, s);
 
         sale_copy_client(s, b->lastClient);
 
-		month = sale_get_month(s) -1;
+        month = sale_get_month(s) - 1;
 
-        cf = sale_get_rev(s);       
+        cf = sale_get_rev(s);
 
-        b->nVendasMes[month]++; 
+        b->nVendasMes[month]++;
 
-        b->nVendasMes[12]++;
+        b->nVendasMes[N_MONTHS]++;
 
-        b->faturacaoMes[month] = b->faturacaoMes[month] + cf;
-        
-        b->faturacaoMes[12] += cf;
+        b->faturacaoMes[month] += cf;
+
+        b->faturacaoMes[N_MONTHS] += cf;
 
         b->nVendasFiliais[sale_get_filial(s) - 1]++;
 
-        b->totalCashFlow = b->totalCashFlow + cf;
+        b->totalCashFlow += cf;
     }
 
     return r;
@@ -167,7 +169,7 @@ int get_n_produtos(MAN_b b)
 int get_n_vendas_total(MAN_b b)
 {
     int i, r = 0;
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < N_FILIAIS; i++)
         r += b->nVendasFiliais[i];
     return r;
 }
@@ -178,7 +180,7 @@ int get_n_vendas_total(MAN_b b)
 int get_n_vendas_filial(MAN_b b, int filial)
 {
     int r = -1;
-    if (is_between(filial, 1, 3))
+    if (is_between(filial, 1, N_FILIAIS))
         r = b->nVendasFiliais[filial - 1];
     return r;
 }
@@ -189,7 +191,7 @@ int get_n_vendas_filial(MAN_b b, int filial)
 int get_n_vendas_month(MAN_b b, int mes)
 {
     int r = -1;
-    if (is_between(mes, 1, 13))
+    if (is_between(mes, 1, N_MONTHS + 1))
         r = b->nVendasMes[mes - 1];
     return r;
 }
@@ -200,7 +202,7 @@ int get_n_vendas_month(MAN_b b, int mes)
 double get_n_faturacao_month(MAN_b b, int mes)
 {
     double r = -1;
-    if (is_between(mes, 1, 13))
+    if (is_between(mes, 1, N_MONTHS + 1))
         r = b->faturacaoMes[mes - 1];
     return r;
 }
@@ -245,10 +247,11 @@ int get_n_vendas_range(MAN_b b, int mInicio, int mFinal)
     int r = -1;
     int month;
 
-    if (is_between(mInicio, 1, 12) && is_between(mFinal, 1, 12) && mInicio < mFinal) {
-    	r=0;
-    	for (month = mInicio; month < mFinal + 1; month++)
-        	r += b->nVendasMes[month - 1];
+    if (is_between(mInicio, 1, N_MONTHS) && is_between(mFinal, 1, N_MONTHS) && mInicio <= mFinal)
+    {
+        r = 0;
+        for (month = mInicio; month < mFinal + 1; month++)
+            r += b->nVendasMes[month - 1];
     }
     return r;
 }
@@ -261,17 +264,17 @@ double get_n_faturacao_range(MAN_b b, int mInicio, int mFinal)
     double r = -1;
     int month;
 
-    if (is_between(mInicio, 1, 12) && is_between(mFinal, 1, 12) && mInicio < mFinal) {
-    	r=0;
-    	for (month = mInicio; month < mFinal + 1; month++)
-        	r += b->faturacaoMes[month - 1];
+    if (is_between(mInicio, 1, N_MONTHS) && is_between(mFinal, 1, N_MONTHS) && mInicio <= mFinal)
+    {
+        r = 0.0;
+        for (month = mInicio; month < mFinal + 1; month++)
+            r += b->faturacaoMes[month - 1];
     }
     return r;
 }
 
 void show_boletim_vendas(MAN_b mn)
 {
-    char **tmp;
     size_t t = 0;
     printf("FIM DA LEITURA DO Vendas_1M.txt\n");
     printf("A maior linha tem tamanho %d\n", get_maior_linha(mn));
@@ -281,7 +284,7 @@ void show_boletim_vendas(MAN_b mn)
     printf("Ultimo cliente: %s\n", mn->lastClient);
     printf("Numero de vendas registadas na filial 1: %d\n", get_n_vendas_filial(mn, 1));
     printf("Numero de vendas registadas na filial 2: %d\n", get_n_vendas_filial(mn, 2));
-    printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3)); 
+    printf("Numero de vendas registadas na filial 3: %d\n", get_n_vendas_filial(mn, 3));
 
     printf("\nFaturacao total: %f\n\n", get_cashflow_total(mn)); //get_n_faturacao_month(mn, 13)
     printf("Expected: 44765588910.5209\n");
@@ -289,27 +292,12 @@ void show_boletim_vendas(MAN_b mn)
 
     puts("\nFASE 2 SPECS");
 
-    tmp = dbase_get_not_sold(mn->products, &t, 0);
-    printf("|%ld|\n", t);
-    g_free(tmp);
-
-    tmp = dbase_get_not_sold(mn->products, &t, 1);
-    printf("|%ld|\n", t);
-    g_free(tmp);
-
-    tmp = dbase_get_not_sold(mn->products, &t, 2);
-    printf("|%ld|\n", t);
-    g_free(tmp);
-
-    tmp = dbase_get_not_sold(mn->products, &t, 3);
-    printf("|%ld|\n", t);
-    g_free(tmp);
-
-    tmp = dbase_get_overall(mn->clients, &t, 0);
-    g_free(tmp);
-
     printf("%ld clientes compraram em todas as filiais\n", t);
 
-    printf("Vendas entre Janeiro e Março: %d\n", get_n_vendas_range(mn, 1, 3));
-    printf("Faturação entre Janeiro e Dezembro: %f\n", get_n_faturacao_range(mn, 1, 12));
+    printf("Vendas entre Janeiro e Março: %d\n", get_n_vendas_range(mn, 1, 12));
+    printf("Faturação entre Janeiro e Dezembro: %f\n", get_n_faturacao_month(mn, 13));
+    printf("Faturação entre Janeiro e Dezembro in range: %f\n", get_n_faturacao_range(mn, 1, 12));
+    printf("Vendas entre Janeiro e dezembro: %d\n", get_n_vendas_month(mn, 13));
+    printf("Vendas entre Janeiro e dezembro in range: %d\n", get_n_vendas_range(mn, 1, 12));
+    printf("Offset: %f\n", 44765588910.5209 - get_n_faturacao_range(mn, 1, 12));
 }
