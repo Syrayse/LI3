@@ -97,8 +97,8 @@ void tarefa2(MAN_b mn)
     for (i = 0; i < 26; i++)
     {
         arr = get_ordered_dbase_dump_products(mn, &n, 'A' + i);
-        printf("%c: size -> %ld\n", 'A' + i, n);
-        printf("Examples: ");
+        printf("\t%c: size -> %ld\n", 'A' + i, n);
+        printf("\tExamples: ");
         for (j = 0; j < n && j < 5; j++)
             printf("%s ", arr[j]);
         putchar('\n');
@@ -159,6 +159,36 @@ void tarefa6(MAN_b mn)
     printf("\tIn total %d clients didn't buy\n", get_not_sold_client(mn));
 }
 
+void tarefa7(MAN_b mn, char *client)
+{
+    int i, j, r;
+    StatInfo si = search_client(mn, client);
+
+    for (i = 1; i <= N_FILIAIS; i++)
+    {
+        for (j = 1; j <= N_MONTHS; j++)
+        {
+            r = get_t_month_fil_vendas(si, j, i);
+            if (r)
+            {
+                printf("\tmes %d filial %d bought %d!\n", j, i, r);
+            }
+        }
+        putchar('\n');
+    }
+
+    for (j = 1; j <= N_MONTHS; j++)
+    {
+        printf("\tmes %d bought %d!\n", j, get_t_month_vendas(si, j));
+    }
+}
+
+void tarefa8(MAN_b mn, int init, int max)
+{
+    printf("\tEntre %d e %d houve %d vendas registadas\n", init, max, get_n_vendas_range(mn, init, max));
+    printf("\tEntre %d e %d facturou-se %lf!\n", init, max, get_n_faturacao_range(mn, init, max));
+}
+
 // CPU TIME && Ler ficheiros
 int main(int argc, char **argv)
 {
@@ -194,6 +224,16 @@ int main(int argc, char **argv)
     start = clock();
     tarefa6(m);
     printf("tarefa 6:\t");
+    c_t(start);
+
+    start = clock();
+    tarefa7(m, "Z5000");
+    printf("tarefa 7:\t");
+    c_t(start);
+
+    start = clock();
+    tarefa8(m, 1, 3);
+    printf("tarefa 8:\t");
     c_t(start);
 
     start = clock();

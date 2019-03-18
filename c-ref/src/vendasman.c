@@ -299,6 +299,11 @@ StatInfo search_product(MAN_b mn, char *product)
     return (StatInfo)dbase_lookup(mn->products, product);
 }
 
+StatInfo search_client(MAN_b mn, char *client)
+{
+    return (StatInfo)dbase_lookup(mn->clients, client);
+}
+
 char **get_products_not_bought(MAN_b mn, size_t *n, int filial)
 {
     return dbase_get_not_sold(mn->products, n, filial);

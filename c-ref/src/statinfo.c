@@ -14,6 +14,7 @@ StatInfo statinfo_make(int flag);
 void statinfo_destroy(StatInfo);
 void statinfo_update(StatInfo, void *);
 int statinfo_is_sold_by_all(StatInfo);
+
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
 int get_t_fil_vendas(StatInfo, int filial);
@@ -25,6 +26,18 @@ int get_t_month_fil_vendas_no_promo(StatInfo, int month, int filial);
 int get_t_month_vendas(StatInfo, int month);
 int get_t_month_vendas_promo(StatInfo, int month);
 int get_t_month_vendas_no_promo(StatInfo, int month);
+
+int get_t_units(StatInfo);
+int get_t_fil_units(StatInfo, int filial);
+int get_t_fil_units_promo(StatInfo, int filial);
+int get_t_fil_units_no_promo(StatInfo, int filial);
+int get_t_month_fil_units(StatInfo, int month, int filial);
+int get_t_month_fil_units_promo(StatInfo, int month, int filial);
+int get_t_month_fil_units_no_promo(StatInfo, int month, int filial);
+int get_t_month_units(StatInfo, int month);
+int get_t_month_units_promo(StatInfo, int month);
+int get_t_month_units_no_promo(StatInfo, int month);
+
 double get_t_rev(StatInfo);
 double get_t_fil_rev(StatInfo, int filial);
 double get_t_fil_rev_promo(StatInfo, int filial);
@@ -35,6 +48,8 @@ double get_t_month_fil_rev_no_promo(StatInfo, int month, int filial);
 double get_t_month_rev(StatInfo, int month);
 double get_t_month_rev_promo(StatInfo, int month);
 double get_t_month_rev_no_promo(StatInfo, int month);
+
+SpecInfo get_spec_info(StatInfo);
 
 /* Metodos privados */
 static int get_t_vendas_month_iter(StatInfo a, int month, int (*)(StatInfo, int, int));
@@ -52,9 +67,11 @@ typedef struct statistical_info
 {
     int identity,
         nVendasTotal,                                   /**< Número de registos de vendas associados */
-        nVendasFilialMonth[N_FILIAIS][N_MONTHS + 1][2]; /**< Numero de registos de vendas associados por filial e mễs */
-    double totalRevenue,                                /**< Rendimento total associado */
-        monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][2];   /**< Rendimento total associado por filial e mês*/
+        nVendasFilialMonth[N_FILIAIS][N_MONTHS + 1][2], /**< Numero de registos de vendas associados por filial e mễs */
+        nUnitsTotal,
+        nUnitsFilialMonth[N_FILIAIS][N_MONTHS + 1][2];
+    double totalRevenue,                              /**< Rendimento total associado */
+        monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][2]; /**< Rendimento total associado por filial e mês*/
     StrSet historic;
 } * StatInfo;
 
@@ -125,10 +142,15 @@ void statinfo_update(StatInfo a, void *e)
 
     sale_id_check(s, a->historic, e, a->identity);
 
+    // Units
+    a->nUnitsTotal += q;
+    a->nUnitsFilialMonth[f - 1][0][indP(p)] += q;
+    a->nUnitsFilialMonth[f - 1][m][indP(p)] += q;
+
     // Vendas
-    a->nVendasTotal += q;
-    a->nVendasFilialMonth[f - 1][0][indP(p)] += q;
-    a->nVendasFilialMonth[f - 1][m][indP(p)] += q;
+    a->nVendasTotal++;
+    a->nVendasFilialMonth[f - 1][0][indP(p)]++;
+    a->nVendasFilialMonth[f - 1][m][indP(p)]++;
 
     // Profit
     a->totalRevenue += rev;
@@ -266,6 +288,57 @@ static int get_t_vendas_month_iter(StatInfo a, int month, int (*f)(StatInfo, int
         r += (*f)(a, month, k);
 
     return r;
+}
+
+int get_t_units(StatInfo si)
+{
+    return si->nUnitsTotal;
+}
+
+int get_t_fil_units(StatInfo si, int filial)
+{
+    return (si->nUnitsFilialMonth[filial - 1][0][0] + si->nUnitsFilialMonth[filial - 1][0][1]);
+}
+
+int get_t_fil_units_promo(StatInfo si, int filial)
+{
+    return si->nUnitsFilialMonth[filial - 1][0][1];
+}
+
+int get_t_fil_units_no_promo(StatInfo si, int filial)
+{
+    return si->nUnitsFilialMonth[filial - 1][0][0];
+}
+
+int get_t_month_fil_units(StatInfo si, int month, int filial)
+{
+    return (si->nUnitsFilialMonth[filial - 1][month][0] +
+            si->nUnitsFilialMonth[filial - 1][month][1]);
+}
+
+int get_t_month_fil_units_promo(StatInfo si, int month, int filial)
+{
+    return si->nVendasFilialMonth[filial - 1][month][1];
+}
+
+int get_t_month_fil_units_no_promo(StatInfo si, int month, int filial)
+{
+    return si->nVendasFilialMonth[filial - 1][month][0];
+}
+
+int get_t_month_units(StatInfo si, int month)
+{
+    return get_t_vendas_month_iter(si, month, get_t_month_fil_units);
+}
+
+int get_t_month_units_promo(StatInfo si, int month)
+{
+    return get_t_vendas_month_iter(si, month, get_t_month_fil_units_promo);
+}
+
+int get_t_month_units_no_promo(StatInfo si, int month)
+{
+    return get_t_vendas_month_iter(si, month, get_t_month_fil_units_no_promo);
 }
 
 /**

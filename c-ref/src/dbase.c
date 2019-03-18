@@ -42,7 +42,6 @@ typedef struct data_base
 {
     int identity,
         total_size,
-        not_init_n,
         max_size;
     StrSet *table; /**< Estrutura de dados em uso */
     GrowingArray not_bought[4];
@@ -58,7 +57,6 @@ DBase dbase_make(int flag)
     int i;
     DBase db = g_malloc(sizeof(struct data_base));
     db->total_size = 0;
-    db->not_init_n = 0;
     db->max_size = 'Z' - 'A' + 1;
     db->identity = flag;
 
@@ -100,17 +98,7 @@ void dbase_destroy(DBase db)
  **/
 void dbase_add(DBase db, void *key, void *user_data)
 {
-    int r = strset_add(db->table[conv_str(key)], key, user_data);
-
-    if (r == 1)
-    {
-        db->total_size++;
-        db->not_init_n++;
-    }
-    else if (r == 0 || r == 2)
-    {
-        db->not_init_n--;
-    }
+    strset_add(db->table[conv_str(key)], key, user_data);
 }
 
 /**
@@ -272,5 +260,10 @@ static void my_garray_add(void *key, void *value, void *user_data)
 
 int dbase_get_not_init(DBase db)
 {
-    return db->not_init_n;
+    int i, r = 0;
+
+    for (i = 0; i < 26; i++)
+        r += strset_get_not_init_n(db->table[i]);
+
+    return r;
 }
