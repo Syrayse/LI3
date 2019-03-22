@@ -70,6 +70,7 @@ Sale sale_make()
     r->client = r->product = NULL;
     r->month = r->filial = r->promo = r->units = 0;
     r->price = 0.0;
+    printf("%ld\n", sizeof(struct sale));
     return r;
 }
 
