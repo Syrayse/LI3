@@ -17,6 +17,7 @@ void store_destroy(Store s);
 void store_query1(Store s, int argc, char **argv);
 char **store_query2(Store s, int *size, int flag);
 StatInfo store_query3(Store s, char *product);
+char **store_query4(Store s, int filial, int *size);
 
 /* Metodos privados */
 static CatProducts load_products(char *product_file);
@@ -111,6 +112,25 @@ StatInfo store_query3(Store s, char *product)
     }
 
     return si;
+}
+
+char **store_query4(Store s, int filial, int *size)
+{
+    char **r = NULL;
+
+    if (is_between(filial, 0, N_FILIAIS))
+    {
+        if (!filial)
+        {
+            r = catProducts_t_all_not_sold(s->cat_products, size);
+        }
+        else
+        {
+            r = catProducts_t_not_sold_filial(s->cat_products, size, filial);
+        }
+    }
+
+    return r;
 }
 
 static CatProducts load_products(char *product_file)

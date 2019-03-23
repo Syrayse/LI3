@@ -13,7 +13,7 @@ void show_statinfo(StatInfo si, int month)
     if (si)
     {
         int i;
-        printf("\nMonth %d\n", month);
+        printf("\n\tMonth %d\n", month);
         for (i = 1; i <= N_FILIAIS; i++)
         {
             printf("\tFor filial %d:\n", i);
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     {
         r = store_query2(s, &size, 'A' + i);
         printf("\t%c -> %d\n\texamples: ", 'A' + i, size);
-        for (j = 0; j < 5; j++)
+        for (j = 0; j < 5 && j < size; j++)
         {
             printf("%s ", r[j]);
         }
@@ -57,8 +57,31 @@ int main(int argc, char *argv[])
     c_t(start);
 
     start = clock();
-    printf("query3:\n");
+    printf("query3:");
     show_statinfo(store_query3(s, "AF1184"), 6);
+    c_t(start);
+
+    start = clock();
+    printf("query4:");
+    r = store_query4(s, 0, &size);
+    printf("\tIn total weren\'t bought %d, examples: ", size);
+
+    for (j = 0; j < 5 && j < size; j++)
+    {
+        printf("%s ", r[j]);
+    }
+    putchar('\n');
+
+    for (i = 1; i <= N_FILIAIS; i++)
+    {
+        r = store_query4(s, i, &size);
+        printf("\tFilial %d, weren\'t bought %d, examples: ", i, size);
+        for (j = 0; j < 5 && j < size; j++)
+        {
+            printf("%s ", r[j]);
+        }
+        putchar('\n');
+    }
     c_t(start);
 
     start = clock();

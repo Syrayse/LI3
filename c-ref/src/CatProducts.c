@@ -62,8 +62,8 @@ void CatProducts_destroy(CatProducts cp)
 
         if (cp->not_sold[0])
         {
-            for (i = 0; i < N_FILIAIS + 1; i++)
-                garray_destroy(cp->not_sold[0]);
+            for (i = 0; i <= N_FILIAIS; i++)
+                garray_destroy(cp->not_sold[i]);
         }
 
         g_free(cp);
@@ -193,13 +193,13 @@ static void build_internal_arr(CatProducts cp)
 
     if (cp && !cp->not_sold[0])
     {
-        for (i = 0; i < N_FILIAIS + 1; i++)
+        for (i = 0; i <= N_FILIAIS; i++)
             cp->not_sold[i] = garray_make(sizeof(char *), NULL);
 
         for (i = 0; i < N_LETTER; i++)
             strset_foreach(cp->products[i], insert_not_bought, cp->not_sold);
 
-        for (i = 0; i < N_FILIAIS + 1; i++)
+        for (i = 0; i <= N_FILIAIS; i++)
             garray_sort(cp->not_sold[i], mystrcmp);
     }
 }
@@ -207,17 +207,17 @@ static void build_internal_arr(CatProducts cp)
 static void insert_not_bought(void *key, void *value, void *user_data)
 {
     int filial, nst = 0;
-    Record r;
+    Record *r;
     GrowingArray *arr;
 
     if (user_data && value)
     {
-        r = (Record)value;
+        r = (Record *)value;
         arr = (GrowingArray *)user_data;
 
         for (filial = 1; filial <= N_FILIAIS; filial++)
         {
-            if (!rec_size(r))
+            if (!rec_size(r[filial - 1]))
             {
                 garray_add(arr[filial], key);
                 ++nst;
