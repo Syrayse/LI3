@@ -20,11 +20,15 @@ StatInfo store_query3(Store s, char *product);
 char **store_query4(Store s, int filial, int *size);
 char **store_query5(Store s, int *size);
 void store_query6(Store s, int *ncl, int *nprd);
+int **store_query7(Store s, char *client);
+void store_query8(Store s, int init, int end, int *nVendas, double *tot);
 
 /* Metodos privados */
 static CatProducts load_products(char *product_file);
 static CatClients load_clients(char *client_file);
 static Accounting loads_transactions(char *transaction_file, CatProducts cp, CatClients cc, FilManager fm);
+static void get_units_matrix(Transaction t, void *e);
+
 // ------------------------------------------------------------------------------
 
 typedef struct store
@@ -146,6 +150,36 @@ void store_query6(Store s, int *ncl, int *nprd)
     *nprd = CatProducts_t_not_sold(s->cat_products);
 }
 
+int **store_query7(Store s, char *client)
+{
+    int i, sz, **r = NULL;
+    gID *ids;
+
+    if (CatClients_exists(s->cat_clients, client))
+    {
+        r = g_malloc(sizeof(int *) * N_FILIAIS);
+
+        for (i = 0; i < N_FILIAIS; i++)
+        {
+            r[i] = g_malloc0(sizeof(int) * N_MONTHS);
+        }
+
+        for (i = 1; i <= N_MONTHS; i++)
+        {
+            ids = CatClients_drop_trans(s->cat_clients, client, i, &sz);
+            Accounting_iter(s->accounting, ids, sz, get_units_matrix, r);
+        }
+    }
+
+    return r;
+}
+
+void store_query8(Store s, int init, int end, int *nVendas, double *tot)
+{
+    *nVendas = Accounting_n_trans_range(s->accounting, init, end);
+    *tot = Accounting_n_cash_range(s->accounting, init, end);
+}
+
 static CatProducts load_products(char *product_file)
 {
     FILE *fp = fopen(product_file, "r");
@@ -247,4 +281,17 @@ static Accounting loads_transactions(char *transaction_file, CatProducts cp, Cat
     printf("\tSucessfully read file sale %s, with %d valids and %d in total!\n", transaction_file, nValid, nTotal);
 
     return ac;
+}
+
+static void get_units_matrix(Transaction t, void *e)
+{
+    if (!e)
+        return;
+    int **r, m, f, u = trans_get_units(t);
+    f = trans_get_filial(t);
+    m = trans_get_month(t);
+
+    r = (int **)e;
+
+    r[f - 1][m - 1] += u;
 }

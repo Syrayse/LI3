@@ -64,6 +64,16 @@ void Accounting_destroy(Accounting a)
 
 void Accounting_add(Accounting a, Transaction t)
 {
+    int m = trans_get_month(t);
+
+    double rev = trans_get_rev(t);
+
+    a->nTrans[0]++;
+    a->nTrans[m]++;
+
+    a->totCashFlow[0] += rev;
+    a->totCashFlow[m] += rev;
+
     garray_add(a->treg, t);
 }
 
@@ -86,7 +96,7 @@ int Accounting_n_trans_range(Accounting a, int init, int end)
 {
     int i, r = -1;
 
-    if (is_between(init, 1, N_MONTHS) && is_between(end, 1, N_MONTHS))
+    if (is_between(init, 1, N_MONTHS) && is_between(end, 1, N_MONTHS) && init <= end)
     {
         r = 0;
 
@@ -117,7 +127,7 @@ double Accounting_n_cash_range(Accounting a, int init, int end)
     int i;
     double r = -1.0;
 
-    if (is_between(init, 1, N_MONTHS) && is_between(end, 1, N_MONTHS))
+    if (is_between(init, 1, N_MONTHS) && is_between(end, 1, N_MONTHS) && init <= end)
     {
         r = 0.0;
 

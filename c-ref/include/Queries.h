@@ -13,5 +13,7 @@ StatInfo store_query3(Store s, char *product);
 char **store_query4(Store s, int filial, int *size);
 char **store_query5(Store s, int *size);
 void store_query6(Store s, int *ncl, int *nprd);
+int **store_query7(Store s, char *client);
+void store_query8(Store s, int init, int end, int *nVendas, double *tot);
 
 #endif

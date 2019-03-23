@@ -32,9 +32,10 @@ int main(int argc, char *argv[])
 {
     Store s = store_make();
 
-    int i, j, size = 0;
+    int i, j, **m, size = 0;
     char **r;
     clock_t defstart, start;
+    double tot;
 
     defstart = start = clock();
     printf("query1:\n");
@@ -101,6 +102,31 @@ int main(int argc, char *argv[])
     store_query6(s, &i, &j);
     printf("\tA total of %d clients didn\'t buy\n", i);
     printf("\tA total of %d products weren\'t sold\n", j);
+    c_t(start);
+
+    start = clock();
+    printf("query7:\n");
+    m = store_query7(s, "Z5000");
+    if (m)
+    {
+        puts("\t\t|1|\t|2|\t|3|\n");
+        for (i = 0; i < N_MONTHS; i++)
+        {
+            printf("\tmes%d\t%d\t%d\t%d\n", i + 1, m[0][i], m[1][i], m[2][i]);
+        }
+    }
+    for (i = 0; i < N_FILIAIS; i++)
+    {
+        g_free(m[i]);
+    }
+    g_free(m);
+    c_t(start);
+
+    start = clock();
+    printf("query8:\n");
+    store_query8(s, 1, 3, &i, &tot);
+    printf("\tIn the range [1,3], %d transactions were registred\n", i);
+    printf("\tIn the range [1,3], the cashflow was %f\n", tot);
     c_t(start);
 
     start = clock();
