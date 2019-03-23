@@ -14,6 +14,7 @@
 Store store_make();
 void store_destroy(Store s);
 void store_query1(Store s, int argc, char **argv);
+char **store_query2(Store s, int *size, int flag);
 
 /* Metodos privados */
 static CatProducts load_products(char *product_file);
@@ -58,6 +59,35 @@ void store_destroy(Store s)
         Accounting_destroy(s->accounting);
         g_free(s);
     }
+}
+
+void store_query1(Store s, int argc, char **argv)
+{
+    if (argc != 4 && argc != 1)
+        return;
+
+    char *products, *clients, *transactions;
+    products = clients = transactions = NULL;
+
+    if (argc == 4)
+    {
+        products = argv[1];
+        clients = argv[2];
+        transactions = argv[3];
+    }
+
+    s->fil_manager = FilManager_make();
+
+    s->cat_products = load_products(products ? products : "tests/Produtos.txt");
+
+    s->cat_clients = load_clients(clients ? clients : "tests/Clientes.txt");
+
+    s->accounting = loads_transactions(transactions ? transactions : "tests/Vendas_1M.txt", s->cat_products, s->cat_clients, s->fil_manager);
+}
+
+char **store_query2(Store s, int *size, int flag)
+{
+    return CatProducts_dump_ordered(s->cat_products,size,flag);
 }
 
 static CatProducts load_products(char *product_file)
@@ -161,19 +191,4 @@ static Accounting loads_transactions(char *transaction_file, CatProducts cp, Cat
     printf("\tSucessfully read file sale %s, with %d valids and %d in total!\n", transaction_file, nValid, nTotal);
 
     return ac;
-}
-
-int main()
-{
-    Store s = store_make();
-
-    s->fil_manager = FilManager_make();
-
-    s->cat_clients = load_clients("tests/Clientes.txt");
-
-    s->cat_products = load_products("tests/Produtos.txt");
-
-    s->accounting = loads_transactions("tests/Vendas_1M.txt", s->cat_products, s->cat_clients, s->fil_manager);
-
-    store_destroy(s);
 }

@@ -14,13 +14,14 @@ int strset_contains(StrSet set, void *elem);
 int strset_size(StrSet set);
 void *strset_lookup(StrSet set, void *key);
 void *strset_value_of(StrSet set, void *elem);
-char **strset_dump(StrSet set, int *n);
 char **strset_dump_ordered(StrSet set, int *n);
 int strset_get_not_init_n(StrSet set);
+char **strset_generic_dump(StrSet set, f_foreach ffor, int *n, int flag);
 
 /* Metodos privados */
 static char **strset_dump_if(StrSet set, Predicate p, fcompare fc, void *user_data, int *n);
 static int strcmp_currier(const void *a, const void *b);
+static void foreach_add(void *key, void *value, void *user_data);
 
 // ------------------------------------------------------------------------------
 
@@ -104,14 +105,9 @@ int strset_size(StrSet set)
     return g_hash_table_size(set->table);
 }
 
-char **strset_dump(StrSet set, int *n)
-{
-    return strset_dump_if(set, NULL, strcmp_currier, NULL, n);
-}
-
 char **strset_dump_ordered(StrSet set, int *n)
 {
-    return strset_dump_if(set, NULL, strcmp_currier, NULL, n);
+    return strset_generic_dump(set, foreach_add, n, 0);
 }
 
 int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), void *user_data)
@@ -182,4 +178,9 @@ static char **strset_dump_if(StrSet set, Predicate p, fcompare fc, void *user_da
 static int strcmp_currier(const void *a, const void *b)
 {
     return mystrcmp((char *)uncurry_by_key((Currier)a), (char *)uncurry_by_key((Currier)b));
+}
+
+static void foreach_add(void *key, void *value, void *user_data)
+{
+    garray_add((GrowingArray)user_data, key);
 }
