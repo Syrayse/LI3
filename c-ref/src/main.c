@@ -1,4 +1,5 @@
 #include "Queries.h"
+#include "statinfo.h"
 #include <time.h>
 #include <stdio.h>
 #include <glib.h>
@@ -6,6 +7,26 @@
 #define cpu_time(start, end) (((double)(end - start)) / CLOCKS_PER_SEC)
 #define show_cpu_time(start, end) (printf("CPU Time:%f\n", cpu_time(start, end)))
 #define c_t(start) (show_cpu_time(start, clock()))
+
+void show_statinfo(StatInfo si, int month)
+{
+    if (si)
+    {
+        int i;
+        printf("\nMonth %d\n", month);
+        for (i = 1; i <= N_FILIAIS; i++)
+        {
+            printf("\tFor filial %d:\n", i);
+            printf("\t\tSales, Promo %d, No Promo %d\n", get_t_month_fil_vendas_promo(si, month, i), get_t_month_fil_vendas_no_promo(si, month, i));
+            printf("\t\tRevenue, Promo %f, No Promo %f\n", get_t_month_fil_rev_promo(si, month, i), get_t_month_fil_rev_no_promo(si, month, i));
+        }
+
+        printf("\tIn all:\n");
+        printf("\t\tSales, Promo %d, No Promo %d\n", get_t_month_vendas_promo(si, month), get_t_month_vendas_no_promo(si, month));
+        printf("\t\tRevenue, Promo %f, No Promo %f\n", get_t_month_rev_promo(si, month), get_t_month_rev_no_promo(si, month));
+        statinfo_destroy(si);
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -33,6 +54,11 @@ int main(int argc, char *argv[])
         putchar('\n');
         g_free(r);
     }
+    c_t(start);
+
+    start = clock();
+    printf("query3:\n");
+    show_statinfo(store_query3(s, "AF1184"), 6);
     c_t(start);
 
     start = clock();

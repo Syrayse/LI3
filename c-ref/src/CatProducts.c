@@ -116,7 +116,7 @@ gID *CatProducts_drop_trans(CatProducts cp, char *product, int filial, int *s)
     void *val;
 
     if ((val = strset_lookup(cp->products[p], product)))
-        r = rec_dump(((Record *)val)[filial], s);
+        r = rec_dump(((Record *)val)[filial - 1], s);
 
     return r;
 }

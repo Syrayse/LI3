@@ -4,6 +4,7 @@
 #include "FilManager.h"
 #include "Accounting.h"
 #include "Verifier.h"
+#include "statinfo.h"
 #include <glib.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,6 +16,7 @@ Store store_make();
 void store_destroy(Store s);
 void store_query1(Store s, int argc, char **argv);
 char **store_query2(Store s, int *size, int flag);
+StatInfo store_query3(Store s, char *product);
 
 /* Metodos privados */
 static CatProducts load_products(char *product_file);
@@ -87,7 +89,28 @@ void store_query1(Store s, int argc, char **argv)
 
 char **store_query2(Store s, int *size, int flag)
 {
-    return CatProducts_dump_ordered(s->cat_products,size,flag);
+    return CatProducts_dump_ordered(s->cat_products, size, flag);
+}
+
+StatInfo store_query3(Store s, char *product)
+{
+    int i, sz = 0;
+    StatInfo si = NULL;
+    gID *ids;
+
+    if (CatProducts_exists(s->cat_products, product))
+    {
+        si = statinfo_make();
+
+        for (i = 1; i <= N_FILIAIS; i++)
+        {
+            ids = CatProducts_drop_trans(s->cat_products, product, i, &sz);
+            Accounting_iter(s->accounting, ids, sz, statinfo_builder, si);
+            g_free(ids);
+        }
+    }
+
+    return si;
 }
 
 static CatProducts load_products(char *product_file)
