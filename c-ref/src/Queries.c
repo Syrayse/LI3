@@ -18,6 +18,8 @@ void store_query1(Store s, int argc, char **argv);
 char **store_query2(Store s, int *size, int flag);
 StatInfo store_query3(Store s, char *product);
 char **store_query4(Store s, int filial, int *size);
+char **store_query5(Store s, int *size);
+void store_query6(Store s, int *ncl, int *nprd);
 
 /* Metodos privados */
 static CatProducts load_products(char *product_file);
@@ -131,6 +133,17 @@ char **store_query4(Store s, int filial, int *size)
     }
 
     return r;
+}
+
+char **store_query5(Store s, int *size)
+{
+    return CatClients_dump_all_fils(s->cat_clients, size);
+}
+
+void store_query6(Store s, int *ncl, int *nprd)
+{
+    *ncl = CatClients_t_not_sold(s->cat_clients);
+    *nprd = CatProducts_t_not_sold(s->cat_products);
 }
 
 static CatProducts load_products(char *product_file)

@@ -1,6 +1,7 @@
 #include "CatProducts.h"
 #include "set.h"
 #include "gArray.h"
+#include "adition.h"
 #include "record.h"
 #include <glib.h>
 #include <stdio.h>
@@ -20,9 +21,6 @@ char **catProducts_t_all_not_sold(CatProducts cp, int *s);
 char **catProducts_t_not_sold_filial(CatProducts cp, int *s, int filial);
 
 /* Metodos privados */
-static void adition_destroy(void *v);
-static void *adition_make();
-static void adition_add(void *val, void *user_data);
 static void build_internal_arr(CatProducts a);
 static void insert_not_bought(void *key, void *value, void *user_data);
 
@@ -46,7 +44,7 @@ CatProducts CatProducts_make()
     cp->not_sold[0] = NULL;
 
     for (i = 0; i < N_LETTER; i++)
-        cp->products[i] = strset_make(g_free, adition_destroy, adition_make, adition_add, -1);
+        cp->products[i] = strset_make(g_free, adition_destroy, adition_make, adition_add, adition_is_empty, -1);
 
     return cp;
 }
@@ -116,7 +114,7 @@ gID *CatProducts_drop_trans(CatProducts cp, char *product, int filial, int *s)
     void *val;
 
     if ((val = strset_lookup(cp->products[p], product)))
-        r = rec_dump(((Record *)val)[filial - 1], s);
+        r = adition_dump(val, filial, s);
 
     return r;
 }
@@ -126,7 +124,7 @@ int CatProducts_t_not_sold(CatProducts cp)
     int i, r = 0;
 
     for (i = 0; i < N_LETTER; i++)
-        r += strset_size(cp->products[i]);
+        r += strset_get_not_init_n(cp->products[i]);
 
     return r;
 }
@@ -155,37 +153,6 @@ char **catProducts_t_not_sold_filial(CatProducts cp, int *s, int filial)
 }
 
 /* METODOS PRIVADOS BELOW */
-static void *adition_make()
-{
-    int i;
-    Record *r = g_malloc(sizeof(Record) * N_FILIAIS);
-
-    for (i = 0; i < N_FILIAIS; i++)
-        r[i] = rec_make();
-
-    return (void *)r;
-}
-
-static void adition_destroy(void *v)
-{
-    int i;
-    Record *r = (Record *)v;
-
-    if (r)
-    {
-
-        for (i = 0; i < N_FILIAIS; i++)
-            rec_destroy(r[i]);
-
-        g_free(r);
-    }
-}
-
-static void adition_add(void *val, void *user_data)
-{
-    gID *g = (gID *)user_data;
-    rec_add(((Record *)val)[g[1] - 1], g[0]);
-}
 
 static void build_internal_arr(CatProducts cp)
 {
@@ -207,17 +174,17 @@ static void build_internal_arr(CatProducts cp)
 static void insert_not_bought(void *key, void *value, void *user_data)
 {
     int filial, nst = 0;
-    Record *r;
+    Adition r;
     GrowingArray *arr;
 
     if (user_data && value)
     {
-        r = (Record *)value;
+        r = (Adition)value;
         arr = (GrowingArray *)user_data;
 
         for (filial = 1; filial <= N_FILIAIS; filial++)
         {
-            if (!rec_size(r[filial - 1]))
+            if (!adition_rec_size(r, filial))
             {
                 garray_add(arr[filial], key);
                 ++nst;

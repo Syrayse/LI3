@@ -8,6 +8,7 @@
 void *append_make();
 void append_destroy(void *e);
 void append_add(void *a, void *b);
+int append_is_empty(void *a);
 int append_is_sold_in_all_fil(Append a);
 gID *append_dump_month(Append a, int month, int *s);
 
@@ -18,6 +19,7 @@ gID *append_dump_month(Append a, int month, int *s);
 
 typedef struct append
 {
+    char empty;
     int nVendas[N_FILIAIS];
     Record reg[N_MONTHS];
 } * Append;
@@ -39,6 +41,8 @@ void *append_make()
         a->reg[i] = rec_make();
     }
 
+    a->empty = 1;
+
     return a;
 }
 
@@ -59,19 +63,31 @@ void append_destroy(void *e)
 
 void append_add(void *a, void *b)
 {
-    gID *d = (gID *)b;
-    Append ap = (Append)a;
-    ap->nVendas[d[0] - 1]++;
-    rec_add(ap->reg[d[1] - 1], d[2]);
+    if (a && b)
+    {
+        gID *d = (gID *)b;
+        Append ap = (Append)a;
+        ap->nVendas[d[0] - 1]++;
+        rec_add(ap->reg[d[1] - 1], d[2]);
+        ap->empty = 0;
+    }
+}
+
+int append_is_empty(void *a)
+{
+    return ((Append)a)->empty;
 }
 
 int append_is_sold_in_all_fil(Append a)
 {
     int i, r = 0;
 
-    for (i = 0; i < N_FILIAIS && !r; i++)
+    if (a && !a->empty)
     {
-        r = max(r, a->nVendas[i]);
+        for (i = 0; i < N_FILIAIS && !r; i++)
+        {
+            r = max(r, a->nVendas[i]);
+        }
     }
 
     return r;

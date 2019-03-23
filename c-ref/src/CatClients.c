@@ -32,7 +32,7 @@ CatClients CatClients_make()
 {
     CatClients cc = g_malloc(sizeof(struct cat_clients));
 
-    cc->clients = strset_make(g_free, append_destroy, append_make, append_add, -1);
+    cc->clients = strset_make(g_free, append_destroy, append_make, append_add, append_is_empty, -1);
 
     return cc;
 }

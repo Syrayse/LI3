@@ -12,7 +12,9 @@ typedef void (*f_update)(void *, void *);
 
 typedef void *(*f_maker)();
 
-StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, int flag);
+typedef int (*f_empty)(void *);
+
+StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_empty fe, int flag);
 void strset_destroy(StrSet set);
 int strset_add(StrSet set, void *elem, void *user_data);
 int strset_remove(StrSet set, void *elem);

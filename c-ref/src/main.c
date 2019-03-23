@@ -62,16 +62,15 @@ int main(int argc, char *argv[])
     c_t(start);
 
     start = clock();
-    printf("query4:");
+    printf("query4:\n");
     r = store_query4(s, 0, &size);
     printf("\tIn total weren\'t bought %d, examples: ", size);
-
     for (j = 0; j < 5 && j < size; j++)
     {
         printf("%s ", r[j]);
     }
     putchar('\n');
-
+    g_free(r);
     for (i = 1; i <= N_FILIAIS; i++)
     {
         r = store_query4(s, i, &size);
@@ -81,7 +80,27 @@ int main(int argc, char *argv[])
             printf("%s ", r[j]);
         }
         putchar('\n');
+        g_free(r);
     }
+    c_t(start);
+
+    start = clock();
+    printf("query5:\n");
+    r = store_query5(s, &size);
+    printf("\tA total of %d clients bought in all, examples: ", size);
+    for (i = 0; i < 5 && i < size; i++)
+    {
+        printf("%s ", r[i]);
+    }
+    putchar('\n');
+    g_free(r);
+    c_t(start);
+
+    start = clock();
+    printf("query6:\n");
+    store_query6(s, &i, &j);
+    printf("\tA total of %d clients didn\'t buy\n", i);
+    printf("\tA total of %d products weren\'t sold\n", j);
     c_t(start);
 
     start = clock();
