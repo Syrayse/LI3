@@ -14,7 +14,9 @@ enum utils
     PROD_LEN = 6,
     CLT_LEN = 5,
     N_LETTER = 26,
-    N_TRANS_ARGS = 7
+    N_TRANS_ARGS = 7,
+    PROD_ID = 0,
+    CLT_ID = 1
 };
 
 /**

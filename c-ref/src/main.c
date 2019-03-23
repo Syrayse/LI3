@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 {
     Store s = store_make();
 
-    int i, j, **m, size = 0;
+    int i, j, **m, n1, n2, size = 0;
     char **r;
     clock_t defstart, start;
     double tot;
@@ -127,6 +127,24 @@ int main(int argc, char *argv[])
     store_query8(s, 1, 3, &i, &tot);
     printf("\tIn the range [1,3], %d transactions were registred\n", i);
     printf("\tIn the range [1,3], the cashflow was %f\n", tot);
+    c_t(start);
+
+    start = clock();
+    printf("query9:\n");
+    char **holder[N_PROMOS];
+    store_query9(s, "AF1184", holder, &n1, &n2, 2);
+    printf("\t-> %d For transactions without promotion, examples: ", n1);
+    for (i = 0; i < 5 && i < n1; i++)
+    {
+        printf("%s ", holder[0][i]);
+    }
+    putchar('\n');
+    printf("\t-> %d For transactions with promotion, examples: ", n2);
+    for (i = 0; i < 5 && i < n2; i++)
+    {
+        printf("%s ", holder[1][i]);
+    }
+    putchar('\n');
     c_t(start);
 
     start = clock();

@@ -15,5 +15,6 @@ char **store_query5(Store s, int *size);
 void store_query6(Store s, int *ncl, int *nprd);
 int **store_query7(Store s, char *client);
 void store_query8(Store s, int init, int end, int *nVendas, double *tot);
+int store_query9(Store s, char *product, char ***holder, int *n1, int *n2, int filial);
 
 #endif

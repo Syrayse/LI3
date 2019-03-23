@@ -5,6 +5,7 @@
 #include "Accounting.h"
 #include "Verifier.h"
 #include "statinfo.h"
+#include "gArray.h"
 #include <glib.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,12 +23,14 @@ char **store_query5(Store s, int *size);
 void store_query6(Store s, int *ncl, int *nprd);
 int **store_query7(Store s, char *client);
 void store_query8(Store s, int init, int end, int *nVendas, double *tot);
+int store_query9(Store s, char *product, char ***holder, int *n1, int *n2, int filial);
 
 /* Metodos privados */
 static CatProducts load_products(char *product_file);
 static CatClients load_clients(char *client_file);
 static Accounting loads_transactions(char *transaction_file, CatProducts cp, CatClients cc, FilManager fm);
 static void get_units_matrix(Transaction t, void *e);
+static void process_promos_clients(Transaction t, void *e);
 
 // ------------------------------------------------------------------------------
 
@@ -180,6 +183,31 @@ void store_query8(Store s, int init, int end, int *nVendas, double *tot)
     *tot = Accounting_n_cash_range(s->accounting, init, end);
 }
 
+int store_query9(Store s, char *product, char ***holder, int *n1, int *n2, int filial)
+{
+    int i, sz;
+    gID *ids = CatProducts_drop_trans(s->cat_products, product, filial, &sz);
+
+    GrowingArray v[N_PROMOS];
+
+    for (i = 0; i < N_PROMOS; i++)
+    {
+        v[i] = garray_make(sizeof(char *), NULL);
+    }
+
+    Accounting_iter(s->accounting, ids, sz, process_promos_clients, v);
+
+    holder[0] = (char **)garray_dump_elems(v[0], NULL, n1);
+    holder[1] = (char **)garray_dump_elems(v[1], NULL, n2);
+
+    for (i = 0; i < N_PROMOS; i++)
+    {
+        garray_destroy(v[i]);
+    }
+    g_free(ids);
+    return sz;
+}
+
 static CatProducts load_products(char *product_file)
 {
     FILE *fp = fopen(product_file, "r");
@@ -294,4 +322,13 @@ static void get_units_matrix(Transaction t, void *e)
     r = (int **)e;
 
     r[f - 1][m - 1] += u;
+}
+
+static void process_promos_clients(Transaction t, void *e)
+{
+    if (!e)
+        return;
+
+    GrowingArray *r = (GrowingArray *)e;
+    garray_add(r[indP(trans_get_promo(t))], trans_get_client(t));
 }
