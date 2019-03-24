@@ -32,6 +32,8 @@ int main(int argc, char *argv[])
 {
     Store s = store_make();
 
+    int N = 6; //O número + vendidos
+
     int i, j, **m, n1, n2, size = 0;
     char **r;
     clock_t defstart, start;
@@ -146,6 +148,14 @@ int main(int argc, char *argv[])
     }
     putchar('\n');
     c_t(start);
+
+    start = clock();
+    printf("Query 11:\n");
+    r=(char**)store_query11(s, N);
+    for (i = 0; i < N; i++)
+        printf("O produto %s, foi o %dº mais vendido\n", r[i], i+1);
+
+    putchar('\n');
 
     start = clock();
     printf("free:\n");

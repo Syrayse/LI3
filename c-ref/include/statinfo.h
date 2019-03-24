@@ -4,11 +4,18 @@
 #include "transaction.h"
 
 typedef struct statistical_info *StatInfo;
+typedef struct vendas_Prod *Vendas;
 
 StatInfo statinfo_make();
 void statinfo_destroy(StatInfo);
 void statinfo_builder(Transaction t, void *e);
+Vendas vendas_make();
+void vendas_destroy(Vendas);
+void vendas_builder(Transaction t, void *e);
 
+char* get_t_product(Vendas);
+int get_t_nVendas(Vendas);
+int get_t_nUnits(Vendas);
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
 int get_t_fil_vendas(StatInfo, int filial);
