@@ -15,7 +15,8 @@ void vendas_builder(Transaction t, void *e);
 
 char* get_t_product(Vendas);
 int get_t_nVendas(Vendas);
-int get_t_nUnits(Vendas);
+int get_t_nVendas_filial(Vendas, int);
+
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
 int get_t_fil_vendas(StatInfo, int filial);
