@@ -17,10 +17,9 @@ void *strset_value_of(StrSet set, void *elem);
 char **strset_dump_ordered(StrSet set, int *n);
 int strset_get_not_init_n(StrSet set);
 char **strset_generic_dump(StrSet set, f_foreach ffor, int *n, int flag);
+char **strset_dump_if(StrSet set, fcompare fc, int *n);
 
 /* Metodos privados */
-static char **strset_dump_if(StrSet set, Predicate p, fcompare fc, void *user_data, int *n);
-static int strcmp_currier(const void *a, const void *b);
 static void foreach_add(void *key, void *value, void *user_data);
 
 // ------------------------------------------------------------------------------
@@ -155,21 +154,13 @@ char **strset_generic_dump(StrSet set, f_foreach ffor, int *n, int flag)
     return r;
 }
 
-static char **strset_dump_if(StrSet set, Predicate p, fcompare fc, void *user_data, int *n)
+char **strset_dump_if(StrSet set, fcompare fc, int *n)
 {
-    char **r = NULL;
+    char **r;
 
-    GHashTableIter iter;
-    gpointer key, value;
+    GrowingArray ga = garray_make(sizeof(Currier), currier_destroy);
 
-    GrowingArray ga = garray_make(sizeof(char *), currier_destroy);
-
-    g_hash_table_iter_init(&iter, set->table);
-    while (g_hash_table_iter_next(&iter, &key, &value))
-    {
-        if (!p || (value && user_data && (*p)(value, user_data)))
-            garray_add(ga, currier_make(key, value, user_data));
-    }
+    g_hash_table_foreach(set->table, foreach_add_g_currier, ga);
 
     if (fc)
         garray_sort(ga, fc);
@@ -179,11 +170,6 @@ static char **strset_dump_if(StrSet set, Predicate p, fcompare fc, void *user_da
     garray_destroy(ga);
 
     return r;
-}
-
-static int strcmp_currier(const void *a, const void *b)
-{
-    return mystrcmp((char *)uncurry_by_key((Currier)a), (char *)uncurry_by_key((Currier)b));
 }
 
 static void foreach_add(void *key, void *value, void *user_data)

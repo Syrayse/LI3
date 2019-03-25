@@ -7,6 +7,7 @@
 #include "statinfo.h"
 #include "gArray.h"
 #include "kheap.h"
+#include "set.h"
 #include <glib.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -25,8 +26,8 @@ void store_query6(Store s, int *ncl, int *nprd);
 int **store_query7(Store s, char *client);
 void store_query8(Store s, int init, int end, int *nVendas, double *tot);
 int store_query9(Store s, char *product, char ***holder, int *n1, int *n2, int filial);
+char **store_query10(Store s, char *client, int month, int *sz);
 char **store_query11(Store s, int N);
-
 
 /* Metodos privados */
 static CatProducts load_products(char *product_file);
@@ -34,6 +35,10 @@ static CatClients load_clients(char *client_file);
 static Accounting loads_transactions(char *transaction_file, CatProducts cp, CatClients cc, FilManager fm);
 static void get_units_matrix(Transaction t, void *e);
 static void process_promos_clients(Transaction t, void *e);
+static void get_units(Transaction t, void *e);
+static void *int_calloc();
+static void int_destroy(void *e);
+static void int_add(void *id, void *user_data);
 
 // ------------------------------------------------------------------------------
 
@@ -211,28 +216,43 @@ int store_query9(Store s, char *product, char ***holder, int *n1, int *n2, int f
     return sz;
 }
 
-//Onde é que está função tem de ser definida???
-int fc(const void * a, const void * b)
+char **store_query10(Store s, char *client, int month, int *sz)
 {
-    int x, y;
-    x=get_t_nVendas((Vendas) a); //get_t_nUnits((Vendas) a);
-    y=get_t_nVendas((Vendas) b); //get_t_nUnits((Vendas) b);
-    return x-y;
+    int size;
+    StrSet product_set = strset_make(NULL, int_destroy, int_calloc, int_add, NULL, -1);
+    gID *ids = CatClients_drop_trans(s->cat_clients, client, month, &size);
+    char **r;
+
+    Accounting_iter(s->accounting, ids, size, get_units, product_set);
+
+    r = strset_dump_if(product_set, compare_quants, sz);
+
+    strset_destroy(product_set);
+
+    return r;
 }
 
-char** store_query11(Store s, int N)
-{   
+//Onde é que está função tem de ser definida???
+int fc(const void *a, const void *b)
+{
+    int x, y;
+    x = get_t_nVendas((Vendas)a); //get_t_nUnits((Vendas) a);
+    y = get_t_nVendas((Vendas)b); //get_t_nUnits((Vendas) b);
+    return x - y;
+}
+
+char **store_query11(Store s, int N)
+{
     int i, j, size, sz = 0;
     char **r;
     gID *ids;
     Vendas si = NULL;
     KHeap heap;
-    heap = kheap_make(&fc, NULL);//Funções de comparação
-
+    heap = kheap_make(&fc, NULL); //Funções de comparação
 
     for (i = 0; i < 26; ++i)
     {
-        r=CatProducts_dump_ordered(s->cat_products, &size, 'A' + i);
+        r = CatProducts_dump_ordered(s->cat_products, &size, 'A' + i);
         for (j = 0; j < size; j++)
         {
             si = vendas_make(r[j]);
@@ -240,7 +260,7 @@ char** store_query11(Store s, int N)
             ids = CatProducts_drop_trans(s->cat_products, r[j], 1, &sz);
             Accounting_iter(s->accounting, ids, sz, vendas_builder, si);
             g_free(ids);
-            
+
             ids = CatProducts_drop_trans(s->cat_products, r[j], 2, &sz);
             Accounting_iter(s->accounting, ids, sz, vendas_builder, si);
             g_free(ids);
@@ -248,20 +268,19 @@ char** store_query11(Store s, int N)
             ids = CatProducts_drop_trans(s->cat_products, r[j], 3, &sz);
             Accounting_iter(s->accounting, ids, sz, vendas_builder, si);
             g_free(ids);
-        
+
             kheap_add(heap, si);
         }
     }
 
     for (i = 0; i < N; ++i)
     {
-        si=kheap_extract_root(heap);
-        r[i]=get_t_product(si);
+        si = kheap_extract_root(heap);
+        r[i] = get_t_product(si);
         //j=get_t_nVendas(si);
         //printf("%d: O produto %s, com %d vendas\n", i+1, r[i], j);
-        
-        //vendas_destroy(si);
 
+        //vendas_destroy(si);
     }
     //while (kheap_check_root(heap)) {
     //    si=kheap_extract_root(heap);
@@ -396,4 +415,44 @@ static void process_promos_clients(Transaction t, void *e)
 
     GrowingArray *r = (GrowingArray *)e;
     garray_add(r[indP(trans_get_promo(t))], trans_get_client(t));
+}
+
+static void get_units(Transaction t, void *e)
+{
+    if (!e)
+        return;
+
+    char *sc, dumprod[PROD_LEN + 1];
+    StrSet r = (StrSet)e;
+    int v;
+
+    trans_copy_product(t, dumprod);
+    sc = dumprod;
+
+    if (!strset_contains(r, sc))
+    {
+        sc = trans_get_product(t);
+    }
+    v = trans_get_units(t);
+    
+    strset_add(r, sc, &v);
+}
+
+static void *int_calloc()
+{
+    return g_malloc0(sizeof(int));
+}
+
+static void int_destroy(void *e)
+{
+    if (e)
+    {
+        g_free((int *)e);
+    }
+}
+
+static void int_add(void *id, void *user_data)
+{
+    int *val = (int *)id;
+    *val += *(int *)user_data;
 }

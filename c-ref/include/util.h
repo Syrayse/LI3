@@ -47,12 +47,13 @@ typedef unsigned int gID;
 typedef unsigned char UChar;
 
 void is_null(void *a);
-int mystrcmp(const void *, const void *);
-int conv_str(const void *);
-Currier currier_make(void *key, void *value, void *user_data);
+int mystrcmp(const void *a, const void *b);
+int conv_str(const void *key);
+Currier currier_make(void *key, void *value);
 void currier_destroy(void *c);
 void *uncurry_by_key(void *c);
 void *uncurry_by_value(void *c);
-void *uncurry_by_user(void *c);
+int compare_quants(const void *a, const void *b);
+void foreach_add_g_currier(void *key, void *value, void *user_data);
 
 #endif

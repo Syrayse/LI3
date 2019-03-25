@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
 
     start = clock();
     printf("query3:");
+    printf("\n\tPara o produto AF1184:");
     show_statinfo(store_query3(s, "AF1184"), 6);
     c_t(start);
 
@@ -108,6 +109,7 @@ int main(int argc, char *argv[])
 
     start = clock();
     printf("query7:\n");
+    printf("\n\tFor client Z500:\n");
     m = store_query7(s, "Z5000");
     if (m)
     {
@@ -133,6 +135,7 @@ int main(int argc, char *argv[])
 
     start = clock();
     printf("query9:\n");
+    printf("\n\tFor product AF1184:\n");
     char **holder[N_PROMOS];
     store_query9(s, "AF1184", holder, &n1, &n2, 2);
     printf("\t-> %d For transactions without promotion, examples: ", n1);
@@ -150,10 +153,21 @@ int main(int argc, char *argv[])
     c_t(start);
 
     start = clock();
+    printf("Query 10:\n");
+    printf("\n\tFor client Z5000:\n");
+    r = store_query10(s, "Z5000", 1, &n1);
+    printf("\tPara o mes 1 foram encontrados %d produtos distintos:\n", n1);
+    for (i = 0; i < n1; i++)
+    {
+        printf("\t\t%dº: %s\n", i + 1, r[i]);
+    }
+    c_t(start);
+
+    start = clock();
     printf("Query 11:\n");
-    r=(char**)store_query11(s, N);
+    r = (char **)store_query11(s, N);
     for (i = 0; i < N; i++)
-        printf("O produto %s, foi o %dº mais vendido\n", r[i], i+1);
+        printf("O produto %s, foi o %dº mais vendido\n", r[i], i + 1);
 
     putchar('\n');
     c_t(start);

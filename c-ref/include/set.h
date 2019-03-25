@@ -26,5 +26,6 @@ void *strset_value_of(StrSet set, void *elem);
 char **strset_dump_ordered(StrSet set, int *n);
 int strset_get_not_init_n(StrSet set);
 char **strset_generic_dump(StrSet set, f_foreach ffor, int *n, int flag);
+char **strset_dump_if(StrSet set, fcompare fc, int *n);
 
 #endif
