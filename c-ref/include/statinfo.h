@@ -9,7 +9,7 @@ typedef struct vendas_Prod *Vendas;
 StatInfo statinfo_make();
 void statinfo_destroy(StatInfo);
 void statinfo_builder(Transaction t, void *e);
-Vendas vendas_make();
+Vendas vendas_make(char*);
 void vendas_destroy(Vendas);
 void vendas_builder(Transaction t, void *e);
 

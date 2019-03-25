@@ -8,7 +8,7 @@
 StatInfo statinfo_make();
 void statinfo_destroy(StatInfo);
 void statinfo_builder(Transaction t, void *e);
-Vendas vendas_make();
+Vendas vendas_make(char*);
 void vendas_destroy(Vendas);
 void vendas_builder(Transaction t, void *e);
 
@@ -111,11 +111,11 @@ void statinfo_builder(Transaction t, void *e)
     si->monthlyFilialRev[f - 1][m][indP(p)] += rev;
 }
 
-Vendas vendas_make()
+Vendas vendas_make(char* nome)
 {
     Vendas a = g_malloc(sizeof(struct vendas_Prod));
 
-    a->product = NULL;
+    a->product = nome;
     a->nVendas[0] = 0;
     a->nVendas[1] = 0;
     a->nVendas[2] = 0;
@@ -137,7 +137,7 @@ void vendas_builder(Transaction t, void *e)
         return;
     Vendas si = (Vendas)e;
 
-    si->product  = trans_get_product(t);
+    //si->product  = trans_get_product(t);
     si->nVendas[trans_get_filial(t) -1] ++;
 }
 char* get_t_product(Vendas si)

@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
         printf("O produto %s, foi o %dº mais vendido\n", r[i], i+1);
 
     putchar('\n');
+    c_t(start);
 
     start = clock();
     printf("free:\n");

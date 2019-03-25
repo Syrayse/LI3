@@ -235,7 +235,7 @@ char** store_query11(Store s, int N)
         r=CatProducts_dump_ordered(s->cat_products, &size, 'A' + i);
         for (j = 0; j < size; j++)
         {
-            si = vendas_make();
+            si = vendas_make(r[j]);
 
             ids = CatProducts_drop_trans(s->cat_products, r[j], 1, &sz);
             Accounting_iter(s->accounting, ids, sz, vendas_builder, si);
@@ -259,8 +259,16 @@ char** store_query11(Store s, int N)
         r[i]=get_t_product(si);
         //j=get_t_nVendas(si);
         //printf("%d: O produto %s, com %d vendas\n", i+1, r[i], j);
+        
+        //vendas_destroy(si);
 
     }
+    //while (kheap_check_root(heap)) {
+    //    si=kheap_extract_root(heap);
+    //    vendas_destroy(si);
+    //}
+
+    kheap_destroy(heap);
 
     return r;
 }
