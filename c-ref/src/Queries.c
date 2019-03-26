@@ -28,6 +28,7 @@ void store_query8(Store s, int init, int end, int *nVendas, double *tot);
 int store_query9(Store s, char *product, char ***holder, int *n1, int *n2, int filial);
 char **store_query10(Store s, char *client, int month, int *sz);
 char **store_query11(Store s, int N);
+char **store_query12(Store s, char *client, int *sz);
 
 /* Metodos privados */
 static CatProducts load_products(char *product_file);
@@ -39,6 +40,10 @@ static void get_units(Transaction t, void *e);
 static void *int_calloc();
 static void int_destroy(void *e);
 static void int_add(void *id, void *user_data);
+static void get_revs(Transaction t, void *e);
+static void *double_calloc();
+static void double_destroy(void *e);
+static void double_add(void *id, void *user_data);
 
 // ------------------------------------------------------------------------------
 
@@ -292,6 +297,45 @@ char **store_query11(Store s, int N)
     return r;
 }
 
+char **store_query12(Store s, char *client, int *sz)
+{
+    int size, i, tmp;
+    StrSet product_set = strset_make(NULL, double_destroy, double_calloc, double_add, NULL, -1);
+    gID *ids;
+    char **r;
+
+    KHeap k = kheap_make(compare_revs, currier_destroy);
+
+    for (i = 1; i <= N_MONTHS; i++)
+    {
+        ids = CatClients_drop_trans(s->cat_clients, client, i, &size);
+
+        Accounting_iter(s->accounting, ids, size, get_revs, product_set);
+
+        g_free(ids);
+    }
+
+    strset_foreach(product_set, foreach_add_heap_currier, k);
+
+    tmp = kheap_size(k);
+    tmp = min(3, tmp);
+
+    r = g_malloc(sizeof(char *) * tmp);
+
+    for (i = 0; i < tmp; i++)
+    {
+        r[i] = g_strdup((char *)uncurry_by_key((Currier)kheap_extract_root(k)));
+    }
+
+    kheap_destroy(k);
+
+    strset_destroy(product_set);
+
+    *sz = tmp;
+
+    return r;
+}
+
 static CatProducts load_products(char *product_file)
 {
     FILE *fp = fopen(product_file, "r");
@@ -434,7 +478,7 @@ static void get_units(Transaction t, void *e)
         sc = trans_get_product(t);
     }
     v = trans_get_units(t);
-    
+
     strset_add(r, sc, &v);
 }
 
@@ -455,4 +499,44 @@ static void int_add(void *id, void *user_data)
 {
     int *val = (int *)id;
     *val += *(int *)user_data;
+}
+
+static void get_revs(Transaction t, void *e)
+{
+    if (!e)
+        return;
+
+    char *sc, dumprod[PROD_LEN + 1];
+    StrSet r = (StrSet)e;
+    double v;
+
+    trans_copy_product(t, dumprod);
+    sc = dumprod;
+
+    if (!strset_contains(r, sc))
+    {
+        sc = trans_get_product(t);
+    }
+    v = trans_get_rev(t);
+
+    strset_add(r, sc, &v);
+}
+
+static void *double_calloc()
+{
+    return g_malloc0(sizeof(double));
+}
+
+static void double_destroy(void *e)
+{
+    if (e)
+    {
+        g_free((double *)e);
+    }
+}
+
+static void double_add(void *id, void *user_data)
+{
+    double *val = (double *)id;
+    *val += *(double *)user_data;
 }
