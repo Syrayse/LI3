@@ -39,8 +39,8 @@ void trans_set_price(Transaction t, double price);
 
 typedef struct transaction
 {
-    char *client,
-        *product;
+    char client[CLT_LEN + 1],
+        product[PROD_LEN + 1];
     UChar month,
         filial,
         promo,
@@ -54,8 +54,6 @@ typedef struct transaction
 Transaction trans_make()
 {
     Transaction t = g_malloc(sizeof(struct transaction));
-    t->client = NULL;
-    t->product = NULL;
     t->month = t->filial = t->promo = t->units = 0;
     t->id = 0;
     t->price = 0.0;
@@ -69,9 +67,6 @@ void trans_destroy(void *e)
     if (e)
     {
         t = (Transaction)e;
-
-        g_free(t->client);
-        g_free(t->product);
         g_free(t);
     }
 }
@@ -138,14 +133,12 @@ double trans_get_rev(Transaction t)
 
 void trans_set_client(Transaction t, char *client)
 {
-    is_null(t->client);
-    t->client = g_strdup(client);
+    strcpy(t->client, client);
 }
 
 void trans_set_product(Transaction t, char *product)
 {
-    is_null(t->product);
-    t->product = g_strdup(product);
+    strcpy(t->product, product);
 }
 
 void trans_set_month(Transaction t, UChar month)
