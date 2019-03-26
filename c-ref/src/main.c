@@ -173,6 +173,15 @@ int main(int argc, char *argv[])
     c_t(start);
 
     start = clock();
+    printf("Query 12:\n");
+    r = store_query12(s, "Z5000", &n1);
+    printf("\n\tFor client Z5000, found top %d!: ", n1);
+    for (i = 0; i < n1; i++)
+        printf("%s ", r[i]);
+    putchar('\n');
+    c_t(start);
+
+    start = clock();
     printf("free:\n");
     store_destroy(s);
     c_t(start);

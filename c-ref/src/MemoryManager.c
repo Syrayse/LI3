@@ -25,6 +25,7 @@ typedef struct memory_block
 MemoryManager MemoryManager_make();
 void MemoryManager_destroy(MemoryManager m);
 void *man_malloc(MemoryManager m, size_t size);
+char *man_strdup(MemoryManager m, char *str);
 
 /* Metodos privados */
 static MemoryBlock MemoryBlock_make(size_t size);
@@ -83,6 +84,21 @@ void *man_malloc(MemoryManager m, size_t size)
     kheap_add(m->mem_heap, rt);
 
     return r;
+}
+
+char *man_strdup(MemoryManager m, char *str)
+{
+    int length;
+    char *new_str = NULL;
+
+    if (str)
+    {
+        length = strlen(str) + 1;
+        new_str = man_malloc(m, length);
+        memcpy(new_str, str, length);
+    }
+
+    return new_str;
 }
 
 static MemoryBlock MemoryBlock_make(size_t size)

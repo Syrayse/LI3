@@ -54,6 +54,8 @@ void currier_destroy(void *c);
 void *uncurry_by_key(void *c);
 void *uncurry_by_value(void *c);
 int compare_quants(const void *a, const void *b);
+int compare_revs(const void *a, const void *b);
 void foreach_add_g_currier(void *key, void *value, void *user_data);
+void foreach_add_heap_currier(void *key, void *value, void *user_data);
 
 #endif
