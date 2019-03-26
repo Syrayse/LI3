@@ -128,7 +128,7 @@ double trans_get_price(Transaction t)
 
 double trans_get_rev(Transaction t)
 {
-    return (trans_get_units(t) * trans_get_price(t));
+    return (t->units * t->price);
 }
 
 void trans_set_client(Transaction t, char *client)
