@@ -1,35 +1,5 @@
 # Summary LI3
 
-Correr na pasta `./c-ref/src/` o comando `make program` irá compilar automaticamente todos os módulos, desde que estes possuam o interface corretamente definido. A importação da _glib_ é feita de modo automático pelo _Makefile_. Todos os ficheiros objeto(__.o__) são armazenados na diretoria `./c-ref/src/obj/`. Todos os ficheiros header (__.h__) devem ser armazenados na diretoria `./c-ref/include/` de forma a permitir o correto funcionamento da _Makefile_. Todas as estruturas básicas de dados que se pretendam criar ou alterar devem estar ou ser adicionadas na diretoria `./c-ref/src/lib`.
-
-### OBJETIVOS E NOTAS DE APOIO TÉCNICO
-
-__O que se pede na fase 2?__
-
-Não incluido o sistema de I/O que é pedido nas várias queries do enunciado.
-
-11. Criar uma lista dos N produtos mais vendidos em todo o ano, indicando o número total de clientes e o número de unidades vendidas, filial a filial. __NOT IMPLEMENTED__.
-
-## Repartição
-
-#### Ana 'Jónni' Almeida
-
-* Idealizar o design do programa que vai comunicar com o utilizador. Como apresentar a informação ao utilizador? Que delimitações devem ser feitas de tal modo que o utilizador consiga aceder a todas as estatisticas sobre o seu supermercado? Pensar no paradigma de _navegadores_ e _cursores_ que é falado no enunciado de LI3.
-
-#### André 'Pistolas' Figueiredo
-
-* Realizar a tarefa __(11)__. (next fim de semana)
-
-#### Rui 'Small Dick Joe' Reis
-
-* All done.
-
-#### Em grupo, cristão
-
-* Desenvolver módulos _navegadores_ e _cursores_.
-* Criar relatorio.
-* Implementar uma forma eficiente de leitura adaptativa, de tal modo, que seja qual for o tamanho da linha que se pretende ler, seja possivel ler sem gerar _segmentation fault_.
-
 ### PREVIOUS STATE
 
 ```
@@ -308,35 +278,33 @@ build	Q1	Q2	Q3	Q4	Q5	Q6	Q7	Q8	Q9	Q10	Q11	Q12	free
 
 AVERAGE: 
 	
-	build -> 1,336806125
-	Q1 -> 0,030384005
-	Q2 -> 1,7865E-05
-	Q3 -> 0,02991901
-	Q4 -> 0,00358831
-	Q5 -> 1,81E-06
-	Q6 -> 2,3405E-05
-	Q7 -> 4,705E-06
-	Q8 -> 4,76E-06
-	Q9 -> 8,28499999999998E-06
-	Q10 -> 0,231458695
-	Q11 -> 4,637E-05
-	Q12 -> 0,13412446
-	free -> 0,134128855	
+	build -> 1,337 seconds
+	Q2 -> 30,4 miliseconds
+	Q3 -> 17,87 microseconds
+	Q4 -> 29,9 miliseconds
+	Q5 -> 3,59 miliseconds
+	Q6 -> 1,81 microseconds
+	Q7 -> 23,4 microseconds
+	Q8 -> 4,7 microseconds
+	Q9 -> 4,8 microseconds
+	Q10 -> 8,28 microseconds
+	Q11 -> 231,46 miliseconds
+	Q12 -> 46,4 microseconds
+	free -> 134,12 miliseconds
 
 STDEV: 
 ```
-build -> 0,024961581571731
-Q1 -> 0,001251178702546
-Q2 -> 4,22920867659078E-06
-Q3 -> 0,00133025958471
-Q4 -> 0,000350208141843
-Q5 -> 1,26566565400925E-06
-Q6 -> 2,08149902497089E-06
-Q7 -> 1,1421460009286E-06
-Q8 -> 1,81628590050185E-06
-Q9 -> 8,41018167335846E-07
-Q10 -> 0,006523694126587
-Q11 -> 5,81136471054734E-06
-Q12 -> 0,002966739000974
-free -> 0,002966790249732	
+build -> 24,97 miliseconds
+Q2 -> 1,26 miliseconds
+Q3 -> 4,23 microseconds
+Q4 -> 1,33 miliseconds
+Q5 -> 350,21 microseconds
+Q6 -> 1,27 microseconds
+Q7 -> 2,08 microseconds
+Q8 -> 1,14 microseconds
+Q9 -> 1,82 microseconds
+Q10 -> 0,841 microseconds
+Q11 -> 6,52 miliseconds
+Q12 -> 5,81 microseconds
+free -> 2,97 miliseconds
 ```
