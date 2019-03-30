@@ -1,3 +1,12 @@
+/**
+ * @file Verifier.h
+ * \brief Interface da classe de validação, `Verifier`, e todas as necessárias funções de validação.
+ * 
+ * Contem todas as funções utilizaveis pelo utilizador deste API.
+ * 
+ * @see Transaction
+ */
+
 #ifndef __VERIFF__
 #define __VERIFF__
 

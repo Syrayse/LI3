@@ -1,7 +1,7 @@
 /**
-@file transaction.h
-\brief Módulo encarregue da estrutura de transação.
-*/
+ * @file transaction.h
+ * \brief Módulo encarregue da estrutura de transação.
+ */
 
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
