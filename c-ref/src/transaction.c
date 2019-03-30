@@ -1,8 +1,7 @@
 /**
-@file transaction.c
-\brief Módulo encarregue da estrutura de transação.
-*/
-
+ * @file transaction.c
+ * \brief Módulo encarregue da estrutura de transação.
+ */
 #include "transaction.h"
 #include <string.h>
 #include <glib.h>

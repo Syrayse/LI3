@@ -1,3 +1,19 @@
+/**
+ * @file Verifier.c
+ * \brief Módulo que define a classe de validação, `Verifier`, e todas as necessárias funções de validação.
+ * 
+ * Neste módulo encontram-se definidas todas as necessárias funções de serviços de validação.
+ * 
+ * Sendo o principal deles, a classe `Verifier`, que corresponde a um agregado de metódos encadeados de tal
+ * forma que permitem a criação de um _stream_ de metódos que são aplicados sucessivamente à medida que se pretende
+ * validar uma `Transaction`. Permitindo assim uma fluidez de códigos e computacional ao ser utilizada a função `strtok`.
+ * 
+ * Para além disso, permite também que o cliente faça validação semântica dos seus produtos
+ * e cliente.
+ * 
+ * @see Transaction
+ */
+
 #include "Verifier.h"
 #include "CatClients.h"
 #include "CatProducts.h"
@@ -27,8 +43,33 @@ static int is_valid_filial(char *filial, Transaction t);
 
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Typedef utilizado de forma a simplificar parametrização de funções.
+ */
 typedef int (*scompare)(char *, Transaction);
 
+/**
+ * \brief Classe `Verifier` contendo todas as variavéis de instâncias necessárias
+ * ao seu bom funcionamento.
+ * 
+ * Internamente a classe `Verifier`, que tem como objetivo final validar unicamente
+ * registos de transação e formar a `Transaction` correspondente, é formada unicamente
+ * por um _array_ de tantas funções como argumentos num registos de transações. Sendo que
+ * este número de argumento se encontra descrito por `N_TRANS_ARGS`.
+ * 
+ * Cada posição _n_ neste _array_ deve conter uma função, tal que esta seja capaz
+ * de validar e adicionar a uma `Transaction` o n-ésimo parametro da ordem estabelecida para
+ * registos de transação, que segue a seguinte formatação:
+ * 
+ *  [PRODUTO] [PREÇO] [UNIDADES VENDIDAS] [PROMOÇÃO] [CLIENTE] [MÊS] [FILIAL]
+ * 
+ * Logo, por exemplo, o indice 2 do array na classe `Verifier`, deverá corresponder univocamente
+ * a um função capaz de validar e atribuir a uma `Transaction` o número de unidades que foram
+ * transacionadas naquele registo.
+ * 
+ * @see scompare
+ * @see Transaction
+ */
 typedef struct verifier
 {
     scompare fa[N_TRANS_ARGS];
@@ -36,10 +77,31 @@ typedef struct verifier
 
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Delimitadores base que permitem compatibilidade com maioria dos sistemas operativos.
+ */
 #define BASE_DELIM " \n\r"
 
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Criar uma instância da classe `Verifier`.
+ * 
+ * Ao criar a instância da classe `Verifier`, são a estas atribuidas todas as funções
+ * de validação internamente necessárias para o correto processamento da validaçao de uma venda.
+ * Mantendo sempre em mente a correspondência unívoca que deve exister entre indíce do array
+ * e posição no registo de transação.
+ * 
+ * @returns Uma nova instância.
+ * 
+ * @see _set_trans_valid_product;
+ * @see is_valid_price;
+ * @see is_valid_units;
+ * @see is_valid_promo;
+ * @see _set_trans_valid_client;
+ * @see is_valid_month;
+ * @see is_valid_filial;
+ */
 Verifier Verifier_make()
 {
     Verifier v = g_malloc(sizeof(struct verifier));
@@ -53,6 +115,9 @@ Verifier Verifier_make()
     return v;
 }
 
+/**
+ * \brief Destrói uma instância da classe `Verifier`.
+ */
 void Verifier_destroy(Verifier v)
 {
     if (v)
@@ -61,16 +126,64 @@ void Verifier_destroy(Verifier v)
     }
 }
 
+/**
+ * \brief Permite validar semânticamente um cliente.
+ * 
+ * De forma a permitir a correta validação semântica do cliente é utilizada
+ * a função `verify_word` passando como argumento o cliente que se pretende
+ * validar em conjunto com a função `is_valid_client`.
+ * 
+ * @returns Uma cópia do cliente se este for válido, NULL caso contrário.
+ *
+ * @see verify_word
+ * @see is_valid_client
+ */
 char *verify_client(char *client)
 {
     return verify_word(client, is_valid_client);
 }
 
+/**
+ * \brief Permite validar semânticamente um produto.
+ * 
+ * De forma a permitir a correta validação semântica do produto é utilizada
+ * a função `verify_word` passando como argumento o produto que se pretende
+ * validar em conjunto com a função `is_valid_product`.
+ * 
+ * @returns Uma cópia do produto se este for válido, NULL caso contrário.
+ *
+ * @see verify_word
+ * @see is_valid_client
+ */
 char *verify_product(char *product)
 {
     return verify_word(product, is_valid_product);
 }
 
+/**
+ * \brief Metódo da classe `Verifier` que permite realizar a validação e criação de uma `Transaction` apartir da sua _String_ representativa.
+ * 
+ * Este metódo tira partido das propriedades da classe `Verifier` de tal modo que usa o seu metódo
+ * de verificação eficiente de registos de transação de forma a conseguir paralelamente
+ * verificar e atribuir a uma dada instância da classe `Transaction` todos os parametros a esta necessários.
+ * 
+ * Este metódo de validação permite validar todos os registos de transações seguindo os pressupostos estabelecidos
+ * pela classe `Verifier` sobre a estruturação de um registo  de transação. E para além disso, verifica também
+ * se o número de argumentos da _String_ representativa é de facto válido.
+ * 
+ * @param v Instância da classe `Verifier` a ser utilizada na verificação.
+ * @param trans_code _String_ representativa de uma transação.
+ * @param cp Catálogo de produtos em vigor.
+ * @param cc Catálogo de cliente em vigor.
+ * @param id ID de identificação a ser atribuido à `Transaction`.
+ * 
+ * @returns Uma instância da classe `Transaction` se a sua _String_ representativa for considerada válida, NULL caso contrário.
+ * 
+ * @see trans_make
+ * @see trans_exists_efect
+ * @see trans_destroy
+ * @see trans_set_id
+ */
 Transaction verify_sale(Verifier v, char *trans_code, CatProducts cp, CatClients cc, gID id)
 {
     int t, i, r = 1;
@@ -97,6 +210,16 @@ Transaction verify_sale(Verifier v, char *trans_code, CatProducts cp, CatClients
     return tr;
 }
 
+/**
+ * \brief Permite validar a _String_ representativa de um cliente.
+ * 
+ * Esta função utiliza pressupostos pré-estabelecidos de forma a verificar se
+ * a _String_ representativa do cliente se encontra semanticamente correta.
+ * 
+ * @param client Cliente que se pretende verificar.
+ * 
+ * @returns 1 se o cliente for válido, 0 caso contrário.
+ */
 static int is_valid_client(char *client)
 {
     return (g_ascii_isupper(client[0]) &&
@@ -104,6 +227,16 @@ static int is_valid_client(char *client)
             (client[5] == '\0'));
 }
 
+/**
+ * \brief Permite validar a _String_ representativa de um produto.
+ * 
+ * Esta função utiliza pressupostos pré-estabelecidos de forma a verificar se
+ * a _String_ representativa do produto se encontra semanticamente correta.
+ * 
+ * @param product Produto que se pretende verificar.
+ * 
+ * @returns 1 se o produto for válido, 0 caso contrário.
+ */
 static int is_valid_product(char *product)
 {
     return (g_ascii_isupper(product[0]) &&
@@ -112,6 +245,19 @@ static int is_valid_product(char *product)
             (product[6] == '\0'));
 }
 
+/**
+ * \brief Função que procede à validação de uma só palavra, segundo uma dada função de validação.
+ * 
+ * Para esta função proceder corretamente, deve ser passado como argumento uma função de validação
+ * que dada uma só palavra `word` permite realizar a validação semântica que se pretende desta.
+ * Para além disso, após a devida verificação é também criada uma memória uma cópia interna
+ * a palavra que se pretende verificar, e caso esta seja validá é retornada para o utilizador.
+ * 
+ * @param word Palavra que se pretende verificar.
+ * @param fv Função de validação da palavra.
+ * 
+ * @returns Uma cópia da palavra caso esta seja válida, NULL caso contrário ou se a função de verificação for NULL.
+ */
 static char *verify_word(char *word, int (*fv)(char *))
 {
     char *token, *r = NULL;
@@ -134,6 +280,21 @@ static char *verify_word(char *word, int (*fv)(char *))
     return r;
 }
 
+/**
+ * \brief Metódo que verifica e atribui a uma `Transaction` um produto.
+ * 
+ * O metódo efetua a validação semântica da _String_ representativa do produto,
+ * através da função `is_valid_product` e para além disso, no caso de esta ser válida é
+ * atribuida à `Transaction` o seu respetivo produto.
+ * 
+ * @param product _String_ representativa do produto em questão.
+ * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
+ * 
+ * @returns 1 se o produto é válido e foi atribuido, 0 caso contrário.
+ * 
+ * @see is_valid_product
+ * @see trans_set_product
+ */
 static int _set_trans_valid_product(char *product, Transaction t)
 {
     int r = is_valid_product(product);
@@ -146,6 +307,20 @@ static int _set_trans_valid_product(char *product, Transaction t)
     return r;
 }
 
+/**
+ * \brief Metódo que verifica e atribui a uma `Transaction` um preço.
+ * 
+ * O metódo faz a conversão entre uma _String_ representativa de um preço 
+ * e o respetivo preço, procedendo à sua validação segundo pressupostos
+ * pré-estabelecidos.
+ * 
+ * @param price _String_ representativa do preço em questão.
+ * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
+ * 
+ * @returns 1 se o preço é válido e foi atribuido, 0 caso contrário.
+ *
+ * @see trans_set_price
+ */
 static int is_valid_price(char *price, Transaction t)
 {
     double f = (double)atof(price);
@@ -159,6 +334,20 @@ static int is_valid_price(char *price, Transaction t)
     return r;
 }
 
+/**
+ * \brief Metódo que verifica e atribui a uma `Transaction` um número de unidades transacionadas.
+ * 
+ * O metódo faz a conversão entre uma _String_ representativa de um número de unidades 
+ * e o respetivo número de unidades, procedendo à sua validação segundo pressupostos
+ * pré-estabelecidos.
+ *
+ * @param units _String_ representativa do número de unidades em questão.
+ * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
+ * 
+ * @returns 1 se o número de unidades é válido e foi atribuido, 0 caso contrário.
+ *
+ * @see trans_set_units
+ */
 static int is_valid_units(char *units, Transaction t)
 {
     int r, f = atoi(units);
@@ -172,6 +361,20 @@ static int is_valid_units(char *units, Transaction t)
     return r;
 }
 
+/**
+ * \brief Metódo que verifica e atribui a uma `Transaction` uma promoção.
+ * 
+ * O metódo faz a conversão entre uma _String_ representativa de uma promoção
+ * e a respetiva promoção, procedendo à sua validação segundo pressupostos
+ * pré-estabelecidos.
+ * 
+ * @param promo _String_ representativa da promoção em questão.
+ * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
+ * 
+ * @returns 1 se a promoção é válida e foi atribuida, 0 caso contrário.
+ * 
+ * @see trans_set_promo
+ */
 static int is_valid_promo(char *promo, Transaction t)
 {
     int r = (*promo == 'N' || *promo == 'P');
@@ -184,6 +387,21 @@ static int is_valid_promo(char *promo, Transaction t)
     return r;
 }
 
+/**
+ * \brief Metódo que verifica e atribui a uma `Transaction` um cliente.
+ * 
+ * O metódo efetua a validação semântica da _String_ representativa do cliente,
+ * através da função `is_valid_client` e para além disso, no caso de esta ser válida é
+ * atribuido à `Transaction` o seu respetivo cliente.
+ * 
+ * @param client _String_ representativa do cliente em questão.
+ * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
+ * 
+ * @returns 1 se o cliente é válido e foi atribuido, 0 caso contrário.
+ * 
+ * @see is_valid_client
+ * @see trans_set_client
+ */
 static int _set_trans_valid_client(char *client, Transaction t)
 {
     int r = is_valid_client(client);
@@ -196,6 +414,20 @@ static int _set_trans_valid_client(char *client, Transaction t)
     return r;
 }
 
+/**
+ * \brief Metódo que verifica e atribui a uma `Transaction` um mês.
+ * 
+ * O metódo faz a conversão entre uma _String_ representativa de um mês
+ * e o respetivo mês, procedendo à sua validação segundo pressupostos
+ * pré-estabelecidos.
+ * 
+ * @param month _String_ representativa do mês em questão.
+ * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
+ * 
+ * @returns 1 se o mês é válido e foi atribuido, 0 caso contrário.
+ * 
+ * @see trans_set_month
+ */
 static int is_valid_month(char *month, Transaction t)
 {
     int r, f = atoi(month);
@@ -205,6 +437,20 @@ static int is_valid_month(char *month, Transaction t)
     return r;
 }
 
+/**
+ * \brief Metódo que verifica e atribui a uma `Transaction` uma filial.
+ * 
+ * O metódo faz a conversão entre uma _String_ representativa de uma filial
+ * e a respetiva filial, procedendo à sua validação segundo pressupostos
+ * pré-estabelecidos.
+ * 
+ * @param filial _String_ representativa da filial em questão.
+ * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
+ * 
+ * @returns 1 se a filial é válida e foi atribuida, 0 caso contrário.
+ *
+ * @see trans_set_filial
+ */
 static int is_valid_filial(char *filial, Transaction t)
 {
     int r, f = atoi(filial);
