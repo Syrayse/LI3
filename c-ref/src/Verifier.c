@@ -140,7 +140,7 @@ void Verifier_destroy(Verifier v)
  */
 char *verify_client(char *client)
 {
-    return verify_word(client, is_valid_client);
+    return client ? verify_word(client, is_valid_client) : NULL;
 }
 
 /**
@@ -157,7 +157,7 @@ char *verify_client(char *client)
  */
 char *verify_product(char *product)
 {
-    return verify_word(product, is_valid_product);
+    return product ? verify_word(product, is_valid_product) : NULL;
 }
 
 /**
@@ -186,6 +186,9 @@ char *verify_product(char *product)
  */
 Transaction verify_sale(Verifier v, char *trans_code, CatProducts cp, CatClients cc, gID id)
 {
+    if (!v || !trans_code || !cp || !cc)
+        return NULL;
+
     int t, i, r = 1;
     Transaction tr = trans_make();
     char *token = strtok(trans_code, BASE_DELIM);
