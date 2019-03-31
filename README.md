@@ -278,33 +278,16 @@ build	Q1	Q2	Q3	Q4	Q5	Q6	Q7	Q8	Q9	Q10	Q11	Q12	free
 
 AVERAGE: 
 	
-	build -> 1,337 seconds
-	Q2 -> 30,4 miliseconds
-	Q3 -> 17,87 microseconds
-	Q4 -> 29,9 miliseconds
-	Q5 -> 3,59 miliseconds
-	Q6 -> 1,81 microseconds
-	Q7 -> 23,4 microseconds
-	Q8 -> 4,7 microseconds
-	Q9 -> 4,8 microseconds
-	Q10 -> 8,28 microseconds
-	Q11 -> 231,46 miliseconds
-	Q12 -> 46,4 microseconds
-	free -> 134,12 miliseconds
-
-STDEV: 
-```
-build -> 24,97 miliseconds
-Q2 -> 1,26 miliseconds
-Q3 -> 4,23 microseconds
-Q4 -> 1,33 miliseconds
-Q5 -> 350,21 microseconds
-Q6 -> 1,27 microseconds
-Q7 -> 2,08 microseconds
-Q8 -> 1,14 microseconds
-Q9 -> 1,82 microseconds
-Q10 -> 0,841 microseconds
-Q11 -> 6,52 miliseconds
-Q12 -> 5,81 microseconds
-free -> 2,97 miliseconds
-```
+	build -> 1,337 (+/-) 0,025 	seconds
+	Q2 -> 30,4 (+/-) 1,26 		miliseconds
+	Q3 -> 17,87 (+/-) 4,23 		microseconds
+	Q4 -> 29,9 (+/-) 1,33 		miliseconds
+	Q5 -> 3,59 (+/-) 0,35 		miliseconds
+	Q6 -> 1,81 (+/-) 1,27 		microseconds
+	Q7 -> 23,4 (+/-) 2,08 		microseconds
+	Q8 -> 4,7 (+/-) 1,14 		microseconds
+	Q9 -> 4,8 (+/-) 1,82 		microseconds
+	Q10 -> 8,28 (+/-) 0,841 	microseconds
+	Q11 -> 231,46 (+/-) 6,52 	miliseconds
+	Q12 -> 46,4 (+/-) 5,81 		microseconds
+	free -> 134,12 (+/-) 2,97 	miliseconds
