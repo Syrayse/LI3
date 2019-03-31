@@ -5,7 +5,7 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_empty fe, int flag);
+StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_empty fe);
 void strset_destroy(StrSet set);
 int strset_add(StrSet set, void *elem, void *user_data);
 int strset_remove(StrSet set, void *elem);
@@ -18,6 +18,7 @@ char **strset_dump_ordered(StrSet set, int *n);
 int strset_get_not_init_n(StrSet set);
 char **strset_generic_dump(StrSet set, f_foreach ffor, int *n, int flag);
 char **strset_dump_if(StrSet set, fcompare fc, int *n);
+char **strset_dump_n_ordered(StrSet set, int n);
 
 /* Metodos privados */
 static void foreach_add(void *key, void *value, void *user_data);
@@ -31,12 +32,11 @@ typedef struct set
     f_maker fm;
     f_update fu;
     f_empty fe;
-    int identity;
 } * StrSet;
 
 // ------------------------------------------------------------------------------
 
-StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_empty fe, int flag)
+StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_empty fe)
 {
     StrSet set = g_malloc(sizeof(struct set));
     set->not_init = 0;
@@ -44,7 +44,6 @@ StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_
     set->fm = fm;
     set->fu = fu;
     set->fe = fe;
-    set->identity = flag;
     return set;
 }
 
@@ -64,6 +63,9 @@ int strset_get_not_init_n(StrSet set)
 
 int strset_add(StrSet set, void *elem, void *user_data)
 {
+    if (!elem)
+        return -1;
+
     int r = 1;
     void *val = NULL;
 
@@ -172,7 +174,27 @@ char **strset_dump_if(StrSet set, fcompare fc, int *n)
     return r;
 }
 
+char **strset_dump_n_ordered(StrSet set, int n)
+{
+    if (n <= 0)
+        return NULL;
+
+    int trash;
+    char **r;
+    GrowingArray ga = garray_make_sized(sizeof(char *), n, NULL);
+
+    strset_foreach(set, foreach_add, ga);
+
+    garray_sort(ga, mystrcmp);
+
+    r = (char **)garray_dump_elems(ga, NULL, &trash);
+
+    garray_destroy(ga);
+
+    return r;
+}
+
 static void foreach_add(void *key, void *value, void *user_data)
 {
-    garray_add((GrowingArray)user_data, key);
+    garray_add((GrowingArray)user_data, g_strdup((char *)key));
 }
