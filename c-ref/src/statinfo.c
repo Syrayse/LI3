@@ -16,9 +16,10 @@
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
-StatInfo statinfo_make();
-void statinfo_destroy(StatInfo);
-void statinfo_builder(Transaction t, void *e);
+void *statinfo_make();
+void statinfo_destroy(void *);
+void statinfo_builder(void *e, void *t);
+StatInfo statinfo_clone(StatInfo si);
 
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
@@ -72,7 +73,7 @@ typedef struct statistical_info
  * 
  * @returns Uma nova instância.
  */
-StatInfo statinfo_make()
+void *statinfo_make()
 {
     int l, c, k;
     StatInfo a = g_malloc(sizeof(struct statistical_info));
@@ -100,11 +101,11 @@ StatInfo statinfo_make()
  * 
  * @param a Instância que se pretende destruir.
  */
-void statinfo_destroy(StatInfo a)
+void statinfo_destroy(void *a)
 {
     if (a)
     {
-        g_free(a);
+        g_free((StatInfo)a);
     }
 }
 
@@ -114,16 +115,17 @@ void statinfo_destroy(StatInfo a)
  * @param t `Transaction` usada como meio de obtenção de informação.
  * @param e Instância de `StatInfo` a ser utilizada como recipiente de informação.
  */
-void statinfo_builder(Transaction t, void *e)
+void statinfo_builder(void *e, void *t)
 {
-    if (!e)
+    if (!e || !t)
         return;
     StatInfo si = (StatInfo)e;
+    Transaction tr = (Transaction)t;
 
-    double rev = trans_get_rev(t);
-    int f, m, p = trans_get_promo(t);
-    m = trans_get_month(t);
-    f = trans_get_filial(t);
+    double rev = trans_get_rev(tr);
+    int f, m, p = trans_get_promo(tr);
+    m = trans_get_month(tr);
+    f = trans_get_filial(tr);
 
     si->nVendasTotal++;
     si->nVendasFilialMonth[f - 1][0][indP(p)]++;
@@ -132,6 +134,37 @@ void statinfo_builder(Transaction t, void *e)
     si->totalCashFlow += rev;
     si->monthlyFilialRev[f - 1][0][indP(p)] += rev;
     si->monthlyFilialRev[f - 1][m][indP(p)] += rev;
+}
+
+/**
+ * \brief Retorna uma cópia da instância.
+ * 
+ * @returns A cópia criada, ou NULL caso a instância seja inválida.
+ */
+StatInfo statinfo_clone(StatInfo si)
+{
+    if (!si)
+        return NULL;
+
+    int l, c, k;
+    StatInfo sc = g_malloc(sizeof(struct statistical_info));
+
+    for (l = 0; l < N_FILIAIS; l++)
+    {
+        for (c = 0; c <= N_MONTHS; c++)
+        {
+            for (k = 0; k < N_PROMOS; k++)
+            {
+                sc->nVendasFilialMonth[l][c][k] = si->nVendasFilialMonth[l][c][k];
+                sc->monthlyFilialRev[l][c][k] = si->monthlyFilialRev[l][c][k];
+            }
+        }
+    }
+
+    sc->nVendasTotal = si->nVendasTotal;
+    sc->totalCashFlow = si->totalCashFlow;
+
+    return sc;
 }
 
 /**

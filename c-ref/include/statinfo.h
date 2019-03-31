@@ -5,9 +5,10 @@
 
 typedef struct statistical_info *StatInfo;
 
-StatInfo statinfo_make();
-void statinfo_destroy(StatInfo);
-void statinfo_builder(Transaction t, void *e);
+void *statinfo_make();
+void statinfo_destroy(void *);
+void statinfo_builder(void *e, void *t);
+StatInfo statinfo_clone(StatInfo si);
 
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);

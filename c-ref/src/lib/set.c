@@ -131,12 +131,7 @@ int strset_update_elem(StrSet set, char *elem, void (*f_up)(void *, void *), voi
 
 void *strset_lookup(StrSet set, void *key)
 {
-    return g_hash_table_lookup(set->table, key);
-}
-
-void *strset_value_of(StrSet set, void *elem)
-{
-    return g_hash_table_lookup(set->table, elem);
+    return key ? g_hash_table_lookup(set->table, key) : NULL;
 }
 
 char **strset_generic_dump(StrSet set, f_foreach ffor, int *n, int flag)

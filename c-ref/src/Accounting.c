@@ -1,97 +1,114 @@
+/**
+ * @file Accounting.h
+ * \brief Módulo que define a classe `Accounting` destinada ao uso como contabilidade.
+ */
 #include "Accounting.h"
-#include "gArray.h"
+#include "statinfo.h"
+#include "util.h"
+#include "transaction.h"
 #include "set.h"
-#include "record.h"
 
 // ------------------------------------------------------------------------------
 
 /* Metodos publicos */
 Accounting Accounting_make();
 void Accounting_destroy(Accounting a);
-void Accounting_add(Accounting a, Transaction t);
-int Accounting_n_trans(Accounting a);
-int Accounting_n_trans_month(Accounting a, int month);
+void Accounting_update(Accounting a, Transaction t);
+void Accounting_add_product(Accounting a, char *product);
 int Accounting_n_trans_range(Accounting a, int init, int end);
-double Accounting_t_cash(Accounting a);
-double Accounting_t_cash_month(Accounting a, int month);
 double Accounting_n_cash_range(Accounting A, int init, int end);
-void Accounting_iter(Accounting a, gID *id_arr, int N, void (*f_iter)(Transaction, void *), void *user_data);
-StatInfo Accounting_get_statinfo(Accounting a, gID *id_arr, int N);
-gID Accounting_get_next_id(Accounting a);
+StatInfo Accounting_get_statinfo(Accounting a, char *product);
 
 /* Metodos privados */
 // Nenhum
 
 // ------------------------------------------------------------------------------
 
+/**
+ * \brief Define a estrutura da classe `Accounting`.
+ * 
+ * Esta estrutura tem como prioridade ser utilizada na prespectiva de metódo
+ * de contabilidade eficiente para os serviços SGV.
+ */
 typedef struct accounting
 {
-    int nTrans[N_MONTHS + 1];
-    double totCashFlow[N_MONTHS + 1];
-    GrowingArray treg;
+    int nTrans[N_MONTHS];         /**< Número de transações mensais. */
+    double totCashFlow[N_MONTHS]; /**< Fluxo monetário mensal. */
+    StrSet products;              /**< Conjunto que armazenada todos os produtos. */
 } * Accounting;
 
 // ------------------------------------------------------------------------------
 
-#define BASE_SIZE 900000
-
-// ------------------------------------------------------------------------------
-
+/**
+ * \brief Cria uma instância da classe `Accounting`.
+ * 
+ * Para além de criar a instância, inicializa todos as variavéis necessárias.
+ * 
+ * @returns Uma instância da classe `Accounting`.
+ */
 Accounting Accounting_make()
 {
     int i;
     Accounting a = g_malloc(sizeof(struct accounting));
 
-    for (i = 0; i < N_MONTHS + 1; i++)
+    for (i = 0; i < N_MONTHS; i++)
     {
         a->totCashFlow[i] = 0.0;
         a->nTrans[i] = 0;
     }
 
-    a->treg = garray_make_sized(sizeof(Transaction), BASE_SIZE, trans_destroy);
+    a->products = strset_make(g_free, statinfo_destroy, statinfo_make, statinfo_builder, NULL);
 
     return a;
 }
 
+/**
+ * \brief Destrói uma instância da classe `Accounting`.
+ * 
+ * @param a Instância a destruir.
+ */
 void Accounting_destroy(Accounting a)
 {
     if (a)
     {
-        garray_destroy(a->treg);
+        strset_destroy(a->products);
         g_free(a);
     }
 }
 
-void Accounting_add(Accounting a, Transaction t)
+/**
+ * \brief Atualiza os valores da contabilidade de acordo com uma transação.
+ * 
+ * @param a Instância a considerar.
+ * @param t Transação usada na atualização de valores.
+ */
+void Accounting_update(Accounting a, Transaction t)
 {
-    int m = trans_get_month(t);
+    if (!t)
+        return;
 
-    double rev = trans_get_rev(t);
+    int month = trans_get_month(t) - 1;
 
-    a->nTrans[0]++;
-    a->nTrans[m]++;
+    char product[PROD_LEN + 1];
 
-    a->totCashFlow[0] += rev;
-    a->totCashFlow[m] += rev;
+    trans_copy_product(t, product);
 
-    garray_add(a->treg, t);
+    strset_add(a->products, product, t);
+
+    a->nTrans[month]++;
+
+    a->totCashFlow[month] += trans_get_rev(t);
 }
 
-int Accounting_n_trans(Accounting a)
-{
-    return a->nTrans[0];
-}
-
-int Accounting_n_trans_month(Accounting a, int month)
-{
-    int r = -1;
-
-    if (is_between(month, 1, N_MONTHS))
-        r = a->nTrans[month];
-
-    return r;
-}
-
+/**
+ * \brief Calcula o número de transações efetuadas entre dois meses.
+ * 
+ * @param a Instância a considerar.
+ * @param init Mês inicial.
+ * @param end Mês final.
+ * 
+ * @returns O valor calculado, ou -1 caso os meses sejam inválidos.
+ */
 int Accounting_n_trans_range(Accounting a, int init, int end)
 {
     int i, r = -1;
@@ -107,21 +124,15 @@ int Accounting_n_trans_range(Accounting a, int init, int end)
     return r;
 }
 
-double Accounting_t_cash(Accounting a)
-{
-    return a->totCashFlow[0];
-}
-
-double Accounting_t_cash_month(Accounting a, int month)
-{
-    double r = -1.0;
-
-    if (is_between(month, 1, N_MONTHS))
-        r = a->totCashFlow[month];
-
-    return r;
-}
-
+/**
+ * \brief Calcula o fluxo monetário entre dois meses.
+ * 
+ * @param a Instância a considerar.
+ * @param init Mês inicial.
+ * @param end Mês final.
+ * 
+ * @returns O valor calculado, ou -1.0 caso os meses sejam inválidos.
+ */
 double Accounting_n_cash_range(Accounting a, int init, int end)
 {
     int i;
@@ -138,36 +149,18 @@ double Accounting_n_cash_range(Accounting a, int init, int end)
     return r;
 }
 
-void Accounting_iter(Accounting a, gID *id_arr, int N, void (*f_iter)(Transaction, void *), void *user_data)
+/**
+ * \brief Cria uma cópia da informação contabilistica associada a um produto.
+ * 
+ * @param a Instância a considerar.
+ * @param product Produto que se pretende verificar.
+ * 
+ * @returns A cópia formada, ou NULL caso o produto não exista.
+ * 
+ * @see statinfo_clone
+ */
+StatInfo Accounting_get_statinfo(Accounting a, char *product)
 {
-    int i;
-    void *r = NULL;
-
-    if (f_iter && user_data)
-    {
-        for (i = 0; i < N; i++)
-        {
-            if ((r = garray_get_index(a->treg, id_arr[i])))
-            {
-                (*f_iter)((Transaction)r, user_data);
-            }
-        }
-    }
-}
-
-StatInfo Accounting_get_statinfo(Accounting a, gID *id_arr, int N)
-{
-    if (N <= 0)
-        return NULL;
-
-    StatInfo si = statinfo_make();
-
-    Accounting_iter(a, id_arr, N, statinfo_builder, si);
-
-    return si;
-}
-
-gID Accounting_get_next_id(Accounting a)
-{
-    return garray_size(a->treg);
+    void *tmp = strset_lookup(a->products, product);
+    return tmp ? statinfo_clone((StatInfo)tmp) : NULL;
 }
