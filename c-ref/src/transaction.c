@@ -2,6 +2,7 @@
  * @file transaction.c
  * \brief Módulo encarregue da estrutura de transação.
  */
+
 #include "transaction.h"
 #include <string.h>
 #include <glib.h>
@@ -323,5 +324,8 @@ void trans_set_id(Transaction t, gID id)
  */
 void trans_set_price(Transaction t, double price)
 {
-    t->price = price;
+    if (price >= 0.0)
+    {
+        t->price = price;
+    }
 }
