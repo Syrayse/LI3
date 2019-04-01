@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
     int i, j, **m, n1, n2, size = 0;
     char **r;
-    clock_t defstart, start;
+    clock_t defstart, start, qstart;
     double tot;
 
     defstart = start = clock();
@@ -44,19 +44,16 @@ int main(int argc, char *argv[])
     store_query1(s, argc, argv);
     c_t(start);
 
-    start = clock();
+    qstart = start = clock();
     printf("query2:\n");
-    for (i = 0; i < 26; i++)
+    r = store_query2(s, &size, 'A');
+    printf("\t%c -> %d\n\texamples: ", 'A', size);
+    for (j = 0; j < 5 && j < size; j++)
     {
-        r = store_query2(s, &size, 'A' + i);
-        printf("\t%c -> %d\n\texamples: ", 'A' + i, size);
-        for (j = 0; j < 5 && j < size; j++)
-        {
-            printf("%s ", r[j]);
-        }
-        putchar('\n');
-        g_free(r);
+        printf("%s ", r[j]);
     }
+    putchar('\n');
+    g_free(r);
     c_t(start);
 
     start = clock();
@@ -75,17 +72,7 @@ int main(int argc, char *argv[])
     }
     putchar('\n');
     g_free(r);
-    for (i = 1; i <= N_FILIAIS; i++)
-    {
-        r = store_query4(s, i, &size);
-        printf("\tFilial %d, weren\'t bought %d, examples: ", i, size);
-        for (j = 0; j < 5 && j < size; j++)
-        {
-            printf("%s ", r[j]);
-        }
-        putchar('\n');
-        g_free(r);
-    }
+
     c_t(start);
 
     start = clock();
@@ -164,15 +151,6 @@ int main(int argc, char *argv[])
     c_t(start);
 
     start = clock();
-    printf("Query 11:\n");
-    r = (char **)store_query11(s, N);
-    for (i = 0; i < N; i++)
-        printf("O produto %s, foi o %dº mais vendido\n", r[i], i + 1);
-
-    putchar('\n');
-    c_t(start);
-
-    start = clock();
     printf("Query 12:\n");
     r = store_query12(s, "Z5000", &n1);
     printf("\n\tFor client Z5000, found top %d!: ", n1);
@@ -180,6 +158,9 @@ int main(int argc, char *argv[])
         printf("%s ", r[i]);
     putchar('\n');
     c_t(start);
+
+    printf("just for queries:\n");
+    c_t(qstart);
 
     start = clock();
     printf("free:\n");
