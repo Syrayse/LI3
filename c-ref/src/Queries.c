@@ -238,63 +238,9 @@ char **store_query10(Store s, char *client, int month, int *sz)
 }
 
 //Onde é que está função tem de ser definida???
-int fc(const void *a, const void *b)
-{
-    int x, y;
-    x = get_t_nVendas((Vendas)a); //get_t_nUnits((Vendas) a);
-    y = get_t_nVendas((Vendas)b); //get_t_nUnits((Vendas) b);
-    return x - y;
-}
-
 char **store_query11(Store s, int N)
 {
-    int i, j, size, sz = 0;
-    char **r;
-    gID *ids;
-    Vendas si = NULL;
-    KHeap heap;
-    heap = kheap_make(&fc, NULL); //Funções de comparação
-
-    for (i = 0; i < 26; ++i)
-    {
-        r = CatProducts_dump_ordered(s->cat_products, &size, 'A' + i);
-        for (j = 0; j < size; j++)
-        {
-            si = vendas_make(r[j]);
-
-            ids = CatProducts_drop_trans(s->cat_products, r[j], 1, &sz);
-            Accounting_iter(s->accounting, ids, sz, vendas_builder, si);
-            g_free(ids);
-
-            ids = CatProducts_drop_trans(s->cat_products, r[j], 2, &sz);
-            Accounting_iter(s->accounting, ids, sz, vendas_builder, si);
-            g_free(ids);
-
-            ids = CatProducts_drop_trans(s->cat_products, r[j], 3, &sz);
-            Accounting_iter(s->accounting, ids, sz, vendas_builder, si);
-            g_free(ids);
-
-            kheap_add(heap, si);
-        }
-    }
-
-    for (i = 0; i < N; ++i)
-    {
-        si = kheap_extract_root(heap);
-        r[i] = get_t_product(si);
-        //j=get_t_nVendas(si);
-        //printf("%d: O produto %s, com %d vendas\n", i+1, r[i], j);
-
-        //vendas_destroy(si);
-    }
-    //while (kheap_check_root(heap)) {
-    //    si=kheap_extract_root(heap);
-    //    vendas_destroy(si);
-    //}
-
-    kheap_destroy(heap);
-
-    return r;
+    return NULL;
 }
 
 char **store_query12(Store s, char *client, int *sz)

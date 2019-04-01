@@ -19,13 +19,7 @@
 StatInfo statinfo_make();
 void statinfo_destroy(StatInfo);
 void statinfo_builder(Transaction t, void *e);
-Vendas vendas_make(char *);
-void vendas_destroy(Vendas);
-void vendas_builder(Transaction t, void *e);
 
-char *get_t_product(Vendas);
-int get_t_nVendas(Vendas);
-int get_t_nVendas_filial(Vendas, int);
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
 int get_t_fil_vendas(StatInfo, int filial);
@@ -70,12 +64,6 @@ typedef struct statistical_info
     double totalCashFlow,                                      /**< Fluxo monetário total realizado. */
         monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][N_PROMOS];   /**< Fluxo monetário contabilizador por Filial, Mês, com ou sem promoção ou só Filial com ou sem promoção. */
 } * StatInfo;
-
-typedef struct vendas_Prod
-{
-    char *product;
-    int nVendas[N_FILIAIS];
-} * Vendas;
 
 // ------------------------------------------------------------------------------
 
@@ -144,54 +132,6 @@ void statinfo_builder(Transaction t, void *e)
     si->totalCashFlow += rev;
     si->monthlyFilialRev[f - 1][0][indP(p)] += rev;
     si->monthlyFilialRev[f - 1][m][indP(p)] += rev;
-}
-
-Vendas vendas_make(char *nome)
-{
-    Vendas a = g_malloc(sizeof(struct vendas_Prod));
-
-    a->product = nome;
-    a->nVendas[0] = 0;
-    a->nVendas[1] = 0;
-    a->nVendas[2] = 0;
-
-    return a;
-}
-
-void vendas_destroy(Vendas a)
-{
-    if (a)
-    {
-        g_free(a);
-    }
-}
-
-void vendas_builder(Transaction t, void *e)
-{
-    if (!e)
-        return;
-    Vendas si = (Vendas)e;
-
-    //si->product  = trans_get_product(t);
-    si->nVendas[trans_get_filial(t) - 1]++;
-}
-
-char *get_t_product(Vendas si)
-{
-    return si->product;
-}
-
-int get_t_nVendas_filial(Vendas si, int fil)
-{
-    return si->nVendas[fil - 1];
-}
-
-int get_t_nVendas(Vendas si)
-{
-    int i, r = 0;
-    for (i = 0; i < N_FILIAIS; i++)
-        r += si->nVendas[i];
-    return r;
 }
 
 /**
