@@ -26,11 +26,6 @@ static void show_footer(NavControl nc);
 // ------------------------------------------------------------------------------
 
 /**
- * \brief Typedef para simplificar a escrita de uma função que tem a capacidade de impressão.
- */
-typedef void (*f_print)(void *);
-
-/**
  * \brief Estrutura que permite a visualização dinâmica de um dicionário.
  * 
  * Através desta estrutura é possivél atacar um sub-problema do sistema I/O a ser implementado.

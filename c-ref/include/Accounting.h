@@ -1,3 +1,10 @@
+/**
+ * @file Accounting.h
+ * \brief Interface de metódos públicos que permitem a interação com instâncias da classe `Accounting`.
+ * 
+ * Esta classe tem como objetivo tratar das contas do serviço SVG.
+ */
+
 #ifndef ACCOUNTING_H
 #define ACCOUNTING_H
 

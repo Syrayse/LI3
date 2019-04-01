@@ -1,3 +1,7 @@
+/**
+ * @file gArray.h
+ * \brief Interface de todos os metódos que permitem a interação com instâncias da classe `gArray`.
+ */
 #ifndef GARRAY_H
 #define GARRAY_H
 

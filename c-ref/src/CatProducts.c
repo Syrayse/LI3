@@ -93,7 +93,10 @@ int CatProducts_exists(CatProducts cp, char *product)
  */
 void CatProducts_add_product(CatProducts cp, char *product)
 {
-    strset_add(cp->products[conv_str(product)], g_strdup(product), NULL);
+    if (!CatProducts_exists(cp, product))
+    {
+        strset_add(cp->products[conv_str(product)], g_strdup(product), NULL);
+    }
 }
 
 /**
@@ -107,11 +110,11 @@ void CatProducts_add_product(CatProducts cp, char *product)
  */
 char **CatProducts_dump_ordered(CatProducts cp, int *s, char let)
 {
-    char ** r = NULL;
+    char **r = NULL;
 
-    if (is_between(let,'A','Z'))
+    if (is_between(let, 'A', 'Z'))
     {
-        *s = strset_size(cp->products[let-'A']);
+        *s = strset_size(cp->products[let - 'A']);
         r = strset_dump_n_ordered(cp->products[let - 'A'], *s);
     }
 

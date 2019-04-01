@@ -99,7 +99,6 @@ typedef struct transaction
         filial,                /**< Filial onde se deu a transação. */
         promo,                 /**< Código promocional associado à transação.  */
         units;                 /**< Unidades envolvidas na transação. */
-    gID id;                    /**< ID da transação. */
     double price;              /**< Preço do produto da transação. */
 } * Transaction;
 
@@ -244,7 +243,6 @@ Transaction trans_make()
 {
     Transaction t = g_malloc(sizeof(struct transaction));
     t->month = t->filial = t->promo = t->units = 0;
-    t->id = 0;
     t->price = 0.0;
     return t;
 }

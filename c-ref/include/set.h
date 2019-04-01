@@ -1,3 +1,8 @@
+/**
+ * @file set.h
+ * \brief Interface de todos os metódos que permitem a interação com instâncias da classe `StrSet`.
+ */
+
 #ifndef SET_H
 #define SET_H
 
@@ -6,12 +11,24 @@
 
 typedef struct set *StrSet;
 
+/**
+ * \brief Redefine uma função que deve ser usada num metódo foreach.
+ */
 typedef void (*f_foreach)(void *, void *, void *);
 
+/**
+ * \brief Redefine uma função que deve ser usada como atualizador de um elemento.
+ */
 typedef void (*f_update)(void *, void *);
 
+/**
+ * \brief Redefine uma função que deve ser usada como criadora da instância pretendida.
+ */
 typedef void *(*f_maker)();
 
+/**
+ * \brief Redefine uma função que deve ser usada de modo a verificar se um elemento é vazio.
+ */
 typedef int (*f_empty)(void *);
 
 StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_empty fe);

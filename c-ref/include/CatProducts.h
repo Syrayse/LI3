@@ -1,6 +1,6 @@
 /**
  * @file CatProducts.h
- * Define a API fornecida ao utilizador desta classe. 
+ * \brief Define a API fornecida ao utilizador desta classe. 
  */
 
 #ifndef CAT_PRODUCTS_H

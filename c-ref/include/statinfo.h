@@ -1,3 +1,8 @@
+/**
+ * @file statinfo.h
+ * \brief Interface de todos os metódos que permitem a interação com instâncias da classe `StatInfo`.
+ */
+
 #ifndef STATINFO_H
 #define STATINFO_H
 

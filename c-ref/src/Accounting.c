@@ -1,5 +1,5 @@
 /**
- * @file Accounting.h
+ * @file Accounting.c
  * \brief Módulo que define a classe `Accounting` destinada ao uso como contabilidade.
  */
 #include "Accounting.h"
@@ -7,6 +7,7 @@
 #include "util.h"
 #include "Verifier.h"
 #include "set.h"
+#include "Appender.h"
 
 // ------------------------------------------------------------------------------
 
@@ -29,12 +30,16 @@ StatInfo Accounting_get_statinfo(Accounting a, char *product);
  * 
  * Esta estrutura tem como prioridade ser utilizada na prespectiva de metódo
  * de contabilidade eficiente para os serviços SGV.
+ * 
+ * Tal como no catálogo de produtos, nesta classe há tantos conjuntos
+ * como letras no alfabeto, com um ojetivo diferente ao do catálogo de produtos.
+ * Neste caso a ideia visa um conjunto mais eficiente mantendo o número de colisões baixo.
  */
 typedef struct accounting
 {
     int nTrans[N_MONTHS];         /**< Número de transações mensais. */
     double totCashFlow[N_MONTHS]; /**< Fluxo monetário mensal. */
-    StrSet products;              /**< Conjunto que armazenada todos os produtos. */
+    StrSet products[N_LETTER];    /**< Conjunto que armazenada todos os produtos. */
 } * Accounting;
 
 // ------------------------------------------------------------------------------
@@ -57,8 +62,10 @@ Accounting Accounting_make()
         a->nTrans[i] = 0;
     }
 
-    a->products = strset_make(g_free, statinfo_destroy, statinfo_make, statinfo_builder, NULL);
-
+    for (i = 0; i < N_LETTER; i++)
+    {
+        a->products[i] = strset_make(g_free, Appender_destroy, Appender_make, Appender_update, NULL);
+    }
     return a;
 }
 
@@ -69,9 +76,14 @@ Accounting Accounting_make()
  */
 void Accounting_destroy(Accounting a)
 {
+    int i;
+
     if (a)
     {
-        strset_destroy(a->products);
+        for (i = 0; i < N_LETTER; i++)
+        {
+            strset_destroy(a->products[i]);
+        }
         g_free(a);
     }
 }
@@ -93,7 +105,7 @@ void Accounting_update(Accounting a, Transaction t)
 
     trans_copy_product(t, product);
 
-    strset_add(a->products, product, t);
+    strset_add(a->products[*product - 'A'], product, t);
 
     a->nTrans[month]++;
 
@@ -161,6 +173,6 @@ double Accounting_n_cash_range(Accounting a, int init, int end)
  */
 StatInfo Accounting_get_statinfo(Accounting a, char *product)
 {
-    void *tmp = strset_lookup(a->products, product);
+    void *tmp = strset_lookup(a->products[*product - 'A'], product);
     return tmp ? statinfo_clone((StatInfo)tmp) : NULL;
 }

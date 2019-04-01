@@ -1,61 +1,73 @@
+/**
+ * @file util.h 
+ * \brief Ficheiro que contèm funções e macros que podem ser úteis e ao longo do projeto.
+ */
+
 #ifndef UTIL_H
 #define UTIL_H
 
 /**
  * \brief Indexador dos códigos promocionais.
- **/
+ */
 #define indP(a) ((a) == ('N') ? 0 : 1)
 
+/**
+ * \brief Estrutura que contém informação essencial à estruturização das diferentes componentes pré-definidas do projeto.
+ */
 enum utils
 {
-    N_MONTHS = 12,
-    N_FILIAIS = 3,
-    N_PROMOS = 2,
-    PROD_LEN = 6,
-    CLT_LEN = 5,
-    N_LETTER = 26,
-    N_TRANS_ARGS = 7,
-    PROD_ID = 0,
-    CLT_ID = 1
+    N_MONTHS = 12,    /**< Número de meses considerados. */
+    N_FILIAIS = 3,    /**< Número de filiais existentes. */
+    N_PROMOS = 2,     /**< Número de promoções existentes. */
+    PROD_LEN = 6,     /**< Comprimento de um código de produto. */
+    CLT_LEN = 5,      /**< Comprimento de um código de cliente. */
+    N_LETTER = 26,    /**< Número de letras no alfabeto. */
+    N_TRANS_ARGS = 7, /**< Número de argumentos que um registo de transação deve possuir. */
+    PROD_ID = 0,      /**< Identificador de um produto */
+    CLT_ID = 1        /**< Identificador de um cliente. */
 };
 
 /**
  * \brief Verifica se x se encontra entre dois limites.
- **/
+ * 
+ * @param x Valor a verificar.
+ * @param min Limite inferior.
+ * @param max Limite superior.
+ * 
+ * @returns 1 se x se encontra min e max, 0 caso contrário.
+ */
 #define is_between(x, min, max) ((x >= min) && (x <= max))
 
 /**
  * \brief Mínimo entre dois números.
- **/
+ * 
+ * @param a Primeiro número.
+ * @param b Segundo número.
+ * 
+ * @returns O menor dos dois.
+ */
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
 /**
  * \brief Maximo entre dois números.
- **/
+ */
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
+/**
+ * \brief Typedef que visa simplificar a escrita de uma função que liberta memória.
+ */
 typedef void (*freefunc)(void *);
 
+/**
+ * \brief Typedef que visa simplificar a escrita de uma função de comparação.
+ */
 typedef int (*fcompare)(const void *, const void *);
 
+/**
+ * \brief Typedef que visa simplificar a escrita de uma função-predicado.
+ */
 typedef int (*Predicate)(const void *, const void *);
 
-typedef struct currier *Currier;
-
-typedef unsigned int gID;
-
-typedef unsigned char UChar;
-
-void is_null(void *a);
 int mystrcmp(const void *a, const void *b);
-int conv_str(const void *key);
-Currier currier_make(void *key, void *value);
-void currier_destroy(void *c);
-void *uncurry_by_key(void *c);
-void *uncurry_by_value(void *c);
-int compare_quants(const void *a, const void *b);
-int compare_revs(const void *a, const void *b);
-void foreach_add_g_currier(void *key, void *value, void *user_data);
-void foreach_add_heap_currier(void *key, void *value, void *user_data);
 
 #endif
