@@ -15,8 +15,6 @@
  */
 
 #include "Verifier.h"
-#include "CatClients.h"
-#include "CatProducts.h"
 #include "util.h"
 #include <glib.h>
 
@@ -27,7 +25,22 @@ Verifier Verifier_make();
 void Verifier_destroy(Verifier v);
 char *verify_client(char *client);
 char *verify_product(char *product);
-Transaction verify_sale(Verifier v, char *trans_code, CatProducts cp, CatClients cc, gID id);
+Transaction verify_sale(Verifier v, char *trans_code);
+
+Transaction trans_make();
+void trans_destroy(void *e);
+
+void trans_copy_product(Transaction src, char *dest);
+void trans_copy_client(Transaction src, char *dest);
+
+char *trans_get_client(Transaction t);
+char *trans_get_product(Transaction t);
+unsigned char trans_get_month(Transaction t);
+unsigned char trans_get_filial(Transaction t);
+unsigned char trans_get_promo(Transaction t);
+unsigned char trans_get_units(Transaction t);
+double trans_get_price(Transaction t);
+double trans_get_rev(Transaction t);
 
 /* Metodos privados */
 static int is_valid_client(char *client);
@@ -74,6 +87,21 @@ typedef struct verifier
 {
     scompare fa[N_TRANS_ARGS];
 } * Verifier;
+
+/**
+ * \brief Estrutura que armazena toda a informação necessária para um registo de transação.
+ */
+typedef struct transaction
+{
+    char client[CLT_LEN + 1],  /**< Cliente associado à transação. */
+        product[PROD_LEN + 1]; /**< Produto associado à transação. */
+    unsigned char month,       /**< Mês da transação. */
+        filial,                /**< Filial onde se deu a transação. */
+        promo,                 /**< Código promocional associado à transação.  */
+        units;                 /**< Unidades envolvidas na transação. */
+    gID id;                    /**< ID da transação. */
+    double price;              /**< Preço do produto da transação. */
+} * Transaction;
 
 // ------------------------------------------------------------------------------
 
@@ -184,33 +212,175 @@ char *verify_product(char *product)
  * @see trans_destroy
  * @see trans_set_id
  */
-Transaction verify_sale(Verifier v, char *trans_code, CatProducts cp, CatClients cc, gID id)
+Transaction verify_sale(Verifier v, char *trans_code)
 {
-    if (!v || !trans_code || !cp || !cc)
+    if (!v || !trans_code)
         return NULL;
 
     int t, i, r = 1;
-    Transaction tr = trans_make();
+    Transaction dest = trans_make();
     char *token = strtok(trans_code, BASE_DELIM);
 
     for (i = 0; r && token && i < N_TRANS_ARGS; i++, token = strtok(NULL, BASE_DELIM))
     {
-        t = (*v->fa[i])(token, tr);
+        t = (*v->fa[i])(token, dest);
         r = min(r, t);
     }
 
-    if (((token && i >= N_TRANS_ARGS) || !r) || !(trans_exists_efect(tr, cp, cc)))
+    if (token && i >= N_TRANS_ARGS)
     {
-        trans_destroy((void *)tr);
-        tr = NULL;
+        r = 0;
     }
 
-    if (tr)
-    {
-        trans_set_id(tr, id);
-    }
+    return dest;
+}
 
-    return tr;
+/**
+ * \brief Cria uma transação.
+ * 
+ * returns Transação criada.
+ */
+Transaction trans_make()
+{
+    Transaction t = g_malloc(sizeof(struct transaction));
+    t->month = t->filial = t->promo = t->units = 0;
+    t->id = 0;
+    t->price = 0.0;
+    return t;
+}
+
+/**
+ * \brief Destrói uma transação.
+ * 
+ * @param e Transação a destruir.
+ */
+void trans_destroy(void *e)
+{
+    Transaction t;
+
+    if (e)
+    {
+        t = (Transaction)e;
+        g_free(t);
+    }
+}
+
+/**
+ * \brief Cópia o código de produto para um dado endereço.
+ * 
+ * @param src Transação a ser utilizada.
+ * @param dest Endereço onde irá ser colocada uma cópia do código do produto.
+ */
+void trans_copy_product(Transaction src, char *dest)
+{
+    strcpy(dest, src->product);
+}
+
+/**
+ * \brief Cópia o código de cliente para um dado endereço.
+ * 
+ * @param src Transação a ser utilizada.
+ * @param dest Endereço onde irá ser colocada uma cópia do código do cliente.
+ */
+void trans_copy_client(Transaction src, char *dest)
+{
+    strcpy(dest, src->client);
+}
+
+/**
+ * \brief Calcula o cliente associado a uma transação.
+ * 
+ * @param t Transação a verificar.
+ * 
+ * @returns O cliente da transação.
+ */
+char *trans_get_client(Transaction t)
+{
+    return g_strdup(t->client);
+}
+
+/**
+ * \brief Calcula o produto associado a uma transação.
+ * 
+ * @param t Transação a verificar.
+ * 
+ * @returns O produto da transação.
+ */
+char *trans_get_product(Transaction t)
+{
+    return g_strdup(t->product);
+}
+
+/**
+ * \brief Calcula o mês a que se deu uma transação.
+ * 
+ * @param t Transação a verificar.
+ * 
+ * @returns O mês da transação.
+ */
+unsigned char trans_get_month(Transaction t)
+{
+    return t->month;
+}
+
+/**
+ * \brief Calcula a filial onde se deu a transação.
+ * 
+ * @param t Transação a verificar.
+ * 
+ * @returns A filial calculada.
+ */
+unsigned char trans_get_filial(Transaction t)
+{
+    return t->filial;
+}
+
+/**
+ * \brief Calcula o código promocional duma transação.
+ * 
+ * @param t Transação a verificar.
+ * 
+ * @returns O código promocional da transação.
+ */
+unsigned char trans_get_promo(Transaction t)
+{
+    return t->promo;
+}
+
+/**
+ * \brief Calcula quantas unidades estão envolvidas na transação.
+ * 
+ * @param t Transação a verificar.
+ * 
+ * @returns O número de unidades envolvidas.
+ */
+unsigned char trans_get_units(Transaction t)
+{
+    return t->units;
+}
+
+/**
+ * \brief Calcula o preço a que se deu a transação.
+ * 
+ * @param t Transação a verificar.
+ * 
+ * @returns O preço realizado.
+ */
+double trans_get_price(Transaction t)
+{
+    return t->price;
+}
+
+/**
+ * \brief Calcula o cashflow obtido duma transação.
+ * 
+ * @param t Transação a verificar.
+ * 
+ * @returns O cashflow obtido.
+ */
+double trans_get_rev(Transaction t)
+{
+    return (t->units * t->price);
 }
 
 /**
@@ -253,34 +423,15 @@ static int is_valid_product(char *product)
  * 
  * Para esta função proceder corretamente, deve ser passado como argumento uma função de validação
  * que dada uma só palavra `word` permite realizar a validação semântica que se pretende desta.
- * Para além disso, após a devida verificação é também criada uma memória uma cópia interna
- * a palavra que se pretende verificar, e caso esta seja validá é retornada para o utilizador.
  * 
  * @param word Palavra que se pretende verificar.
  * @param fv Função de validação da palavra.
  * 
- * @returns Uma cópia da palavra caso esta seja válida, NULL caso contrário ou se a função de verificação for NULL.
+ * @returns A própria palavra caso esta seja válida, NULL caso contrário.
  */
 static char *verify_word(char *word, int (*fv)(char *))
 {
-    char *token, *r = NULL;
-
-    token = strtok(word, BASE_DELIM);
-
-    if (fv && (*fv)(token))
-    {
-        r = g_strdup(token);
-    }
-
-    token = strtok(NULL, BASE_DELIM);
-
-    if (token)
-    {
-        g_free(r);
-        r = NULL;
-    }
-
-    return r;
+    return ((word && fv && (*fv)(word)) ? word : NULL);
 }
 
 /**
@@ -296,7 +447,6 @@ static char *verify_word(char *word, int (*fv)(char *))
  * @returns 1 se o produto é válido e foi atribuido, 0 caso contrário.
  * 
  * @see is_valid_product
- * @see trans_set_product
  */
 static int _set_trans_valid_product(char *product, Transaction t)
 {
@@ -304,7 +454,7 @@ static int _set_trans_valid_product(char *product, Transaction t)
 
     if (r)
     {
-        trans_set_product(t, product);
+        strcpy(t->product, product);
     }
 
     return r;
@@ -321,8 +471,6 @@ static int _set_trans_valid_product(char *product, Transaction t)
  * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
  * 
  * @returns 1 se o preço é válido e foi atribuido, 0 caso contrário.
- *
- * @see trans_set_price
  */
 static int is_valid_price(char *price, Transaction t)
 {
@@ -331,7 +479,7 @@ static int is_valid_price(char *price, Transaction t)
 
     if (r)
     {
-        trans_set_price(t, f);
+        t->price = f;
     }
 
     return r;
@@ -348,8 +496,6 @@ static int is_valid_price(char *price, Transaction t)
  * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
  * 
  * @returns 1 se o número de unidades é válido e foi atribuido, 0 caso contrário.
- *
- * @see trans_set_units
  */
 static int is_valid_units(char *units, Transaction t)
 {
@@ -358,7 +504,7 @@ static int is_valid_units(char *units, Transaction t)
 
     if (r)
     {
-        trans_set_units(t, f);
+        t->units = f;
     }
 
     return r;
@@ -375,8 +521,6 @@ static int is_valid_units(char *units, Transaction t)
  * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
  * 
  * @returns 1 se a promoção é válida e foi atribuida, 0 caso contrário.
- * 
- * @see trans_set_promo
  */
 static int is_valid_promo(char *promo, Transaction t)
 {
@@ -384,7 +528,7 @@ static int is_valid_promo(char *promo, Transaction t)
 
     if (r)
     {
-        trans_set_promo(t, *promo);
+        t->promo = *promo;
     }
 
     return r;
@@ -403,7 +547,6 @@ static int is_valid_promo(char *promo, Transaction t)
  * @returns 1 se o cliente é válido e foi atribuido, 0 caso contrário.
  * 
  * @see is_valid_client
- * @see trans_set_client
  */
 static int _set_trans_valid_client(char *client, Transaction t)
 {
@@ -411,7 +554,7 @@ static int _set_trans_valid_client(char *client, Transaction t)
 
     if (r)
     {
-        trans_set_client(t, client);
+        strcpy(t->client, client);
     }
 
     return r;
@@ -428,15 +571,13 @@ static int _set_trans_valid_client(char *client, Transaction t)
  * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
  * 
  * @returns 1 se o mês é válido e foi atribuido, 0 caso contrário.
- * 
- * @see trans_set_month
  */
 static int is_valid_month(char *month, Transaction t)
 {
     int r, f = atoi(month);
     r = is_between(f, 1, 12);
     if (r)
-        trans_set_month(t, f);
+        t->month = f;
     return r;
 }
 
@@ -451,14 +592,12 @@ static int is_valid_month(char *month, Transaction t)
  * @param t `Transaction` que irá ser o recepiente de possivéis atribuições.
  * 
  * @returns 1 se a filial é válida e foi atribuida, 0 caso contrário.
- *
- * @see trans_set_filial
  */
 static int is_valid_filial(char *filial, Transaction t)
 {
     int r, f = atoi(filial);
     r = is_between(f, 1, 3);
     if (r)
-        trans_set_filial(t, f);
+        t->filial = f;
     return r;
 }

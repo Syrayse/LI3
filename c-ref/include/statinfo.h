@@ -1,7 +1,7 @@
 #ifndef STATINFO_H
 #define STATINFO_H
 
-#include "transaction.h"
+#include "Verifier.h"
 
 typedef struct statistical_info *StatInfo;
 

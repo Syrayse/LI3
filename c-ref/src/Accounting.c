@@ -5,7 +5,7 @@
 #include "Accounting.h"
 #include "statinfo.h"
 #include "util.h"
-#include "transaction.h"
+#include "Verifier.h"
 #include "set.h"
 
 // ------------------------------------------------------------------------------

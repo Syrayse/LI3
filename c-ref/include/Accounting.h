@@ -1,7 +1,7 @@
 #ifndef ACCOUNTING_H
 #define ACCOUNTING_H
 
-#include "transaction.h"
+#include "Verifier.h"
 #include "statinfo.h"
 
 typedef struct accounting *Accounting;
