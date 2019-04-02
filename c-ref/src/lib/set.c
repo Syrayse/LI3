@@ -2,7 +2,7 @@
 #include "util.h"
 #include "gArray.h"
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_empty fe);
@@ -23,7 +23,7 @@ char **strset_dump_n_ordered(StrSet set, int n);
 /* Metodos privados */
 static void foreach_add(void *key, void *value, void *user_data);
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 typedef struct set
 {
@@ -34,7 +34,7 @@ typedef struct set
     f_empty fe;
 } * StrSet;
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 StrSet strset_make(freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu, f_empty fe)
 {
@@ -145,24 +145,6 @@ char **strset_generic_dump(StrSet set, f_foreach ffor, int *n, int flag)
         garray_sort(ga, mystrcmp);
 
     r = (char **)garray_dump_elems(ga, NULL, n);
-
-    garray_destroy(ga);
-
-    return r;
-}
-
-char **strset_dump_if(StrSet set, fcompare fc, int *n)
-{
-    char **r;
-
-    GrowingArray ga = garray_make(sizeof(Currier), currier_destroy);
-
-    g_hash_table_foreach(set->table, foreach_add_g_currier, ga);
-
-    if (fc)
-        garray_sort(ga, fc);
-
-    r = (char **)garray_dump_elems(ga, uncurry_by_key, n);
 
     garray_destroy(ga);
 

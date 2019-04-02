@@ -9,7 +9,7 @@
 #include "set.h"
 #include "Appender.h"
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 Accounting Accounting_make();
@@ -21,9 +21,9 @@ double Accounting_n_cash_range(Accounting A, int init, int end);
 StatInfo Accounting_get_statinfo(Accounting a, char *product);
 
 /* Metodos privados */
-// Nenhum
+/* Nenhum */
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Define a estrutura da classe `Accounting`.
@@ -42,7 +42,7 @@ typedef struct accounting
     StrSet products[N_LETTER];    /**< Conjunto que armazenada todos os produtos. */
 } * Accounting;
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Cria uma instância da classe `Accounting`.

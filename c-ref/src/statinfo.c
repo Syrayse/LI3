@@ -13,7 +13,7 @@
 #include "util.h"
 #include <glib.h>
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 void *statinfo_make();
@@ -48,7 +48,7 @@ double get_t_month_rev_no_promo(StatInfo, int month);
 static int get_t_vendas_month_iter(StatInfo a, int month, int (*)(StatInfo, int, int));
 static double get_t_rev_month_iter(StatInfo a, int month, double (*)(StatInfo, int, int));
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Estrutura da classe `StatInfo`.
@@ -66,7 +66,7 @@ typedef struct statistical_info
         monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][N_PROMOS];   /**< Fluxo monetário contabilizador por Filial, Mês, com ou sem promoção ou só Filial com ou sem promoção. */
 } * StatInfo;
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Cria uma instância da classe `StatInfo` com valores zerados.

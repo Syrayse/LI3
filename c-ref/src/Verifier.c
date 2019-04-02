@@ -18,7 +18,7 @@
 #include "util.h"
 #include <glib.h>
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 Verifier Verifier_make();
@@ -54,7 +54,7 @@ static int _set_trans_valid_client(char *client, Transaction t);
 static int is_valid_month(char *month, Transaction t);
 static int is_valid_filial(char *filial, Transaction t);
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Typedef utilizado de forma a simplificar parametrização de funções.
@@ -102,14 +102,14 @@ typedef struct transaction
     double price;              /**< Preço do produto da transação. */
 } * Transaction;
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Delimitadores base que permitem compatibilidade com maioria dos sistemas operativos.
  */
 #define BASE_DELIM " \n\r"
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Criar uma instância da classe `Verifier`.

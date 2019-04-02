@@ -14,7 +14,7 @@
 #include "gArray.h"
 #include <glib.h>
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metódos públicos */
 void *Appender_make();
@@ -26,7 +26,7 @@ void Appender_iterate_filial(Appender app, int filial, void (*f_iter)(Transactio
 /* Metódos privados */
 static void enclosed_iterator_filial(Appender app, int filial, void (*f_iter)(Transaction, void *), void *user_data);
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Definição da estrutura da classe `Appender`.
@@ -44,7 +44,7 @@ typedef struct appender
     GrowingArray regist[N_FILIAIS]; /**< Array de `GrowingArray`s que devem conter `Transaction`s. */
 } * Appender;
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Criar uma instância da classe `Appender`.

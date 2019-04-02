@@ -6,7 +6,7 @@
 #include "CatClients.h"
 #include "set.h"
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 CatClients CatClients_make();
@@ -15,9 +15,9 @@ int CatClients_exists(CatClients cc, char *client);
 void CatClients_add_client(CatClients cc, char *client);
 
 /* Metodos privados */
-// Nenhum
+/* Nenhum */
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Definição da classe que armazena o catálogo de clientes. 
@@ -27,7 +27,7 @@ typedef struct cat_clients
     StrSet clients; /**< Conjunto onde são armazenados os clientes. */
 } * CatClients;
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Cria uma instância da classe `CatClients`.

@@ -3,16 +3,17 @@
  * \brief Ficheiro que contèm funções e macros que podem ser úteis e ao longo do projeto.
  */
 #include "util.h"
+#include <string.h>
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 int mystrcmp(const void *a, const void *b);
 
 /* Metodos privados */
-// Nenhum
+/* Nenhum */
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Efetua a comparação alfabética de duas _Strings_.
@@ -25,4 +26,16 @@ int mystrcmp(const void *a, const void *b);
 int mystrcmp(const void *a, const void *b)
 {
     return strcmp(*(const char **)a, *(const char **)b);
+}
+
+/**
+ * \brief Permite calcular um indíce adequada a um dado elemento.
+ * 
+ * @param key Elemento a considerar.
+ * 
+ * @returns Chave adequada.
+ */
+int conv_str(const void *key)
+{
+    return (((int)(*(const char *)key)) - 'A');
 }

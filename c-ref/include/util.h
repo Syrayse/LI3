@@ -69,5 +69,6 @@ typedef int (*fcompare)(const void *, const void *);
 typedef int (*Predicate)(const void *, const void *);
 
 int mystrcmp(const void *a, const void *b);
+int conv_str(const void *key);
 
 #endif

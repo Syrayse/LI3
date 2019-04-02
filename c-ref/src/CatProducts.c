@@ -11,7 +11,7 @@
 #include "gArray.h"
 #include <glib.h>
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 CatProducts CatProducts_make();
@@ -21,9 +21,9 @@ void CatProducts_add_product(CatProducts cp, char *product);
 char **CatProducts_dump_ordered(CatProducts cp, int *s, char let);
 
 /* Metodos privados */
-// Nenhum
+/* Nenhum */
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Definição da classe que armazena o catálogo de produtos.
@@ -33,7 +33,7 @@ typedef struct cat_products
     StrSet products[N_LETTER]; /**< _Array_ de conjuntos cada um correspondente a uma letra, por ordem alfabética. */
 } * CatProducts;
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Cria uma instância da classe `CatProducts`.

@@ -5,7 +5,7 @@ OLDIR=$(ODIR)/lib
 DOCDIR=docs
 
 CC=gcc
-CFLAGS = -Wall -std=c11 -g -Ofast `pkg-config --cflags glib-2.0` -I$(IDIR)
+CFLAGS = -Wall -ansi -g -Ofast `pkg-config --cflags glib-2.0` -I$(IDIR)
 
 DEPS=$(IDIR)/$(wildcard *.h)
 SOURCES=$(wildcard *.c)

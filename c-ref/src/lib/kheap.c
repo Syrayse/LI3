@@ -1,10 +1,10 @@
 /**
  * @file kheap.c
  * \brief Módulo de código associado à estrutura de dados heap.
- **/
+ */
 #include "kheap.h"
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 KHeap kheap_make(fcompare, freefunc);
@@ -22,7 +22,7 @@ static int bubble_down(KHeap);
 static void double_heap(KHeap);
 static void swap_arr(void **arr, int i, int j);
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 typedef struct kheap
 {
@@ -32,31 +32,29 @@ typedef struct kheap
     void **heap;
 } * KHeap;
 
-// ------------------------------------------------------------------------------
-
-// Listagem das funções ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Define o número de ramos da Heap.
- **/
+ */
 #define K 6
 
 /**
  * \brief Calcula o antecessor de um elemento da Heap.
- **/
+ */
 #define ant(i, K) (((i)-1) / K)
 
 /**
  * \brief Calcula um n-ésimo sucessor de um elemento da Heap.
- **/
+ */
 #define succ(i, k, n) ((k) * (i) + (n))
 
 /**
  * \brief Tamanho inicial da estrutura de dados onde se encontra armazenada a Heap.
- **/
+ */
 #define BASESIZE 10
 
-// Funções ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/* ------------------------------------------------------------------------------ */
 
 KHeap kheap_make(fcompare fc, freefunc ff)
 {
