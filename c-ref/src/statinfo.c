@@ -16,10 +16,16 @@
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
+<<<<<<< HEAD
 void *statinfo_make();
 void statinfo_destroy(void *);
 void statinfo_builder(void *e, void *t);
 StatInfo statinfo_clone(StatInfo si);
+=======
+StatInfo statinfo_make();
+void statinfo_destroy(StatInfo);
+void statinfo_builder(Transaction t, void *e);
+>>>>>>> master
 
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
@@ -66,7 +72,11 @@ typedef struct statistical_info
         monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][N_PROMOS];   /**< Fluxo monetário contabilizador por Filial, Mês, com ou sem promoção ou só Filial com ou sem promoção. */
 } * StatInfo;
 
+<<<<<<< HEAD
 /* ------------------------------------------------------------------------------ */
+=======
+// ------------------------------------------------------------------------------
+>>>>>>> master
 
 /**
  * \brief Cria uma instância da classe `StatInfo` com valores zerados.
@@ -136,6 +146,7 @@ void statinfo_builder(void *e, void *t)
     si->monthlyFilialRev[f - 1][m][indP(p)] += rev;
 }
 
+<<<<<<< HEAD
 /**
  * \brief Retorna uma cópia da instância.
  * 
@@ -167,6 +178,8 @@ StatInfo statinfo_clone(StatInfo si)
     return sc;
 }
 
+=======
+>>>>>>> master
 /**
  * \brief Calcula o número total de transações.
  * 
