@@ -1,21 +1,19 @@
+/**
+ * @file statinfo.h
+ * \brief Interface de todos os metódos que permitem a interação com instâncias da classe `StatInfo`.
+ */
+
 #ifndef STATINFO_H
 #define STATINFO_H
 
-#include "transaction.h"
+#include "Verifier.h"
 
 typedef struct statistical_info *StatInfo;
-typedef struct vendas_Prod *Vendas;
 
-StatInfo statinfo_make();
-void statinfo_destroy(StatInfo);
-void statinfo_builder(Transaction t, void *e);
-Vendas vendas_make(char*);
-void vendas_destroy(Vendas);
-void vendas_builder(Transaction t, void *e);
-
-char* get_t_product(Vendas);
-int get_t_nVendas(Vendas);
-int get_t_nVendas_filial(Vendas, int);
+void *statinfo_make();
+void statinfo_destroy(void *);
+void statinfo_builder(void *e, void *t);
+StatInfo statinfo_clone(StatInfo si);
 
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);

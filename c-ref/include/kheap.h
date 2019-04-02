@@ -1,3 +1,7 @@
+/**
+ * @file kheap.h
+ * \brief Interface de todos os metódos que permitem a interação com instâncias da classe `KHeap`.
+ */
 #ifndef KHEAP_H
 #define KHEAP_H
 

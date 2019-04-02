@@ -9,7 +9,7 @@
 #include <glib.h>
 #include <stdio.h>
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 NavControl NavControl_make();
@@ -23,12 +23,7 @@ void NavControl_show(NavControl nc);
 static void show_header(NavControl nc);
 static void show_footer(NavControl nc);
 
-// ------------------------------------------------------------------------------
-
-/**
- * \brief Typedef para simplificar a escrita de uma função que tem a capacidade de impressão.
- */
-typedef void (*f_print)(void *);
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Estrutura que permite a visualização dinâmica de um dicionário.
@@ -48,7 +43,7 @@ typedef struct nav_control
         fp_user;       /**< Função de impressão a ser aplicada à informação passada pelo usuário. */
 } * NavControl;
 
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Número de elementos predifinido por página.
@@ -64,7 +59,7 @@ typedef struct nav_control
  * \brief Máximo entre dois números.
  */
 #define max(a, b) ((a) > (b) ? (a) : (b))
-// ------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Cria uma instância da classe `NavControl`.
