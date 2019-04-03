@@ -6,13 +6,10 @@
 #ifndef STATINFO_H
 #define STATINFO_H
 
-#include "Verifier.h"
-
 typedef struct statistical_info *StatInfo;
 
 void *statinfo_make();
 void statinfo_destroy(void *);
-void statinfo_builder(void *e, void *t);
 StatInfo statinfo_clone(StatInfo si);
 
 int get_n_actors(StatInfo);

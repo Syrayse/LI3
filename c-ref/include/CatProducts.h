@@ -6,14 +6,15 @@
 #ifndef CAT_PRODUCTS_H
 #define CAT_PRODUCTS_H
 
-#include "util.h"
-
 typedef struct cat_products *CatProducts;
+
+typedef struct product *Product;
 
 CatProducts CatProducts_make();
 void CatProducts_destroy(CatProducts cp);
-int CatProducts_exists(CatProducts cp, char *product);
-void CatProducts_add_product(CatProducts cp, char *product);
+void CatProducts_add_product(CatProducts cp, Product product);
 char **CatProducts_dump_ordered(CatProducts cp, int *s, char let);
+Product Product_make(char *product_code);
+void Product_destroy(void *p);
 
 #endif

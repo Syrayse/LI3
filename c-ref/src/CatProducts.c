@@ -9,19 +9,29 @@
 #include "CatProducts.h"
 #include "set.h"
 #include "gArray.h"
-#include <glib.h>
+#include <gmodule.h>
 
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 CatProducts CatProducts_make();
 void CatProducts_destroy(CatProducts cp);
-int CatProducts_exists(CatProducts cp, char *product);
-void CatProducts_add_product(CatProducts cp, char *product);
+int CatProducts_exists(CatProducts cp, Product product);
+void CatProducts_add_product(CatProducts cp, Product product);
 char **CatProducts_dump_ordered(CatProducts cp, int *s, char let);
+Product Product_make(char *product_code);
+void Product_destroy(void *p);
 
 /* Metodos privados */
-/* Nenhum */
+static gint wrap_mystrcmp(gconstpointer a, gconstpointer b, gpointer user_data);
+static gboolean foreach_add(gpointer key, gpointer value, gpointer data);
+
+/* ------------------------------------------------------------------------------ */
+
+/**
+ * \brief Define o tamanho de um código de produto.
+ */
+#define PROD_LEN 6
 
 /* ------------------------------------------------------------------------------ */
 
@@ -30,8 +40,16 @@ char **CatProducts_dump_ordered(CatProducts cp, int *s, char let);
  */
 typedef struct cat_products
 {
-    StrSet products[N_LETTER]; /**< _Array_ de conjuntos cada um correspondente a uma letra, por ordem alfabética. */
+    GTree *products[N_LETTER]; /**< _Array_ de conjuntos cada um correspondente a uma letra, por ordem alfabética. */
 } * CatProducts;
+
+/**
+ * \brief Define a estrutura associada a um `Product`.
+ */
+typedef struct product
+{
+    char product_code[PROD_LEN + 1]; /**< Código do produto. */
+} * Product;
 
 /* ------------------------------------------------------------------------------ */
 
@@ -49,8 +67,10 @@ CatProducts CatProducts_make()
     CatProducts cp = g_malloc(sizeof(struct cat_products));
 
     for (i = 0; i < N_LETTER; i++)
-        cp->products[i] = strset_make(g_free, NULL, NULL, NULL, NULL);
 
+    {
+        cp->products[i] = g_tree_new_full(wrap_mystrcmp, NULL, Product_destroy, NULL);
+    }
     return cp;
 }
 
@@ -66,23 +86,15 @@ void CatProducts_destroy(CatProducts cp)
     if (cp)
     {
         for (i = 0; i < N_LETTER; i++)
-            strset_destroy(cp->products[i]);
+            g_tree_destroy(cp->products[i]);
 
         g_free(cp);
     }
 }
 
-/**
- * \brief Verifica se um produto existe no catalogo de produtos.
- * 
- * @param cp Instância a considerar.
- * @param product Produto que se pretende verificar.
- * 
- * @returns 1 caso o produto exista, 0 caso contrário.
- */
-int CatProducts_exists(CatProducts cp, char *product)
+int CatProducts_exists(CatProducts cp, Product product)
 {
-    return strset_contains(cp->products[conv_str(product)], product);
+    
 }
 
 /**
@@ -91,12 +103,9 @@ int CatProducts_exists(CatProducts cp, char *product)
  * @param cp Instância a considerar.
  * @param product Produto a adicionar ao catalogo.
  */
-void CatProducts_add_product(CatProducts cp, char *product)
+void CatProducts_add_product(CatProducts cp, Product product)
 {
-    if (!CatProducts_exists(cp, product))
-    {
-        strset_add(cp->products[conv_str(product)], g_strdup(product), NULL);
-    }
+    g_tree_insert(cp->products[*product->product_code - 'A'], g_strdup(product->product_code), NULL);
 }
 
 /**
@@ -110,13 +119,60 @@ void CatProducts_add_product(CatProducts cp, char *product)
  */
 char **CatProducts_dump_ordered(CatProducts cp, int *s, char let)
 {
+    int i = 0;
     char **r = NULL;
+    GTree *ref;
+    void *holder[2];
 
     if (is_between(let, 'A', 'Z'))
     {
-        *s = strset_size(cp->products[let - 'A']);
-        r = strset_dump_n_ordered(cp->products[let - 'A'], *s);
+        ref = cp->products[let - 'A'];
+        r = g_malloc(sizeof(char *) * g_tree_nnodes(ref));
+        holder[0] = r;
+        holder[1] = &i;
+        g_tree_foreach(ref, foreach_add, holder);
+        *s = i;
     }
 
     return r;
+}
+
+/**
+ * \brief 
+ */
+Product Product_make(char *product_code)
+{
+    Product product = g_malloc(sizeof(struct product));
+
+    strcpy(product->product_code, product_code);
+
+    return product;
+}
+
+/**
+ * \brief 
+ */
+void Product_destroy(void *p)
+{
+    if (p)
+    {
+        g_free((Product)p);
+    }
+}
+
+/**
+ * \brief Função de comparação que envolve a função `mystrcmp` é estritamente necessária para comparação em arvóres.
+ */
+static gint wrap_mystrcmp(gconstpointer a, gconstpointer b, gpointer user_data)
+{
+    return strcmp(((Product)a)->product_code, ((Product)b)->product_code);
+}
+
+static gboolean foreach_add(gpointer key, gpointer value, gpointer data)
+{
+    void **holder = (void **)data;
+
+    ((char **)holder[0])[(*(int *)holder[1])++] = g_strdup(((Product)key)->product_code);
+
+    return FALSE;
 }

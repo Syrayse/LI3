@@ -16,16 +16,9 @@
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
-<<<<<<< HEAD
 void *statinfo_make();
 void statinfo_destroy(void *);
-void statinfo_builder(void *e, void *t);
 StatInfo statinfo_clone(StatInfo si);
-=======
-StatInfo statinfo_make();
-void statinfo_destroy(StatInfo);
-void statinfo_builder(Transaction t, void *e);
->>>>>>> master
 
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
@@ -72,11 +65,7 @@ typedef struct statistical_info
         monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][N_PROMOS];   /**< Fluxo monetário contabilizador por Filial, Mês, com ou sem promoção ou só Filial com ou sem promoção. */
 } * StatInfo;
 
-<<<<<<< HEAD
 /* ------------------------------------------------------------------------------ */
-=======
-// ------------------------------------------------------------------------------
->>>>>>> master
 
 /**
  * \brief Cria uma instância da classe `StatInfo` com valores zerados.
@@ -120,34 +109,6 @@ void statinfo_destroy(void *a)
 }
 
 /**
- * \brief Dada uma venda, que é utilizada como um recurso de obtenção de informação estatistica, permite obter informação considerada contabilisticamente útil sobre esta.
- *
- * @param t `Transaction` usada como meio de obtenção de informação.
- * @param e Instância de `StatInfo` a ser utilizada como recipiente de informação.
- */
-void statinfo_builder(void *e, void *t)
-{
-    if (!e || !t)
-        return;
-    StatInfo si = (StatInfo)e;
-    Transaction tr = (Transaction)t;
-
-    double rev = trans_get_rev(tr);
-    int f, m, p = trans_get_promo(tr);
-    m = trans_get_month(tr);
-    f = trans_get_filial(tr);
-
-    si->nVendasTotal++;
-    si->nVendasFilialMonth[f - 1][0][indP(p)]++;
-    si->nVendasFilialMonth[f - 1][m][indP(p)]++;
-
-    si->totalCashFlow += rev;
-    si->monthlyFilialRev[f - 1][0][indP(p)] += rev;
-    si->monthlyFilialRev[f - 1][m][indP(p)] += rev;
-}
-
-<<<<<<< HEAD
-/**
  * \brief Retorna uma cópia da instância.
  * 
  * @returns A cópia criada, ou NULL caso a instância seja inválida.
@@ -178,8 +139,6 @@ StatInfo statinfo_clone(StatInfo si)
     return sc;
 }
 
-=======
->>>>>>> master
 /**
  * \brief Calcula o número total de transações.
  * 
