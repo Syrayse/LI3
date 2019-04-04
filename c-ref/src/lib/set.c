@@ -96,7 +96,7 @@ int set_size(Set set)
     return g_hash_table_size(set->table);
 }
 
-gpointer set_lookup(set set, void *key)
+gpointer set_lookup(set set, gpointer key)
 {
     return g_hash_table_lookup(set->table, key);
 }
