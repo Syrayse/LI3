@@ -1,40 +1,24 @@
-/**
- * @file Accounting.c
- * \brief Módulo que define a classe `Accounting` destinada ao uso como contabilidade.
- */
 #include "Accounting.h"
 #include "statinfo.h"
 #include "util.h"
-#include "Verifier.h"
 #include "set.h"
-#include "Appender.h"
+#include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
 Accounting Accounting_make();
 void Accounting_destroy(Accounting a);
-void Accounting_update(Accounting a, Transaction t);
-void Accounting_add_product(Accounting a, char *product);
+void Accounting_update(Accounting a, char *product, int month, int filial, int units, int promo, double spent);
 int Accounting_n_trans_range(Accounting a, int init, int end);
-double Accounting_n_cash_range(Accounting A, int init, int end);
-StatInfo Accounting_get_statinfo(Accounting a, char *product);
+double Accounting_n_cash_range(Accounting a, int init, int end);
+int Accounting_get_global_stats(Accounting a, char *product, int month, int *trans_vec, int *spent_vec);
+int Accounting_get_per_filial_stats(Accounting a, char *product, int month, int **trans_vec, int **spent_vec);
 
 /* Metodos privados */
-/* Nenhum */
 
 /* ------------------------------------------------------------------------------ */
 
-/**
- * \brief Define a estrutura da classe `Accounting`.
- * 
- * Esta estrutura tem como prioridade ser utilizada na prespectiva de metódo
- * de contabilidade eficiente para os serviços SGV.
- * 
- * Tal como no catálogo de produtos, nesta classe há tantos conjuntos
- * como letras no alfabeto, com um ojetivo diferente ao do catálogo de produtos.
- * Neste caso a ideia visa um conjunto mais eficiente mantendo o número de colisões baixo.
- */
 typedef struct accounting
 {
     int nTrans[N_MONTHS];         /**< Número de transações mensais. */
@@ -44,36 +28,25 @@ typedef struct accounting
 
 /* ------------------------------------------------------------------------------ */
 
-/**
- * \brief Cria uma instância da classe `Accounting`.
- * 
- * Para além de criar a instância, inicializa todos as variavéis necessárias.
- * 
- * @returns Uma instância da classe `Accounting`.
- */
 Accounting Accounting_make()
 {
     int i;
-    Accounting a = g_malloc(sizeof(struct accounting));
+    Accounting ac = g_malloc(sizeof(struct accounting));
 
     for (i = 0; i < N_MONTHS; i++)
     {
-        a->totCashFlow[i] = 0.0;
-        a->nTrans[i] = 0;
+        ac->nTrans[i] = 0;
+        ac->totCashFlow[i] = 0.0;
     }
 
     for (i = 0; i < N_LETTER; i++)
     {
-        a->products[i] = strset_make(g_free, Appender_destroy, Appender_make, Appender_update, NULL);
+        ac->products[i] = strset_make(g_free, statinfo_destroy, statinfo_make, statinfo_update, NULL);
     }
-    return a;
+
+    return ac;
 }
 
-/**
- * \brief Destrói uma instância da classe `Accounting`.
- * 
- * @param a Instância a destruir.
- */
 void Accounting_destroy(Accounting a)
 {
     int i;
@@ -84,43 +57,33 @@ void Accounting_destroy(Accounting a)
         {
             strset_destroy(a->products[i]);
         }
+
         g_free(a);
     }
 }
 
-/**
- * \brief Atualiza os valores da contabilidade de acordo com uma transação.
- * 
- * @param a Instância a considerar.
- * @param t Transação usada na atualização de valores.
- */
-void Accounting_update(Accounting a, Transaction t)
+void Accounting_update(Accounting a, char *product, int month, int filial, int units, int promo, double spent)
 {
-    if (!t)
-        return;
+    void *tmp[5];
+    int p = *product - 'A';
+    char *ef_product = product;
+    a->nTrans[month - 1]++;
+    a->totCashFlow[month - 1] += units * spent;
 
-    int month = trans_get_month(t) - 1;
+    tmp[0] = &month;
+    tmp[1] = &filial;
+    tmp[2] = &units;
+    tmp[3] = &promo;
+    tmp[4] = &spent;
 
-    char product[PROD_LEN + 1];
+    if (!strset_contains(a->products[p], product))
+    {
+        ef_product = g_strdup(product);
+    }
 
-    trans_copy_product(t, product);
-
-    strset_add(a->products[*product - 'A'], product, t);
-
-    a->nTrans[month]++;
-
-    a->totCashFlow[month] += trans_get_rev(t);
+    strset_add(a->products[p], ef_product, tmp);
 }
 
-/**
- * \brief Calcula o número de transações efetuadas entre dois meses.
- * 
- * @param a Instância a considerar.
- * @param init Mês inicial.
- * @param end Mês final.
- * 
- * @returns O valor calculado, ou -1 caso os meses sejam inválidos.
- */
 int Accounting_n_trans_range(Accounting a, int init, int end)
 {
     int i, r = -1;
@@ -136,15 +99,6 @@ int Accounting_n_trans_range(Accounting a, int init, int end)
     return r;
 }
 
-/**
- * \brief Calcula o fluxo monetário entre dois meses.
- * 
- * @param a Instância a considerar.
- * @param init Mês inicial.
- * @param end Mês final.
- * 
- * @returns O valor calculado, ou -1.0 caso os meses sejam inválidos.
- */
 double Accounting_n_cash_range(Accounting a, int init, int end)
 {
     int i;
@@ -161,18 +115,45 @@ double Accounting_n_cash_range(Accounting a, int init, int end)
     return r;
 }
 
-/**
- * \brief Cria uma cópia da informação contabilistica associada a um produto.
- * 
- * @param a Instância a considerar.
- * @param product Produto que se pretende verificar.
- * 
- * @returns A cópia formada, ou NULL caso o produto não exista.
- * 
- * @see statinfo_clone
- */
-StatInfo Accounting_get_statinfo(Accounting a, char *product)
+int Accounting_get_global_stats(Accounting a, char *product, int month, int *trans_vec, int *spent_vec)
 {
-    void *tmp = strset_lookup(a->products[*product - 'A'], product);
-    return tmp ? statinfo_clone((StatInfo)tmp) : NULL;
+    int r = 0;
+    void *val;
+    StatInfo si;
+
+    if ((val = strset_lookup(a->products[*product - 'A'], product)))
+    {
+        r = 1;
+        si = (StatInfo)val;
+
+        trans_vec[0] = get_t_month_vendas_no_promo(si, month);
+        trans_vec[1] = get_t_month_vendas_promo(si, month);
+        spent_vec[0] = get_t_month_rev_no_promo(si, month);
+        spent_vec[1] = get_t_month_rev_promo(si, month);
+    }
+
+    return r;
+}
+
+int Accounting_get_per_filial_stats(Accounting a, char *product, int month, int **trans_vec, int **spent_vec)
+{
+    int i, r = 0;
+    void *val;
+    StatInfo si;
+
+    if ((val = strset_lookup(a->products[*product - 'A'], product)))
+    {
+        r = 1;
+        si = (StatInfo)val;
+
+        for (i = 0; i < N_FILIAIS; i++)
+        {
+            trans_vec[i][0] = get_t_month_fil_vendas_no_promo(si, month, i + 1);
+            trans_vec[i][1] = get_t_month_fil_vendas_promo(si, month, i + 1);
+            spent_vec[i][0] = get_t_month_fil_rev_no_promo(si, month, i + 1);
+            spent_vec[i][1] = get_t_month_fil_rev_promo(si, month, i + 1);
+        }
+    }
+
+    return r;
 }

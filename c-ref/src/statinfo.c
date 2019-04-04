@@ -18,13 +18,13 @@
 /* Metodos publicos */
 void *statinfo_make();
 void statinfo_destroy(void *);
-StatInfo statinfo_clone(StatInfo si);
+void statinfo_update(void *e, void *user);
+
+int get_t_units(StatInfo si);
+int get_t_units_fil(StatInfo si, int filial);
 
 int get_n_actors(StatInfo);
 int get_t_vendas(StatInfo);
-int get_t_fil_vendas(StatInfo, int filial);
-int get_t_fil_vendas_promo(StatInfo, int filial);
-int get_t_fil_vendas_no_promo(StatInfo, int filial);
 int get_t_month_fil_vendas(StatInfo, int month, int filial);
 int get_t_month_fil_vendas_promo(StatInfo, int month, int filial);
 int get_t_month_fil_vendas_no_promo(StatInfo, int month, int filial);
@@ -33,9 +33,6 @@ int get_t_month_vendas_promo(StatInfo, int month);
 int get_t_month_vendas_no_promo(StatInfo, int month);
 
 double get_t_rev(StatInfo);
-double get_t_fil_rev(StatInfo, int filial);
-double get_t_fil_rev_promo(StatInfo, int filial);
-double get_t_fil_rev_no_promo(StatInfo, int filial);
 double get_t_month_fil_rev(StatInfo, int month, int filial);
 double get_t_month_fil_rev_promo(StatInfo, int month, int filial);
 double get_t_month_fil_rev_no_promo(StatInfo, int month, int filial);
@@ -44,8 +41,6 @@ double get_t_month_rev_promo(StatInfo, int month);
 double get_t_month_rev_no_promo(StatInfo, int month);
 
 /* Metodos privados */
-static int get_t_vendas_month_iter(StatInfo a, int month, int (*)(StatInfo, int, int));
-static double get_t_rev_month_iter(StatInfo a, int month, double (*)(StatInfo, int, int));
 
 /* ------------------------------------------------------------------------------ */
 
@@ -60,9 +55,11 @@ static double get_t_rev_month_iter(StatInfo a, int month, double (*)(StatInfo, i
 typedef struct statistical_info
 {
     int nVendasTotal,                                          /**< Número de transações */
-        nVendasFilialMonth[N_FILIAIS][N_MONTHS + 1][N_PROMOS]; /**< Matriz que contem o número de transações separados por Filial, mês e a utilização de código promocional. */
-    double totalCashFlow,                                      /**< Fluxo monetário total realizado. */
-        monthlyFilialRev[N_FILIAIS][N_MONTHS + 1][N_PROMOS];   /**< Fluxo monetário contabilizador por Filial, Mês, com ou sem promoção ou só Filial com ou sem promoção. */
+        nVendasFilialMonth[N_MONTHS][N_FILIAIS + 1][N_PROMOS], /**< Matriz que contem o número de transações separados por Filial, mês e a utilização de código promocional. */
+        totalUnits,
+        nQuantFilial[N_FILIAIS];
+    double totalCashFlow,                                    /**< Fluxo monetário total realizado. */
+        monthlyFilialRev[N_MONTHS][N_FILIAIS + 1][N_PROMOS]; /**< Fluxo monetário contabilizador por Filial, Mês, com ou sem promoção ou só Filial com ou sem promoção. */
 } * StatInfo;
 
 /* ------------------------------------------------------------------------------ */
@@ -77,9 +74,9 @@ void *statinfo_make()
     int l, c, k;
     StatInfo a = g_malloc(sizeof(struct statistical_info));
 
-    for (l = 0; l < N_FILIAIS; l++)
+    for (l = 0; l < N_MONTHS; l++)
     {
-        for (c = 0; c <= N_MONTHS; c++)
+        for (c = 0; c <= N_FILIAIS; c++)
         {
             for (k = 0; k < N_PROMOS; k++)
             {
@@ -89,8 +86,14 @@ void *statinfo_make()
         }
     }
 
+    for (l = 0; l < N_FILIAIS; l++)
+    {
+        a->nQuantFilial[l] = 0;
+    }
+
     a->nVendasTotal = 0;
     a->totalCashFlow = 0.0;
+    a->totalUnits = 0;
 
     return a;
 }
@@ -108,35 +111,37 @@ void statinfo_destroy(void *a)
     }
 }
 
-/**
- * \brief Retorna uma cópia da instância.
- * 
- * @returns A cópia criada, ou NULL caso a instância seja inválida.
- */
-StatInfo statinfo_clone(StatInfo si)
+/* Assume que recebe [month]+[filial]+[units]+[promo]+[spent] */
+void statinfo_update(void *e, void *user_data)
 {
-    if (!si)
-        return NULL;
+    StatInfo si = (StatInfo)e;
+    void **holder = (void **)user_data;
+    double spent = *(double *)holder[4];
+    int units, filial, month, promo = *(int *)holder[3];
+    units = *(int *)holder[2];
+    filial = *(int *)holder[1];
+    month = *(int *)holder[0] - 1;
 
-    int l, c, k;
-    StatInfo sc = g_malloc(sizeof(struct statistical_info));
+    si->nVendasTotal++;
+    si->nVendasFilialMonth[month][0][promo]++;
+    si->nVendasFilialMonth[month][filial][promo]++;
 
-    for (l = 0; l < N_FILIAIS; l++)
-    {
-        for (c = 0; c <= N_MONTHS; c++)
-        {
-            for (k = 0; k < N_PROMOS; k++)
-            {
-                sc->nVendasFilialMonth[l][c][k] = si->nVendasFilialMonth[l][c][k];
-                sc->monthlyFilialRev[l][c][k] = si->monthlyFilialRev[l][c][k];
-            }
-        }
-    }
+    si->totalCashFlow += spent;
+    si->monthlyFilialRev[month][0][promo] += spent;
+    si->monthlyFilialRev[month][filial][promo] += spent;
 
-    sc->nVendasTotal = si->nVendasTotal;
-    sc->totalCashFlow = si->totalCashFlow;
+    si->totalUnits += units;
+    si->nQuantFilial[filial - 1] += units;
+}
 
-    return sc;
+int get_t_units(StatInfo si)
+{
+    return si->totalUnits;
+}
+
+int get_t_units_fil(StatInfo si, int filial)
+{
+    return si->nQuantFilial[filial - 1];
 }
 
 /**
@@ -152,45 +157,6 @@ int get_t_vendas(StatInfo si)
 }
 
 /**
- * \brief Calcula o número total de transações por filial
- * 
- * @param a Instância a ser considerada.
- * @param filial Filial que se pretende verificar.
- * 
- * @returns O número total de transações por filial.
- */
-int get_t_fil_vendas(StatInfo a, int filial)
-{
-    return (a->nVendasFilialMonth[filial - 1][0][0] + a->nVendasFilialMonth[filial - 1][0][1]);
-}
-
-/**
- * \brief Calcula o número total de transações por filial, com promoção
- * 
- * @param a Instância a ser considerada.
- * @param filial Filial que se pretende verificar.
- * 
- * @returns O número total de transações por filial, com promoção.
- */
-int get_t_fil_vendas_promo(StatInfo a, int filial)
-{
-    return a->nVendasFilialMonth[filial - 1][0][1];
-}
-
-/**
- * \brief Calcula o número total de transações por filial, sem promoção
- * 
- * @param a Instância a ser considerada.
- * @param filial Filial que se pretende verificar.
- * 
- * @returns O número total de transações por filial, sem promoção.
- */
-int get_t_fil_vendas_no_promo(StatInfo a, int filial)
-{
-    return a->nVendasFilialMonth[filial - 1][0][0];
-}
-
-/**
  * \brief Calcula o número total de transações por mês e filial.
  * 
  * @param a Instância a ser considerada.
@@ -201,8 +167,8 @@ int get_t_fil_vendas_no_promo(StatInfo a, int filial)
  */
 int get_t_month_fil_vendas(StatInfo a, int month, int filial)
 {
-    return (a->nVendasFilialMonth[filial - 1][month][0] +
-            a->nVendasFilialMonth[filial - 1][month][1]);
+    return (a->nVendasFilialMonth[month - 1][filial][0] +
+            a->nVendasFilialMonth[month - 1][filial][1]);
 }
 
 /**
@@ -216,7 +182,7 @@ int get_t_month_fil_vendas(StatInfo a, int month, int filial)
  */
 int get_t_month_fil_vendas_promo(StatInfo a, int month, int filial)
 {
-    return a->nVendasFilialMonth[filial - 1][month][1];
+    return a->nVendasFilialMonth[month - 1][filial][1];
 }
 
 /**
@@ -230,7 +196,7 @@ int get_t_month_fil_vendas_promo(StatInfo a, int month, int filial)
  */
 int get_t_month_fil_vendas_no_promo(StatInfo a, int month, int filial)
 {
-    return a->nVendasFilialMonth[filial - 1][month][0];
+    return a->nVendasFilialMonth[month - 1][filial][0];
 }
 
 /**
@@ -243,7 +209,7 @@ int get_t_month_fil_vendas_no_promo(StatInfo a, int month, int filial)
  */
 int get_t_month_vendas(StatInfo a, int month)
 {
-    return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas);
+    return (a->nVendasFilialMonth[month - 1][0][0] + a->nVendasFilialMonth[month - 1][0][1]);
 }
 
 /**
@@ -256,7 +222,7 @@ int get_t_month_vendas(StatInfo a, int month)
  */
 int get_t_month_vendas_promo(StatInfo a, int month)
 {
-    return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas_promo);
+    return a->nVendasFilialMonth[month - 1][0][1];
 }
 
 /**
@@ -269,7 +235,7 @@ int get_t_month_vendas_promo(StatInfo a, int month)
  */
 int get_t_month_vendas_no_promo(StatInfo a, int month)
 {
-    return get_t_vendas_month_iter(a, month, get_t_month_fil_vendas_no_promo);
+    return a->nVendasFilialMonth[month - 1][0][0];
 }
 
 /**
@@ -285,46 +251,6 @@ double get_t_rev(StatInfo a)
 }
 
 /**
- * \brief Calcula o fluxo monetário total associado a uma dada filial.
- * 
- * @param a Instância a ser considerada.
- * @param filial Filial que se pretende verificar.
- * 
- * @returns O Fluxo monetário total associado a uma dada filial.
- */
-double get_t_fil_rev(StatInfo a, int filial)
-{
-    return (a->monthlyFilialRev[filial - 1][0][0] +
-            a->monthlyFilialRev[filial - 1][0][1]);
-}
-
-/**
- * \brief Calcula o fluxo monetário total associado a uma dada filial, com promoção.
- * 
- * @param a Instância a ser considerada.
- * @param filial Filial que se pretende verificar.
- * 
- * @returns O Fluxo monetário total associado a uma dada filial, com promoção.
- */
-double get_t_fil_rev_promo(StatInfo a, int filial)
-{
-    return a->monthlyFilialRev[filial - 1][0][1];
-}
-
-/**
- * \brief Calcula o fluxo monetário total associado a uma dada filial, sem promoção.
- * 
- * @param a Instância a ser considerada.
- * @param filial Filial que se pretende verificar.
- * 
- * @returns O Fluxo monetário total associado a uma dada filial, sem promoção.
- */
-double get_t_fil_rev_no_promo(StatInfo a, int filial)
-{
-    return a->monthlyFilialRev[filial - 1][0][0];
-}
-
-/**
  * \brief Calcula o fluxo monetário total de um dado mês e filial.
  * 
  * @param a Instância a ser considerada.
@@ -335,8 +261,8 @@ double get_t_fil_rev_no_promo(StatInfo a, int filial)
  */
 double get_t_month_fil_rev(StatInfo a, int month, int filial)
 {
-    return (a->monthlyFilialRev[filial - 1][month][0] +
-            a->monthlyFilialRev[filial - 1][month][1]);
+    return (a->monthlyFilialRev[month - 1][filial][0] +
+            a->monthlyFilialRev[month - 1][filial][1]);
 }
 
 /**
@@ -350,7 +276,7 @@ double get_t_month_fil_rev(StatInfo a, int month, int filial)
  */
 double get_t_month_fil_rev_promo(StatInfo a, int month, int filial)
 {
-    return a->monthlyFilialRev[filial - 1][month][1];
+    return a->monthlyFilialRev[month - 1][filial][1];
 }
 
 /**
@@ -364,7 +290,7 @@ double get_t_month_fil_rev_promo(StatInfo a, int month, int filial)
  */
 double get_t_month_fil_rev_no_promo(StatInfo a, int month, int filial)
 {
-    return a->monthlyFilialRev[filial - 1][month][0];
+    return a->monthlyFilialRev[month - 1][filial][0];
 }
 
 /**
@@ -380,7 +306,7 @@ double get_t_month_fil_rev_no_promo(StatInfo a, int month, int filial)
  */
 double get_t_month_rev(StatInfo a, int month)
 {
-    return get_t_rev_month_iter(a, month, get_t_month_fil_rev);
+    return (a->monthlyFilialRev[month - 1][0][0] + a->monthlyFilialRev[month - 1][0][1]);
 }
 
 /**
@@ -399,7 +325,7 @@ double get_t_month_rev(StatInfo a, int month)
  */
 double get_t_month_rev_promo(StatInfo a, int month)
 {
-    return get_t_rev_month_iter(a, month, get_t_month_fil_rev_promo);
+    return a->monthlyFilialRev[month - 1][0][1];
 }
 
 /**
@@ -418,44 +344,5 @@ double get_t_month_rev_promo(StatInfo a, int month)
  */
 double get_t_month_rev_no_promo(StatInfo a, int month)
 {
-    return get_t_rev_month_iter(a, month, get_t_month_fil_rev_no_promo);
-}
-
-/**
- * \brief Permite iterar uma dada função sobre todos os valores que formam o número de vendas total de um mês e obter informação sobre estes.
- * 
- * @param a Instância a ser considerada.
- * @param month Mês que se pretende verificar.
- * @param f Função de obtenção de informação de um dado ponto por mês e filial.
- * 
- * @returns O valor calculado através da função de obtenção de informação.
- */
-static int get_t_vendas_month_iter(StatInfo a, int month, int (*f)(StatInfo, int, int))
-{
-    int k, r = 0;
-
-    for (k = 1; k <= N_FILIAIS; k++)
-        r += (*f)(a, month, k);
-
-    return r;
-}
-
-/**
- * \brief Permite iterar uma dada função sobre todos os valores que formam o fluxo monetário de um mês e obter informação sobre estes.
- * 
- * @param a Instância a ser considerada.
- * @param month Mês que se pretende verificar.
- * @param f Função de obtenção de informação de um dado ponto por mês e filial.
- * 
- * @returns O valor calculado através da função de obtenção de informação.
- */
-static double get_t_rev_month_iter(StatInfo a, int month, double (*f)(StatInfo, int, int))
-{
-    int k;
-    double r = 0;
-
-    for (k = 1; k <= N_FILIAIS; k++)
-        r += (*f)(a, month, k);
-
-    return r;
+    return a->monthlyFilialRev[month - 1][0][0];
 }

@@ -18,13 +18,19 @@ CatProducts CatProducts_make();
 void CatProducts_destroy(CatProducts cp);
 int CatProducts_exists(CatProducts cp, Product product);
 void CatProducts_add_product(CatProducts cp, Product product);
+void CatProduct_report_trans(CatProducts cp, char *product, int filial);
 char **CatProducts_dump_ordered(CatProducts cp, int *s, char let);
+int CatProducts_get_total_not_bought(CatProducts cp);
+char **CatProducts_not_bought(CatProducts cp, int *size);
+char **CatProducts_not_bought_fil(CatProducts cp, int filial, int *size);
 Product Product_make(char *product_code);
 void Product_destroy(void *p);
 
 /* Metodos privados */
 static gint wrap_mystrcmp(gconstpointer a, gconstpointer b, gpointer user_data);
-static gboolean foreach_add(gpointer key, gpointer value, gpointer data);
+static gboolean foreach_add_tree(gpointer key, gpointer value, gpointer data);
+static void foreach_add_set(gpointer key, gpointer value, gpointer data);
+static char **dump_not_bought_reg(CatProducts cp, int ind, int *size);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -41,6 +47,7 @@ static gboolean foreach_add(gpointer key, gpointer value, gpointer data);
 typedef struct cat_products
 {
     GTree *products[N_LETTER]; /**< _Array_ de conjuntos cada um correspondente a uma letra, por ordem alfabética. */
+    StrSet not_bought_regist[N_FILIAIS + 1];
 } * CatProducts;
 
 /**
@@ -67,10 +74,15 @@ CatProducts CatProducts_make()
     CatProducts cp = g_malloc(sizeof(struct cat_products));
 
     for (i = 0; i < N_LETTER; i++)
-
     {
         cp->products[i] = g_tree_new_full(wrap_mystrcmp, NULL, Product_destroy, NULL);
     }
+
+    for (i = 0; i <= N_FILIAIS; i++)
+    {
+        cp->not_bought_regist[i] = strset_make(NULL, NULL, NULL, NULL, NULL);
+    }
+
     return cp;
 }
 
@@ -86,7 +98,14 @@ void CatProducts_destroy(CatProducts cp)
     if (cp)
     {
         for (i = 0; i < N_LETTER; i++)
+        {
             g_tree_destroy(cp->products[i]);
+        }
+
+        for (i = 0; i <= N_FILIAIS; i++)
+        {
+            strset_destroy(cp->not_bought_regist[i]);
+        }
 
         g_free(cp);
     }
@@ -94,7 +113,8 @@ void CatProducts_destroy(CatProducts cp)
 
 int CatProducts_exists(CatProducts cp, Product product)
 {
-    
+    void *trash1, *trash2;
+    return g_tree_lookup_extended(cp->products[*product->product_code - 'A'], product->product_code, &trash1, &trash2);
 }
 
 /**
@@ -105,7 +125,21 @@ int CatProducts_exists(CatProducts cp, Product product)
  */
 void CatProducts_add_product(CatProducts cp, Product product)
 {
-    g_tree_insert(cp->products[*product->product_code - 'A'], g_strdup(product->product_code), NULL);
+    int i;
+    char *copy_product_code = g_strdup(product->product_code);
+
+    g_tree_insert(cp->products[*product->product_code - 'A'], copy_product_code, NULL);
+
+    for (i = 0; i <= N_FILIAIS; i++)
+    {
+        strset_add(cp->not_bought_regist[i], copy_product_code,NULL);
+    }
+}
+
+void CatProduct_report_trans(CatProducts cp, char *product, int filial)
+{
+    strset_remove(cp->not_bought_regist[0], product);
+    strset_remove(cp->not_bought_regist[filial], product);
 }
 
 /**
@@ -130,11 +164,26 @@ char **CatProducts_dump_ordered(CatProducts cp, int *s, char let)
         r = g_malloc(sizeof(char *) * g_tree_nnodes(ref));
         holder[0] = r;
         holder[1] = &i;
-        g_tree_foreach(ref, foreach_add, holder);
+        g_tree_foreach(ref, foreach_add_tree, holder);
         *s = i;
     }
 
     return r;
+}
+
+int CatProducts_get_total_not_bought(CatProducts cp)
+{
+    return strset_size(cp->not_bought_regist[0]);
+}
+
+char **CatProducts_not_bought(CatProducts cp, int *size)
+{
+    return dump_not_bought_reg(cp, 0, size);
+}
+
+char **CatProducts_not_bought_fil(CatProducts cp, int filial, int *size)
+{
+    return dump_not_bought_reg(cp, filial, size);
 }
 
 /**
@@ -168,11 +217,32 @@ static gint wrap_mystrcmp(gconstpointer a, gconstpointer b, gpointer user_data)
     return strcmp(((Product)a)->product_code, ((Product)b)->product_code);
 }
 
-static gboolean foreach_add(gpointer key, gpointer value, gpointer data)
+static gboolean foreach_add_tree(gpointer key, gpointer value, gpointer data)
 {
     void **holder = (void **)data;
 
     ((char **)holder[0])[(*(int *)holder[1])++] = g_strdup(((Product)key)->product_code);
 
     return FALSE;
+}
+
+static void foreach_add_set(gpointer key, gpointer value, gpointer data)
+{
+    void **holder = (void **)data;
+    ((char **)holder[0])[(*(int *)holder[1])++] = g_strdup(key);
+}
+
+static char **dump_not_bought_reg(CatProducts cp, int ind, int *size)
+{
+    int i = 0;
+    char **r = NULL;
+    void *holder[2];
+
+    r = g_malloc(sizeof(char *) * strset_size(cp->not_bought_regist[ind]));
+    holder[0] = r;
+    holder[1] = &i;
+    strset_foreach(cp->not_bought_regist[ind], foreach_add_set, holder);
+    *size = i;
+
+    return r;
 }
