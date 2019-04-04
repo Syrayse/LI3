@@ -19,6 +19,7 @@ Product product_make(char *product_code);
 void product_destroy(Product p);
 Product product_clone(Product p);
 char *product_get_code(Product p);
+int product_get_first_let(Product p);
 guint product_hash(gconstpointer v);
 gboolean product_equal(gconstpointer v1, gconstpointer v2);
 
@@ -51,6 +52,11 @@ Product product_clone(Product p)
 char *product_get_code(Product p)
 {
     return g_strdup(p->product_code);
+}
+
+int product_get_first_let(Product p)
+{
+    return *(p->product_code);
 }
 
 guint product_hash(gconstpointer v)

@@ -7,9 +7,10 @@
  */
 
 #include "CatProducts.h"
+#include "Product.h"
+#include "TAD_List.h"
 #include "set.h"
-#include "gArray.h"
-#include <gmodule.h>
+#include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
@@ -18,55 +19,28 @@ CatProducts CatProducts_make();
 void CatProducts_destroy(CatProducts cp);
 int CatProducts_exists(CatProducts cp, Product product);
 void CatProducts_add_product(CatProducts cp, Product product);
-void CatProduct_report_trans(CatProducts cp, char *product, int filial);
-char **CatProducts_dump_ordered(CatProducts cp, int *s, char let);
+void CatProduct_report_trans(CatProducts cp, Product product, int filial);
+TAD_List CatProducts_dump_ordered(CatProducts cp, char let);
 int CatProducts_get_total_not_bought(CatProducts cp);
-char **CatProducts_not_bought(CatProducts cp, int *size);
-char **CatProducts_not_bought_fil(CatProducts cp, int filial, int *size);
-Product Product_make(char *product_code);
-void Product_destroy(void *p);
+TAD_List CatProducts_not_bought(CatProducts cp);
+TAD_List CatProducts_not_bought_fil(CatProducts cp, int filial);
 
 /* Metodos privados */
-static gint wrap_mystrcmp(gconstpointer a, gconstpointer b, gpointer user_data);
-static gboolean foreach_add_tree(gpointer key, gpointer value, gpointer data);
-static void foreach_add_set(gpointer key, gpointer value, gpointer data);
-static char **dump_not_bought_reg(CatProducts cp, int ind, int *size);
+static int get_i(Product p);
+static void foreach_add_code(gpointer key, gpointer value, gpointer data);
+static TAD_List dump_not_bought_reg(CatProducts cp, int ind);
+static int mystrcmp(gpointer v1, gpointer v2);
 
 /* ------------------------------------------------------------------------------ */
 
-/**
- * \brief Define o tamanho de um código de produto.
- */
-#define PROD_LEN 6
-
-/* ------------------------------------------------------------------------------ */
-
-/**
- * \brief Definição da classe que armazena o catálogo de produtos.
- */
 typedef struct cat_products
 {
-    GTree *products[N_LETTER]; /**< _Array_ de conjuntos cada um correspondente a uma letra, por ordem alfabética. */
-    StrSet not_bought_regist[N_FILIAIS + 1];
+    Set product_set[N_LETTER],            /**< Contem todos os produtos, separados por conjuntos que estão indexados por primeira letra. */
+        not_bought_regist[N_FILIAIS + 1]; /**< Contem todos os produtos não comprados em global e por filial     */
 } * CatProducts;
-
-/**
- * \brief Define a estrutura associada a um `Product`.
- */
-typedef struct product
-{
-    char product_code[PROD_LEN + 1]; /**< Código do produto. */
-} * Product;
 
 /* ------------------------------------------------------------------------------ */
 
-/**
- * \brief Cria uma instância da classe `CatProducts`.
- * 
- * Para além de criar a instância, inicializa todos os `StrSet`s necessários.
- * 
- * @returns Uma instância da classe `CatProducts`.
- */
 CatProducts CatProducts_make()
 {
     int i;
@@ -75,22 +49,17 @@ CatProducts CatProducts_make()
 
     for (i = 0; i < N_LETTER; i++)
     {
-        cp->products[i] = g_tree_new_full(wrap_mystrcmp, NULL, Product_destroy, NULL);
+        cp->product_set[i] = set_make(product_hash, product_equal, NULL, NULL, NULL, NULL);
     }
 
     for (i = 0; i <= N_FILIAIS; i++)
     {
-        cp->not_bought_regist[i] = strset_make(NULL, NULL, NULL, NULL, NULL);
+        cp->not_bought_regist[i] = set_make(product_hash, product_equal, NULL, NULL, NULL, NULL);
     }
 
     return cp;
 }
 
-/**
- * \brief Destrói uma instância da classe `CatProducts`.
- * 
- * @param cp Instância a destruir.
- */
 void CatProducts_destroy(CatProducts cp)
 {
     int i;
@@ -113,62 +82,46 @@ void CatProducts_destroy(CatProducts cp)
 
 int CatProducts_exists(CatProducts cp, Product product)
 {
-    void *trash1, *trash2;
-    return g_tree_lookup_extended(cp->products[*product->product_code - 'A'], product->product_code, &trash1, &trash2);
+    return set_contains(cp->product_set[get_i(product)], product);
 }
 
-/**
- * \brief Adiciona um produto ao catalogo de produtos.
- * 
- * @param cp Instância a considerar.
- * @param product Produto a adicionar ao catalogo.
- */
 void CatProducts_add_product(CatProducts cp, Product product)
 {
     int i;
-    char *copy_product_code = g_strdup(product->product_code);
+    Product p_copy = product_clone(product);
 
-    g_tree_insert(cp->products[*product->product_code - 'A'], copy_product_code, NULL);
+    strset_add(cp->product_set[get_i(p_copy)], p_copy);
 
     for (i = 0; i <= N_FILIAIS; i++)
     {
-        strset_add(cp->not_bought_regist[i], copy_product_code,NULL);
+        strset_add(cp->not_bought_regist[i], p_copy, NULL);
     }
 }
 
-void CatProduct_report_trans(CatProducts cp, char *product, int filial)
+void CatProduct_report_trans(CatProducts cp, Product product, int filial)
 {
     strset_remove(cp->not_bought_regist[0], product);
     strset_remove(cp->not_bought_regist[filial], product);
 }
 
-/**
- * \brief Efetua uma dump de um conjunto de cópias de todos os produtos que começam com uma dada letra.
- * 
- * @param cp Instância a considerar.
- * @param s Endereço onde será colocado o número de elementos despejados.
- * @param let Primeira letra a considerar.
- * 
- * @returns O array de cópia de _Strings_ , NULL caso a letra seja inválida.
- */
-char **CatProducts_dump_ordered(CatProducts cp, int *s, char let)
+TAD_List CatProducts_dump_ordered(CatProducts cp, char let)
 {
     int i = 0;
-    char **r = NULL;
-    GTree *ref;
-    void *holder[2];
+    TAD_List tl = NULL;
+    Set ref;
 
     if (is_between(let, 'A', 'Z'))
     {
-        ref = cp->products[let - 'A'];
-        r = g_malloc(sizeof(char *) * g_tree_nnodes(ref));
-        holder[0] = r;
-        holder[1] = &i;
-        g_tree_foreach(ref, foreach_add_tree, holder);
-        *s = i;
+        ref = cp->product_set[let - 'A'];
+
+        tl = list_make(g_free, set_size(ref));
+
+        set_foreach(ref, foreach_add, tl);
+
+        list_sort(tl, mystrcmp);
     }
 
-    return r;
+    return tl;
 }
 
 int CatProducts_get_total_not_bought(CatProducts cp)
@@ -176,73 +129,40 @@ int CatProducts_get_total_not_bought(CatProducts cp)
     return strset_size(cp->not_bought_regist[0]);
 }
 
-char **CatProducts_not_bought(CatProducts cp, int *size)
+TAD_List CatProducts_not_bought(CatProducts cp)
 {
-    return dump_not_bought_reg(cp, 0, size);
+    return dump_not_bought_reg(cp, 0);
 }
 
-char **CatProducts_not_bought_fil(CatProducts cp, int filial, int *size)
+TAD_List CatProducts_not_bought_fil(CatProducts cp, int filial)
 {
-    return dump_not_bought_reg(cp, filial, size);
+    return dump_not_bought_reg(cp, filial);
 }
 
-/**
- * \brief 
- */
-Product Product_make(char *product_code)
+static int get_i(Product p)
 {
-    Product product = g_malloc(sizeof(struct product));
-
-    strcpy(product->product_code, product_code);
-
-    return product;
+    return (product_get_first_let(p) - 'A');
 }
 
-/**
- * \brief 
- */
-void Product_destroy(void *p)
+static void foreach_add_code(gpointer key, gpointer value, gpointer data)
 {
-    if (p)
-    {
-        g_free((Product)p);
-    }
+    list_add((TAD_List)data, product_get_code((Product)key));
 }
 
-/**
- * \brief Função de comparação que envolve a função `mystrcmp` é estritamente necessária para comparação em arvóres.
- */
-static gint wrap_mystrcmp(gconstpointer a, gconstpointer b, gpointer user_data)
-{
-    return strcmp(((Product)a)->product_code, ((Product)b)->product_code);
-}
-
-static gboolean foreach_add_tree(gpointer key, gpointer value, gpointer data)
-{
-    void **holder = (void **)data;
-
-    ((char **)holder[0])[(*(int *)holder[1])++] = g_strdup(((Product)key)->product_code);
-
-    return FALSE;
-}
-
-static void foreach_add_set(gpointer key, gpointer value, gpointer data)
-{
-    void **holder = (void **)data;
-    ((char **)holder[0])[(*(int *)holder[1])++] = g_strdup(key);
-}
-
-static char **dump_not_bought_reg(CatProducts cp, int ind, int *size)
+static TAD_List dump_not_bought_reg(CatProducts cp, int ind)
 {
     int i = 0;
-    char **r = NULL;
-    void *holder[2];
 
-    r = g_malloc(sizeof(char *) * strset_size(cp->not_bought_regist[ind]));
-    holder[0] = r;
-    holder[1] = &i;
-    strset_foreach(cp->not_bought_regist[ind], foreach_add_set, holder);
-    *size = i;
+    Set ref = cp->not_bought_regist[ind];
+
+    TAD_List tl = list_make(g_free, set_size(ref));
+
+    strset_foreach(ref, foreach_add_code, tl);
 
     return r;
+}
+
+static int mystrcmp(gpointer v1, gpointer v2)
+{
+    return strcmp((char *)v1, (char *)v2);
 }

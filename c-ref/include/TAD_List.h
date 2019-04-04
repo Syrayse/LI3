@@ -19,7 +19,7 @@ typedef struct tad_list *TAD_List;
  * 
  * @returns Nova instância.
  */
-TAD_List tadlist_make(unsigned int size);
+TAD_List list_make(GDestroyNotify f, unsigned int size);
 
 /**
  * \brief Destrói uma instância da classe `TAD_List`.
@@ -55,5 +55,13 @@ gpointer list_get_next(TAD_List tl);
  * @returns 1 se for possivél adicionar, 0 caso contrário.
  */
 int list_add(TAD_List tl, gpointer v);
+
+/**
+ * \brief Permite fazer a ordenação de uma lista.
+ * 
+ * @param tl Lista que se pretende ordenar.
+ * @param fc Função de ordenação pela qual se deve ordenar.
+ */
+void list_sort(TAD_List tl, GCompareFunc fc);
 
 #endif

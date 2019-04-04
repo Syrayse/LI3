@@ -56,6 +56,15 @@ Product product_clone(Product p);
 char *product_get_code(Product p);
 
 /**
+ * \brief Indica qual é a primeira letra do código de um produto.
+ * 
+ * @param p Produto a considerar.
+ * 
+ * @returns Primeira letra do código do produto.
+ */
+int product_get_first_let(Product p);
+
+/**
  * \brief Calcula o _hash code_ de uma instância da classe `Product`.
  * 
  * @param p Instância a considerar.

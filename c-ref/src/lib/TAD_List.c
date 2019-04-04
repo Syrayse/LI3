@@ -19,22 +19,24 @@ typedef struct tad_list
         used,              /**< Número de elementos utilizados.  */
         max;               /**< Máxima capacidade da lista. */
     gpointer *array;       /**< Contentor de informação da lista. */
+    GDestroyNotify f;
 } * TAD_List;
 
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
-TAD_List tadlist_make(unsigned int size);
+TAD_List list_make(GDestroyNotify f, unsigned int size);
 void list_destroy(TAD_List tl);
 unsigned int list_size(TAD_List tl);
 gpointer list_get_next(TAD_List tl);
 int list_add(TAD_List tl, gpointer v);
+void list_sort(TAD_List tl, GCompareFunc fc);
 
 /* Metodos privados */
 
 /* ------------------------------------------------------------------------------ */
 
-TAD_List tadlist_make(unsigned int size)
+TAD_List list_make(GDestroyNotify f, unsigned int size)
 {
     TAD_List tl = g_malloc(sizeof(struct tad_list));
 
@@ -44,13 +46,25 @@ TAD_List tadlist_make(unsigned int size)
 
     tl->array = g_malloc(sizeof(gpointer) * size);
 
+    tl->f = f;
+
     return tl;
 }
 
 void list_destroy(TAD_List tl)
 {
+    int i;
+
     if (tl)
     {
+        if (tl->f)
+        {
+            for (i = 0; i < tl->used; i++)
+            {
+                (*tl->f)(tl->array[i]);
+            }
+        }
+
         g_free(tl->array);
         g_free(tl);
     }
@@ -78,4 +92,9 @@ int list_add(TAD_List tl, gpointer v)
     }
 
     return r;
+}
+
+void list_sort(TAD_List tl, GCompareFunc fc)
+{
+    qsort(tl->array, tl->used, sizeof(gpointer), fc);
 }
