@@ -10,6 +10,9 @@
 
 #include <glib.h>
 
+/**
+ * \brief Tipo opaco representativo de uma instância da classe `TAD_List`.
+ */
 typedef struct tad_list *TAD_List;
 
 /**
@@ -19,7 +22,7 @@ typedef struct tad_list *TAD_List;
  * 
  * @returns Nova instância.
  */
-TAD_List list_make(GDestroyNotify f, unsigned int size);
+TAD_List list_make(GFreeFunc f, unsigned int size);
 
 /**
  * \brief Destrói uma instância da classe `TAD_List`.

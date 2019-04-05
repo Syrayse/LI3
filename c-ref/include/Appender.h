@@ -6,6 +6,9 @@
 #include "TAD_List.h"
 #include <glib.h>
 
+/**
+ * \brief Tipo opaco representativo de uma instância da classe `Appender`.
+ */
 typedef struct appender *Appender;
 
 gpointer appender_make();

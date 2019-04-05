@@ -1,6 +1,9 @@
 #ifndef _CLNTINFO_
 #define _CLNTINFO_
 
+/**
+ * \brief Tipo opaco representativo de uma instância da classe `ClntInfo`.
+ */
 typedef struct clntinfo *ClntInfo;
 
 void *clntinfo_make();

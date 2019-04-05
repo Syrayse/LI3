@@ -4,6 +4,9 @@
 #include "TAD_List.h"
 #include <glib.h>
 
+/**
+ * \brief Tipo opaco representativo de uma instância da classe `Adition`.
+ */
 typedef struct adition *Adition;
 
 gpointer adition_make();

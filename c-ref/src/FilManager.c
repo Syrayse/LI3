@@ -1,3 +1,12 @@
+/**
+ * @file FilManager.c
+ * \brief Ficheiro que contém toda a condificação associada à classe `FilManager`.
+ * 
+ * Este classe tem como objetivo representar todas as relações existentes entre clientes
+ * e os produtos que comprou, ou, produtos e os clientes que o compraram. Esta classe efetua o tratamento
+ * de todas as filiais de uma só vez. Sendo que para um dado produto ou cliente está presente
+ * toda a informação útil necessária para representar as diferentes ligações para todas as filiais.
+ */
 #include "FilManager.h"
 #include "Appender.h"
 #include "Adition.h"
@@ -9,10 +18,18 @@
 
 /* ------------------------------------------------------------------------------ */
 
+/**
+ * \brief Estrutura da classe `FilManager`.
+ * 
+ * Esta classe possui dois `Set`'s, um dos _sets_ tem como objetivo representar todos os clientes que efetuaram transações
+ * e a forma como eles se ligam a todos os produtos que possam vir a ter comprado em qualquer uma das filiais.
+ * O outro conjunto, tem como objetivo representar todos os produtos que foram transacionados e forma como estes se ligam
+ * a todos os clientes que os possam vir a ter transacionado em qualquer uma das filiais.
+ */
 typedef struct filmanager
 {
-    Set client_set,
-        product_set;
+    Set client_set,  /**< Conjunto de clientes. */
+        product_set; /**<  Conjunto de produtos. */
 } * FilManager;
 
 /* ------------------------------------------------------------------------------ */

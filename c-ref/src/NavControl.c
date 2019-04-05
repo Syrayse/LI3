@@ -8,7 +8,6 @@
 #include "NavControl.h"
 #include "TAD_List.h"
 #include <glib.h>
-#include <stdio.h>
 
 /* ------------------------------------------------------------------------------ */
 
@@ -35,14 +34,15 @@ typedef struct nav_control
 /* Metodos publicos */
 NavControl NavControl_make();
 void NavControl_destroy(NavControl nc);
-void NavControl_change_dict(NavControl nc, TAD_List tl, void *user_data, f_print fp_elem, f_print fp_user);
+void NavControl_change_dict(NavControl nc, TAD_List tl, gpointer user_data, f_print fp_elem, f_print fp_user);
 int NavControl_next_page(NavControl nc);
 int NavControl_previous_page(NavControl nc);
 void NavControl_show(NavControl nc);
+int NavControl_get_init(NavControl nc);
+int NavControl_get_end(NavControl nc);
+int NavControl_get_page(NavControl nc);
 
 /* Metodos privados */
-static void show_header(NavControl nc);
-static void show_footer(NavControl nc);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -52,21 +52,12 @@ static void show_footer(NavControl nc);
 #define N_PER_PAGE 25
 
 /**
- * \brief Separador utilizado no design de interface gráfico atual.
- */
-#define SEPARATOR "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n"
-
-/**
  * \brief Máximo entre dois números.
  */
 #define max(a, b) ((a) > (b) ? (a) : (b))
+
 /* ------------------------------------------------------------------------------ */
 
-/**
- * \brief Cria uma instância da classe `NavControl`.
- * 
- * @returns Uma nova instância da classe `NavControl`.
- */
 NavControl NavControl_make()
 {
     NavControl nc = g_malloc(sizeof(struct nav_control));
@@ -82,11 +73,6 @@ NavControl NavControl_make()
     return nc;
 }
 
-/**
- * \brief Destrói uma instância da classe `NavControl`.
- * 
- * @param nc Instância a ser destruída. 
- */
 void NavControl_destroy(NavControl nc)
 {
     if (nc)
@@ -100,22 +86,7 @@ void NavControl_destroy(NavControl nc)
     }
 }
 
-/**
- * \brief Altera o dicionário em vigor no `NavControl`.
- * 
- * Permite alterar o dicionário que se pretend verificar através do `NavControl`.
- * Se um dicionário já estiver em vigor este é discartado.
- * 
- * Para além disso, é passada um função de impressão que permite ao utilizador
- * deste metódo escolher como permite imprimir cada elemento.
- * 
- * @param nc Instância a ser considerada.
- * @param dict Novo dicionário a ser colocado.
- * @param user_data Informação pertinente ao conteúdo do dicionário.
- * @param fp_elem Função de impessão do novo dicionário, a ser aplicada a cada elemento deste. 
- * @param fp_user Função de impressão de informação pertinente ao conteúdo do dicionário.
- */
-void NavControl_change_dict(NavControl nc, TAD_List dict, void *user_data, f_print fp_elem, f_print fp_user)
+void NavControl_change_dict(NavControl nc, TAD_List dict, gpointer user_data, f_print fp_elem, f_print fp_user)
 {
     if (!dict)
         return;
@@ -142,14 +113,6 @@ void NavControl_change_dict(NavControl nc, TAD_List dict, void *user_data, f_pri
     nc->end = max(nc->size, nc->nPerPage);
 }
 
-/**
- * \brief Permite passar para a próxima página de elementos que se pretende visualizar.
- * 
- * Dependendo da váriavel de instância de `NavControl`, `nPerPage`, são alterados os parametros
- * `init` e `end` de forma a tentar simular o que seria o passar de uma página.
- * 
- * @returns 1 se foi possivél avançar para a próxima página, 0 caso contrário.
- */
 int NavControl_next_page(NavControl nc)
 {
     int r = 0;
@@ -173,14 +136,6 @@ int NavControl_next_page(NavControl nc)
     return r;
 }
 
-/**
- * \brief Permite retroceder para a página anterior de elementos que se pretende visualizar.
- * 
- * Dependendo da váriavel de instância de `NavControl`, `nPerPage`, são alterados os parametros
- * `init` e `end` de forma a tentar simular o que seria retroceder uma página.
- * 
- * @returns 1 se foi possivél retroceder para a página anterior, 0 caso contrário.
- */
 int NavControl_previous_page(NavControl nc)
 {
     int r = 0;
@@ -204,15 +159,6 @@ int NavControl_previous_page(NavControl nc)
     return r;
 }
 
-/**
- * \brief Imprime no ecra o correspondente a uma página.
- * 
- * A formatação desta página possui, um _header_ com informação útil à
- * página corrente, os elementos da página, segundo a aplicação da função
- * `f_print` e para além disso um rodapé também com informação útil.
- * 
- * @param nc Instância a considerar.
- */
 void NavControl_show(NavControl nc)
 {
     if (!nc->fp_elem)
@@ -220,42 +166,23 @@ void NavControl_show(NavControl nc)
 
     int i;
 
-    show_header(nc);
-
     for (i = nc->init; i < nc->end; i++)
     {
         (*nc->fp_elem)(list_get_index(nc->dictionary, i));
     }
-
-    show_footer(nc);
 }
 
-/**
- * \brief Imprime um _header_ adequado para a apresentação da página da instância.
- * 
- * @param nc Instância a considerar.
- */
-static void show_header(NavControl nc)
+int NavControl_get_init(NavControl nc)
 {
-    if (nc->user_data && nc->fp_user)
-    {
-        printf("Showing info about:\n");
-        (*nc->fp_user)(nc->user_data);
-    }
-
-    printf(SEPARATOR);
+    return nc->init;
 }
 
-/**
- * \brief imprime um rodapé adequado para a representação da página da instância.
- * 
- * @param nc Instância a considerar.
- */
-static void show_footer(NavControl nc)
+int NavControl_get_end(NavControl nc)
 {
-    printf(SEPARATOR);
+    return nc->end - 1;
+}
 
-    printf("Showing results from %d to %d.\t\t\t\tCurrent page:%d\n", nc->init, nc->end - 1, nc->page);
-
-    printf(SEPARATOR);
+int NavControl_get_page(NavControl nc)
+{
+    return nc->page;
 }

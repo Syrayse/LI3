@@ -1,13 +1,23 @@
+/**
+ * @file set.c
+ * \brief Ficheiro que contém toda a codificação necessária à classe `Set`.
+ * 
+ * Esta classe permite que dada uma chave exista uma correspondência unívoca à mesma ou ao valor anexado a esta.
+ */
+
 #include "set.h"
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
+/**
+ * \brief Estrutura da classe `Set`.
+ */
 typedef struct set
 {
-    GHashTable *table;
-    f_maker fm;
-    f_update fu;
+    GHashTable *table; /**< Contentor onde é guardada toda a informação de chave e valores. */
+    f_maker fm;        /**< Função que permite criar memória para os valores necessários. */
+    f_update fu;       /**< Função de atualização que visa atualizar os valores do conjunto. */
 } * Set;
 
 /* ------------------------------------------------------------------------------ */

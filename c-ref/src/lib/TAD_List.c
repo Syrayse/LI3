@@ -18,13 +18,13 @@ typedef struct tad_list
     unsigned int used, /**< Número de elementos utilizados.  */
         max;           /**< Máxima capacidade da lista. */
     gpointer *array;   /**< Contentor de informação da lista. */
-    GDestroyNotify f;
+    GFreeFunc f;
 } * TAD_List;
 
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
-TAD_List list_make(GDestroyNotify f, unsigned int size);
+TAD_List list_make(GFreeFunc f, unsigned int size);
 void list_destroy(TAD_List tl);
 unsigned int list_size(TAD_List tl);
 gpointer list_get_index(TAD_List tl, unsigned int index);
@@ -35,7 +35,7 @@ void list_sort(TAD_List tl, GCompareFunc fc);
 
 /* ------------------------------------------------------------------------------ */
 
-TAD_List list_make(GDestroyNotify f, unsigned int size)
+TAD_List list_make(GFreeFunc f, unsigned int size)
 {
     TAD_List tl = g_malloc(sizeof(struct tad_list));
 

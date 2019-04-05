@@ -1,19 +1,35 @@
 /**
  * @file kheap.c
- * \brief Módulo de código associado à estrutura de dados heap.
+ * \brief Ficheiro de código direccionado para a classe `KHeap`.
+ * 
+ * KHeap é um tipo de _heap_ porém, ao contrário da normal _heap_ com dois filhos
+ * a KHeap consegue lidar com um número arbitrário de filhos, que está definido a 6.
  */
 #include "kheap.h"
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
+/**
+ * \brief Estrutura da classe `KHeap`.
+ */
+typedef struct kheap
+{
+    size_t size,     /**< Indica a capacidade máxima atual da kheap. */
+        used;        /**< Indica quantos elementos estão inseridos. */
+    GCompareFunc fc; /**< A função de comparação entre elementos. */
+    GFreeFunc ff;    /**< Função usada para liberta os elementos da kheap. */
+    gpointer *heap;  /**< Contentor onde são armazenados os elementos da kheap. */
+} * KHeap;
+
+/* ------------------------------------------------------------------------------ */
+
 /* Metodos publicos */
 KHeap kheap_make(GCompareFunc, GFreeFunc);
-KHeap kheap_heapify_array(void **d, int length, GCompareFunc fc, GFreeFunc ff);
 void kheap_destroy(KHeap);
-void kheap_add(KHeap, void *);
-void *kheap_check_root(KHeap);
-void *kheap_extract_root(KHeap);
+void kheap_add(KHeap, gpointer);
+gpointer kheap_check_root(KHeap);
+gpointer kheap_extract_root(KHeap);
 size_t kheap_size(KHeap);
 int kheap_is_empty(KHeap);
 
@@ -21,17 +37,7 @@ int kheap_is_empty(KHeap);
 static int bubble_up(KHeap);
 static int bubble_down(KHeap);
 static void double_heap(KHeap);
-static void swap_arr(void **arr, int i, int j);
-
-/* ------------------------------------------------------------------------------ */
-
-typedef struct kheap
-{
-    size_t size, used;
-    GCompareFunc fc;
-    GFreeFunc ff;
-    void **heap;
-} * KHeap;
+static void swap_arr(gpointer *arr, int i, int j);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -67,19 +73,7 @@ KHeap kheap_make(GCompareFunc fc, GFreeFunc ff)
         kh->ff = ff;
         kh->size = BASESIZE;
         kh->used = 0;
-        kh->heap = g_malloc(sizeof(void *) * BASESIZE);
-    }
-    return kh;
-}
-
-KHeap kheap_heapify_array(void **d, int length, GCompareFunc fc, GFreeFunc ff)
-{
-    int i;
-    KHeap kh = kheap_make(fc, ff);
-    if (kh)
-    {
-        for (i = 0; i < length; i++)
-            kheap_add(kh, d[i]);
+        kh->heap = g_malloc(sizeof(gpointer) * BASESIZE);
     }
     return kh;
 }
@@ -101,7 +95,7 @@ void kheap_destroy(KHeap kh)
     }
 }
 
-void kheap_add(KHeap kh, void *d)
+void kheap_add(KHeap kh, gpointer d)
 {
     if (kh->used == kh->size)
         double_heap(kh);
@@ -110,9 +104,9 @@ void kheap_add(KHeap kh, void *d)
     kh->used++;
 }
 
-void *kheap_check_root(KHeap kh)
+gpointer kheap_check_root(KHeap kh)
 {
-    void *d = NULL;
+    gpointer d = NULL;
 
     if (kh && kh->used)
         d = kh->heap[0];
@@ -120,9 +114,9 @@ void *kheap_check_root(KHeap kh)
     return d;
 }
 
-void *kheap_extract_root(KHeap kh)
+gpointer kheap_extract_root(KHeap kh)
 {
-    void *d = NULL;
+    gpointer d = NULL;
 
     if (kh && kh->used)
     {
@@ -162,7 +156,7 @@ static int bubble_down(KHeap kh)
 {
     int i, p, minI, r, order;
     p = r = order = 0;
-    void *min;
+    gpointer min;
 
     while (succ(p, K, 1) < kh->used && !order)
     {
@@ -192,13 +186,13 @@ static int bubble_down(KHeap kh)
 
 static void double_heap(KHeap kh)
 {
-    kh->heap = g_realloc(kh->heap, sizeof(void *) * kh->size * 2);
+    kh->heap = g_realloc(kh->heap, sizeof(gpointer) * kh->size * 2);
     kh->size *= 2;
 }
 
-static void swap_arr(void **arr, int i, int j)
+static void swap_arr(gpointer *arr, int i, int j)
 {
-    void *tmp = arr[i];
+    gpointer tmp = arr[i];
     arr[i] = arr[j];
     arr[j] = tmp;
 }

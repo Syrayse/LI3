@@ -10,6 +10,9 @@
 
 #include "Product.h"
 
+/**
+ * \brief Tipo opaco representativo de uma instância da classe `Accounting`.
+ */
 typedef struct accounting *Accounting;
 
 /**

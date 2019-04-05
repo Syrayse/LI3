@@ -12,12 +12,7 @@
 #include <glib.h>
 
 /**
- * \brief Define o tamanho de um código de produto.
- */
-#define PRODUCT_LEN 6
-
-/**
- * \brief Tipo opaco representativo da classe `Product`.
+ * \brief Tipo opaco representativo de uma instância da classe `Product`.
  */
 typedef struct product *Product;
 
@@ -56,9 +51,11 @@ Product product_clone(Product p);
 char *product_get_code(Product p);
 
 /**
- * \brief Em vez de passar como argumento um produto passa um tipo abstrato de dados que representa este.
+ * \brief Em vez de passar como argumento um produto passa-se um tipo abstrato de dados que representa este.
  * 
  * Está função é utilizada unicamente para evitar warnings do compilador.
+ * 
+ * * @param v Tipo abstrato de dados que representa o produto.
  */
 void wrapproduct_destroy(gpointer v);
 

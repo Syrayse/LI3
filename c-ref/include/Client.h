@@ -1,10 +1,10 @@
 /**
- * @file Product.h
- * \brief Define a interface de metódos aplicáveis em instâncias da classe `Product`.
+ * @file Client.h
+ * \brief Define a interface de metódos aplicáveis em instâncias da classe `Client`.
  * 
  * Esta interface visa facilitar a comunicação com entidades externa que pretendam obter informação
- * de um instância de `Product`. Este módulo está especificamente desenhado de forma a facilitar a sua integração
- * em tabelas de hash, através de metódos `product_hash` e `product_equal`.
+ * de um instância de `Client`. Este módulo está especificamente desenhado de forma a facilitar a sua integração
+ * em tabelas de hash, através de metódos `client_hash` e `client_equal`.
  */
 #ifndef __CLIENT_ADT__
 #define __CLIENT_ADT__
@@ -12,12 +12,7 @@
 #include <glib.h>
 
 /**
- * \brief Define o tamanho de um código de cliente.
- */
-#define CLIENT_LEN 5
-
-/**
- * \brief Tipo opaco representativo da classe `Product`.
+ * \brief Tipo opaco representativo de uma instância da classe `Client`.
  */
 typedef struct client *Client;
 
@@ -74,6 +69,13 @@ guint client_hash(gconstpointer v);
  */
 gboolean client_equal(gconstpointer v1, gconstpointer v2);
 
+/**
+ * \brief Em vez de passar como argumento um client passa-se um tipo abstrato de dados que representa este.
+ * 
+ * Está função é utilizada unicamente para evitar warnings do compilador.
+ *
+ * @param v Tipo abstrato de dados que representa o client
+ */
 void wrapclient_destroy(gpointer v);
 
 #endif

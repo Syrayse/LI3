@@ -7,9 +7,19 @@
 
 /* ------------------------------------------------------------------------------ */
 
+/**
+ * \brief Define o tamanho de um código de cliente.
+ */
+#define CLIENT_LEN 5
+
+/**
+ * \brief Estrutura de dados que define a classe `Client`.
+ * 
+ * Atualmente esta classe é unicamente composta pelo respectivo código de cliente.
+ */
 typedef struct client
 {
-    char client_code[CLIENT_LEN + 1];
+    char client_code[CLIENT_LEN + 1]; /**< Código de cliente. */
 } * Client;
 
 /* ------------------------------------------------------------------------------ */

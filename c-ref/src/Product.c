@@ -7,9 +7,19 @@
 
 /* ------------------------------------------------------------------------------ */
 
+/**
+ * \brief Define o tamanho de um código de produto.
+ */
+#define PRODUCT_LEN 6
+
+/**
+ * \brief Estrutura de dados que define a classe `Product`.
+ * 
+ * Esta classe é atualmente composta unicamente pelo código do produto.
+ */
 typedef struct product
 {
-    char product_code[PRODUCT_LEN + 1];
+    char product_code[PRODUCT_LEN + 1]; /**< Código do produto correspondente. */
 } * Product;
 
 /* ------------------------------------------------------------------------------ */
@@ -24,6 +34,7 @@ guint product_hash(gconstpointer v);
 gboolean product_equal(gconstpointer v1, gconstpointer v2);
 void wrapproduct_destroy(gpointer v);
 int get_i(Product p);
+
 /* Metódos privados */
 
 /* ------------------------------------------------------------------------------ */
@@ -55,16 +66,6 @@ char *product_get_code(Product p)
     return g_strdup(p->product_code);
 }
 
-void wrapproduct_destroy(gpointer v)
-{
-    product_destroy((Product)v);
-}
-
-int get_i(Product p)
-{
-    return (*(p->product_code) - 'A');
-}
-
 guint product_hash(gconstpointer v)
 {
     Product p = (Product)v;
@@ -76,4 +77,14 @@ gboolean product_equal(gconstpointer v1, gconstpointer v2)
     Product p1 = (Product)v1;
     Product p2 = (Product)v2;
     return g_str_equal(p1->product_code, p2->product_code);
+}
+
+void wrapproduct_destroy(gpointer v)
+{
+    product_destroy((Product)v);
+}
+
+int get_i(Product p)
+{
+    return (*(p->product_code) - 'A');
 }
