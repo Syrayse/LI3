@@ -4,18 +4,9 @@
  */
 
 #include "CatClients.h"
+#include "Client.h"
 #include "set.h"
-
-/* ------------------------------------------------------------------------------ */
-
-/* Metodos publicos */
-CatClients CatClients_make();
-void CatClients_destroy(CatClients cc);
-int CatClients_exists(CatClients cc, char *client);
-void CatClients_add_client(CatClients cc, char *client);
-
-/* Metodos privados */
-/* Nenhum */
+#include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
@@ -24,61 +15,51 @@ void CatClients_add_client(CatClients cc, char *client);
  */
 typedef struct cat_clients
 {
-    StrSet clients; /**< Conjunto onde são armazenados os clientes. */
+    Set clients; /**< Conjunto onde são armazenados os clientes. */
 } * CatClients;
 
 /* ------------------------------------------------------------------------------ */
 
-/**
- * \brief Cria uma instância da classe `CatClients`.
- * 
- * Para além de criar a instância, inicializa o conjunto necessário.
- * 
- * @returns Uma instância da classe `CatClients`.
- */
+/* Metodos publicos */
+CatClients CatClients_make();
+void CatClients_destroy(CatClients cc);
+int CatClients_exists(CatClients cc, Client client);
+void CatClients_add_client(CatClients cc, Client client);
+
+/* Metodos privados */
+static void wrapclient_destroy(gpointer v);
+
+/* ------------------------------------------------------------------------------ */
+
 CatClients CatClients_make()
 {
     CatClients cc = g_malloc(sizeof(struct cat_clients));
 
-    cc->clients = strset_make(g_free, NULL, NULL, NULL, NULL);
+    cc->clients = set_make(client_hash, client_equal, wrapclient_destroy, NULL, NULL, NULL);
 
     return cc;
 }
 
-/**
- * \brief Destrói uma instância da classe `CatClients`.
- * 
- * @param cc Instância a destruir.
- */
 void CatClients_destroy(CatClients cc)
 {
     if (cc)
     {
-        strset_destroy(cc->clients);
+        set_destroy(cc->clients);
         g_free(cc);
     }
 }
 
-/**
- * \brief Verifica se um cliente existe no catalogo de clientes.
- * 
- * @param cp Instância a considerar.
- * @param client Cliente que se pretende verificar.
- * 
- * @returns 1 caso o cliente exista, 0 caso contrário.
- */
-int CatClients_exists(CatClients cc, char *client)
+int CatClients_exists(CatClients cc, Client client)
 {
     return strset_contains(cc->clients, client);
 }
 
-/**
- * \brief Adiciona um cliente ao catalogo de clientes.
- * 
- * @param cp Instância a considerar.
- * @param client Cliente a adicionar ao catálogo.
- */
-void CatClients_add_client(CatClients cc, char *client)
+void CatClients_add_client(CatClients cc, Client client)
 {
     strset_add(cc->clients, client, NULL);
+}
+
+static void wrapclient_destroy(gpointer v)
+{
+    client_destroy((Client)v);
 }

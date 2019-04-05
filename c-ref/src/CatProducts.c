@@ -30,6 +30,7 @@ static int get_i(Product p);
 static void foreach_add_code(gpointer key, gpointer value, gpointer data);
 static TAD_List dump_not_bought_reg(CatProducts cp, int ind);
 static int mystrcmp(gpointer v1, gpointer v2);
+static void wrapproduct_destroy(gpointer v);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -49,7 +50,7 @@ CatProducts CatProducts_make()
 
     for (i = 0; i < N_LETTER; i++)
     {
-        cp->product_set[i] = set_make(product_hash, product_equal, NULL, NULL, NULL, NULL);
+        cp->product_set[i] = set_make(product_hash, product_equal, wrapproduct_destroy, NULL, NULL, NULL);
     }
 
     for (i = 0; i <= N_FILIAIS; i++)
@@ -165,4 +166,9 @@ static TAD_List dump_not_bought_reg(CatProducts cp, int ind)
 static int mystrcmp(gpointer v1, gpointer v2)
 {
     return strcmp((char *)v1, (char *)v2);
+}
+
+static void wrapproduct_destroy(gpointer v)
+{
+    product_destroy((Product)v);
 }

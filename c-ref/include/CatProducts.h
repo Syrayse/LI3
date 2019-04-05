@@ -6,6 +6,9 @@
 #ifndef CAT_PRODUCTS_H
 #define CAT_PRODUCTS_H
 
+#include "Product.h"
+#include "TAD_List.h"
+
 /**
  * \brief Estrutura de dados que define um catálogo de produtos.
  */
