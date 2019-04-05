@@ -1,8 +1,30 @@
+/**
+ * @file Adition.c
+ * \brief Ficheiro de código necessário a todos metódos da classe `Adition`.
+ * 
+ * Em módulo acima na hierarquia esta classe é utilizada de forma a armazenar todos
+ * os clientes que estão associados a um dado produto, representando assim a relação
+ * de um produto com todos os clientes que o compraram.
+ * 
+ * Para cada cliente presente no conjunto da instância é guardada a forma como este
+ * interagiu com o produto ao qual está anexada esta instância.
+ */
+
 #include "Adition.h"
 #include "ClntInfo.h"
 #include "Client.h"
 #include "set.h"
 #include <glib.h>
+
+/* ------------------------------------------------------------------------------ */
+
+/**
+ * \brief Estrutura da classe `Adition`.
+ */
+typedef struct adition
+{
+    Set client_set; /**< Conjunto que armazena todos clientes. */
+} * Adition;
 
 /* ------------------------------------------------------------------------------ */
 
@@ -18,14 +40,7 @@ static void foreach_add(gpointer key, gpointer value, gpointer user_data);
 
 /* ------------------------------------------------------------------------------ */
 
-typedef struct adition
-{
-    Set client_set;
-} * Adition;
-
-/* ------------------------------------------------------------------------------ */
-
-void *adition_make()
+gpointer adition_make()
 {
     Adition ad = g_malloc(sizeof(struct adition));
 
@@ -34,7 +49,7 @@ void *adition_make()
     return ad;
 }
 
-void adition_destroy(void *e)
+void adition_destroy(gpointer e)
 {
     Adition ad;
 
@@ -46,17 +61,17 @@ void adition_destroy(void *e)
     }
 }
 
-void adition_update(void *e, void *user_data)
+void adition_update(gpointer e, gpointer user_data)
 {
     Adition ad = (Adition)e;
-    void **user = (void **)user_data;
+    gpointer *user = (gpointer *)user_data;
     set_add(ad->client_set, (Client)user[0], user + 1);
 }
 
 TAD_List adition_dump_by_promo_fil(Adition ad, int filial, int promo)
 {
     int i = 0;
-    void *tmp[3];
+    gpointer tmp[3];
     TAD_List tl = list_make(g_free, set_size(ad->client_set));
 
     tmp[0] = tl;
@@ -81,7 +96,7 @@ int adition_size(Adition ad)
 
 static void foreach_add(gpointer key, gpointer value, gpointer user_data)
 {
-    void **holder = (void **)user_data;
+    gpointer *holder = (gpointer *)user_data;
     TAD_List tl = (TAD_List)holder[0];
     int catched_promo, used_promo, filial;
     used_promo = *(int *)holder[1];

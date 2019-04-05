@@ -99,7 +99,7 @@ void kheap_add(KHeap kh, gpointer v)
 {
     if (kh->used == kh->size)
         double_heap(kh);
-    kh->heap[kh->used] = d;
+    kh->heap[kh->used] = v;
     bubble_up(kh);
     kh->used++;
 }

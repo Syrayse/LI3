@@ -1,9 +1,28 @@
+/**
+ * @file Accounting.c
+ * \brief Ficheiro de código necessários para os metódos da classe `Accounting`.
+ * 
+ * Esta classe tem como objetivo tratar das contas do serviço SVG.
+ */
+
 #include "Accounting.h"
 #include "statinfo.h"
 #include "Product.h"
 #include "util.h"
 #include "set.h"
 #include <glib.h>
+
+/* ------------------------------------------------------------------------------ */
+
+/**
+ * \brief Estrutura da classe `Accounting`.
+ */
+typedef struct accounting
+{
+    int nTrans[N_MONTHS];         /**< Número de transações mensais. */
+    double totCashFlow[N_MONTHS]; /**< Fluxo monetário mensal. */
+    Set products[N_LETTER];       /**< Conjunto que armazenada todos os produtos. */
+} * Accounting;
 
 /* ------------------------------------------------------------------------------ */
 
@@ -20,15 +39,6 @@ int Accounting_get_per_filial_stats(Accounting a, Product product, int month, in
 static gpointer wrapstatinfo_make();
 static void wrapstatinfo_destroy(gpointer v);
 static void wrapstatinfo_update(gpointer v1, gpointer v2);
-
-/* ------------------------------------------------------------------------------ */
-
-typedef struct accounting
-{
-    int nTrans[N_MONTHS];         /**< Número de transações mensais. */
-    double totCashFlow[N_MONTHS]; /**< Fluxo monetário mensal. */
-    Set products[N_LETTER];    /**< Conjunto que armazenada todos os produtos. */
-} * Accounting;
 
 /* ------------------------------------------------------------------------------ */
 

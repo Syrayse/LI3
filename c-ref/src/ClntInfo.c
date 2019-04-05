@@ -1,27 +1,40 @@
+/**
+ * @file ClntInfo.c
+ * \brief Código necessário aos metódos da classe `ClntInfo`.
+ * 
+ * Esta classe tem como objetivo relacionar os produtos com os clientes que o compraram.
+ * 
+ * Em módulos acima na hierarquia esta classe é utilizada de forma a representar de que forma
+ * é que um dado produto foi comprado por um dado cliente em uma dada filial.
+ */
+
 #include "ClntInfo.h"
 #include "util.h"
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
+/**
+ * \brief Estrutura da classe `ClntInfo`.
+ */
 typedef struct clntinfo
 {
-    signed char promo_code[N_FILIAIS];
+    signed char promo_code[N_FILIAIS]; /**< Array de código de promoções para todas as filiais. */
 } * ClntInfo;
 
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
-void *clntinfo_make();
-void clntinfo_destroy(void *e);
-void clntinfo_update(void *e, void *user_data);
+gpointer clntinfo_make();
+void clntinfo_destroy(gpointer e);
+void clntinfo_update(gpointer e, gpointer user_data);
 int clntinfo_promo(ClntInfo ci, int filial);
 
 /* Metodos privados */
 
 /* ------------------------------------------------------------------------------ */
 
-void *clntinfo_make()
+gpointer clntinfo_make()
 {
     int i;
 
@@ -35,7 +48,7 @@ void *clntinfo_make()
     return ci;
 }
 
-void clntinfo_destroy(void *e)
+void clntinfo_destroy(gpointer e)
 {
     if (e)
     {
@@ -43,10 +56,10 @@ void clntinfo_destroy(void *e)
     }
 }
 
-void clntinfo_update(void *e, void *user_data)
+void clntinfo_update(gpointer e, gpointer user_data)
 {
     ClntInfo ci = (ClntInfo)e;
-    void **user = (void *)user_data;
+    gpointer *user = (gpointer *)user_data;
     int promo, filial = *(int *)user[0] - 1;
     promo = *(int *)user[1];
 

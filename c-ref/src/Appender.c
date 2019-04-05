@@ -1,3 +1,13 @@
+/**
+ * @file Appender.c
+ * \brief Ficheiro com o código relativo a todos os metódos da classe `Appender`.
+ * 
+ * Em módulos acima na hierarquia esta classe representa a ligação entre clientes e os produtos
+ * que este cliente comprou. Cada instância da classe `Appender` representa uma diferente ligação
+ * entre cliente e produto. Sendo que para cada uma desta ligações é armazenadas informação útil de forma
+ * a conseguir de forma eficiente responder às queries apresentadas.
+ */
+
 #include "Appender.h"
 #include "PrdtInfo.h"
 #include "set.h"
@@ -10,10 +20,13 @@
 
 /* ------------------------------------------------------------------------------ */
 
+/**
+ * \brief Estrutura da classe `Appender`.
+ */
 typedef struct appender
 {
-    int matrix[N_FILIAIS][N_MONTHS + 1];
-    Set product_set;
+    int matrix[N_FILIAIS][N_MONTHS + 1]; /**< Matriz que armazenada as quantidades compradas pelo cliente, ordenadas por filial e mês. */
+    Set product_set; /**< Conjunto de todos os produtos comprados pelo cliente. */
 } * Appender;
 
 /* ------------------------------------------------------------------------------ */
@@ -75,7 +88,7 @@ void appender_destroy(gpointer v)
 void appender_update(gpointer e, gpointer user_data)
 {
     Appender ap = (Appender)e;
-    void *new[3], **user = (void **)user_data;
+    gpointer new[3], *user = (gpointer *)user_data;
     Product product = (Product)user[0];
     int filial, units, month = *(int *)user[2];
     units = *(int *)user[3];
@@ -153,7 +166,7 @@ TAD_List appender_get_most_bought(Appender ap, int month)
 {
     int j, i = 0;
     TAD_List tl = NULL;
-    void *tmp[3];
+    gpointer tmp[3];
     Currier *c_arr = g_malloc(sizeof(Currier) * set_size(ap->product_set));
 
     tmp[0] = c_arr;
@@ -216,7 +229,7 @@ int is_bought_in_all(Appender ap)
 
 static void foreach_add_by_month(gpointer key, gpointer value, gpointer user_data)
 {
-    void **holder = (void **)user_data;
+    gpointer *holder = (gpointer *)user_data;
     int month = *(int *)holder[2];
 
     if (prdtinfo_month_units((PrdtInfo)value, month) > 0)
