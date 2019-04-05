@@ -1,5 +1,6 @@
 #include "Accounting.h"
 #include "statinfo.h"
+#include "Product.h"
 #include "util.h"
 #include "set.h"
 #include <glib.h>
@@ -9,13 +10,16 @@
 /* Metodos publicos */
 Accounting Accounting_make();
 void Accounting_destroy(Accounting a);
-void Accounting_update(Accounting a, char *product, int month, int filial, int units, int promo, double spent);
+void Accounting_update(Accounting a, Product product, int month, int filial, int units, int promo, double spent);
 int Accounting_n_trans_range(Accounting a, int init, int end);
 double Accounting_n_cash_range(Accounting a, int init, int end);
-int Accounting_get_global_stats(Accounting a, char *product, int month, int *trans_vec, int *spent_vec);
-int Accounting_get_per_filial_stats(Accounting a, char *product, int month, int **trans_vec, int **spent_vec);
+int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, int *spent_vec);
+int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, int **spent_vec);
 
 /* Metodos privados */
+static gpointer wrapstatinfo_make();
+static void wrapstatinfo_destroy(gpointer v);
+static void wrapstatinfo_update(gpointer v1, gpointer v2);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -23,7 +27,7 @@ typedef struct accounting
 {
     int nTrans[N_MONTHS];         /**< Número de transações mensais. */
     double totCashFlow[N_MONTHS]; /**< Fluxo monetário mensal. */
-    StrSet products[N_LETTER];    /**< Conjunto que armazenada todos os produtos. */
+    Set products[N_LETTER];    /**< Conjunto que armazenada todos os produtos. */
 } * Accounting;
 
 /* ------------------------------------------------------------------------------ */
@@ -41,7 +45,7 @@ Accounting Accounting_make()
 
     for (i = 0; i < N_LETTER; i++)
     {
-        ac->products[i] = strset_make(g_free, statinfo_destroy, statinfo_make, statinfo_update, NULL);
+        ac->products[i] = set_make(product_hash, product_equal, wrapproduct_destroy, wrapstatinfo_destroy, wrapstatinfo_make, wrapstatinfo_update);
     }
 
     return ac;
@@ -55,18 +59,19 @@ void Accounting_destroy(Accounting a)
     {
         for (i = 0; i < N_LETTER; i++)
         {
-            strset_destroy(a->products[i]);
+            set_destroy(a->products[i]);
         }
 
         g_free(a);
     }
 }
 
-void Accounting_update(Accounting a, char *product, int month, int filial, int units, int promo, double spent)
+void Accounting_update(Accounting a, Product product, int month, int filial, int units, int promo, double spent)
 {
     void *tmp[5];
-    int p = *product - 'A';
-    char *ef_product = product;
+    int p = get_i(product);
+    Product ef_product = product;
+
     a->nTrans[month - 1]++;
     a->totCashFlow[month - 1] += units * spent;
 
@@ -76,12 +81,12 @@ void Accounting_update(Accounting a, char *product, int month, int filial, int u
     tmp[3] = &promo;
     tmp[4] = &spent;
 
-    if (!strset_contains(a->products[p], product))
+    if (!set_contains(a->products[p], product))
     {
-        ef_product = g_strdup(product);
+        ef_product = product_clone(product);
     }
 
-    strset_add(a->products[p], ef_product, tmp);
+    set_add(a->products[p], ef_product, tmp);
 }
 
 int Accounting_n_trans_range(Accounting a, int init, int end)
@@ -115,13 +120,13 @@ double Accounting_n_cash_range(Accounting a, int init, int end)
     return r;
 }
 
-int Accounting_get_global_stats(Accounting a, char *product, int month, int *trans_vec, int *spent_vec)
+int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, int *spent_vec)
 {
     int r = 0;
-    void *val;
+    gpointer val;
     StatInfo si;
 
-    if ((val = strset_lookup(a->products[*product - 'A'], product)))
+    if ((val = set_lookup(a->products[get_i(product)], product)))
     {
         r = 1;
         si = (StatInfo)val;
@@ -135,13 +140,13 @@ int Accounting_get_global_stats(Accounting a, char *product, int month, int *tra
     return r;
 }
 
-int Accounting_get_per_filial_stats(Accounting a, char *product, int month, int **trans_vec, int **spent_vec)
+int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, int **spent_vec)
 {
     int i, r = 0;
     void *val;
     StatInfo si;
 
-    if ((val = strset_lookup(a->products[*product - 'A'], product)))
+    if ((val = set_lookup(a->products[get_i(product)], product)))
     {
         r = 1;
         si = (StatInfo)val;
@@ -156,4 +161,19 @@ int Accounting_get_per_filial_stats(Accounting a, char *product, int month, int 
     }
 
     return r;
+}
+
+static gpointer wrapstatinfo_make()
+{
+    return statinfo_make();
+}
+
+static void wrapstatinfo_destroy(gpointer v)
+{
+    statinfo_destroy((StatInfo)v);
+}
+
+static void wrapstatinfo_update(gpointer v1, gpointer v2)
+{
+    statinfo_update((StatInfo)v1, v2);
 }

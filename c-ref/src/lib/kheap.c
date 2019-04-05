@@ -3,12 +3,13 @@
  * \brief Módulo de código associado à estrutura de dados heap.
  */
 #include "kheap.h"
+#include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
-KHeap kheap_make(fcompare, freefunc);
-KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff);
+KHeap kheap_make(GCompareFunc, GFreeFunc);
+KHeap kheap_heapify_array(void **d, int length, GCompareFunc fc, GFreeFunc ff);
 void kheap_destroy(KHeap);
 void kheap_add(KHeap, void *);
 void *kheap_check_root(KHeap);
@@ -27,8 +28,8 @@ static void swap_arr(void **arr, int i, int j);
 typedef struct kheap
 {
     size_t size, used;
-    fcompare fc;
-    freefunc ff;
+    GCompareFunc fc;
+    GFreeFunc ff;
     void **heap;
 } * KHeap;
 
@@ -56,7 +57,7 @@ typedef struct kheap
 
 /* ------------------------------------------------------------------------------ */
 
-KHeap kheap_make(fcompare fc, freefunc ff)
+KHeap kheap_make(GCompareFunc fc, GFreeFunc ff)
 {
     KHeap kh = NULL;
     if (fc)
@@ -71,7 +72,7 @@ KHeap kheap_make(fcompare fc, freefunc ff)
     return kh;
 }
 
-KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff)
+KHeap kheap_heapify_array(void **d, int length, GCompareFunc fc, GFreeFunc ff)
 {
     int i;
     KHeap kh = kheap_make(fc, ff);
@@ -176,7 +177,7 @@ static int bubble_down(KHeap kh)
                 minI = i;
             }
         }
-      
+
         if (kh->fc(kh->heap[p], min) < 0)
         {
             swap_arr(kh->heap, p, minI);

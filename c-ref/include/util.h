@@ -53,22 +53,4 @@ enum utils
  */
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
-/**
- * \brief Typedef que visa simplificar a escrita de uma função que liberta memória.
- */
-typedef void (*freefunc)(void *);
-
-/**
- * \brief Typedef que visa simplificar a escrita de uma função de comparação.
- */
-typedef int (*fcompare)(const void *, const void *);
-
-/**
- * \brief Typedef que visa simplificar a escrita de uma função-predicado.
- */
-typedef int (*Predicate)(const void *, const void *);
-
-int mystrcmp(const void *a, const void *b);
-int conv_str(const void *key);
-
 #endif

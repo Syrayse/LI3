@@ -21,6 +21,7 @@ Client client_clone(Client c);
 char *client_get_code(Client c);
 guint client_hash(gconstpointer v);
 gboolean client_equal(gconstpointer v1, gconstpointer v2);
+void wrapclient_destroy(gpointer v);
 
 /* Metodos privados */
 
@@ -64,4 +65,9 @@ gboolean client_equal(gconstpointer v1, gconstpointer v2)
     Client c1 = (Client)v1;
     Client c2 = (Client)v2;
     return g_str_equal(c1->client_code, c2->client_code);
+}
+
+void wrapclient_destroy(gpointer v)
+{
+    client_destroy((Client)v);
 }

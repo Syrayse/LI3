@@ -40,7 +40,7 @@ TAD_List list_make(GDestroyNotify f, unsigned int size)
 {
     TAD_List tl = g_malloc(sizeof(struct tad_list));
 
-    tl->next_ind = tl->user = 0;
+    tl->next_ind = tl->used = 0;
 
     tl->max = size;
 

@@ -1,15 +1,16 @@
 #include "Adition.h"
 #include "ClntInfo.h"
+#include "Client.h"
 #include "set.h"
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
-void *adition_make();
-void adition_destroy(void *e);
-void adition_update(void *e, void *user_data);
-char **adition_dump_by_promo_fil(Adition ad, int filial, int promo, int *size);
+gpointer adition_make();
+void adition_destroy(gpointer e);
+void adition_update(gpointer e, gpointer user_data);
+TAD_List adition_dump_by_promo_fil(Adition ad, int filial, int promo);
 int adition_size(Adition ad);
 
 /* Metodos privados */
@@ -19,7 +20,7 @@ static void foreach_add(gpointer key, gpointer value, gpointer user_data);
 
 typedef struct adition
 {
-    StrSet client_set;
+    Set client_set;
 } * Adition;
 
 /* ------------------------------------------------------------------------------ */
@@ -28,7 +29,7 @@ void *adition_make()
 {
     Adition ad = g_malloc(sizeof(struct adition));
 
-    ad->client_set = strset_make(NULL, clntinfo_destroy, clntinfo_make, clntinfo_update, NULL);
+    ad->client_set = set_make(client_hash, client_equal, NULL, clntinfo_destroy, clntinfo_make, clntinfo_update);
 
     return ad;
 }
@@ -40,7 +41,7 @@ void adition_destroy(void *e)
     if (e)
     {
         ad = (Adition)e;
-        strset_destroy(ad->client_set);
+        set_destroy(ad->client_set);
         g_free(ad);
     }
 }
@@ -49,61 +50,46 @@ void adition_update(void *e, void *user_data)
 {
     Adition ad = (Adition)e;
     void **user = (void **)user_data;
-    strset_add(ad->client_set, (char *)user[0], user + 1);
+    set_add(ad->client_set, (Client)user[0], user + 1);
 }
 
-int adition_get_promo(Adition ad, char *client, int filial)
-{
-    int r = -1;
-    void *val;
-
-    if ((val = strset_lookup(ad->client_set, client)))
-    {
-        r = clntinfo_promo((ClntInfo)val, filial);
-    }
-
-    return r;
-}
-
-char **adition_dump_by_promo_fil(Adition ad, int filial, int promo, int *size)
+TAD_List adition_dump_by_promo_fil(Adition ad, int filial, int promo)
 {
     int i = 0;
-    void *tmp[4];
-    char **r = g_malloc(sizeof(char *) * strset_size(ad->client_set));
+    void *tmp[3];
+    TAD_List tl = list_make(g_free, set_size(ad->client_set));
 
-    tmp[0] = r;
-    tmp[1] = &i;
-    tmp[2] = &promo;
-    tmp[3] = &filial;
+    tmp[0] = tl;
+    tmp[1] = &promo;
+    tmp[2] = &filial;
 
-    strset_foreach(ad->client_set, foreach_add, tmp);
-
-    *size = i;
+    set_foreach(ad->client_set, foreach_add, tmp);
 
     if (i == 0)
     {
-        g_free(r);
-        r = NULL;
+        list_destroy(tl);
+        tl = NULL;
     }
 
-    return r;
+    return tl;
 }
 
 int adition_size(Adition ad)
 {
-    return strset_size(ad->client_set);
+    return set_size(ad->client_set);
 }
 
 static void foreach_add(gpointer key, gpointer value, gpointer user_data)
 {
     void **holder = (void **)user_data;
+    TAD_List tl = (TAD_List)holder[0];
     int catched_promo, used_promo, filial;
-    used_promo = *(int *)holder[2];
-    filial = *(int *)holder[3];
+    used_promo = *(int *)holder[1];
+    filial = *(int *)holder[2];
     catched_promo = clntinfo_promo((ClntInfo)value, filial);
 
     if (used_promo == catched_promo || catched_promo == 2)
     {
-        ((char **)holder[0])[(*(int *)holder[1])++] = g_strdup((char *)key);
+        list_add(tl, client_get_code((Client)key));
     }
 }

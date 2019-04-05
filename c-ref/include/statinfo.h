@@ -8,9 +8,9 @@
 
 typedef struct statistical_info *StatInfo;
 
-void *statinfo_make();
-void statinfo_destroy(void *);
-void statinfo_update(void *e, void *user_data);
+StatInfo statinfo_make();
+void statinfo_destroy(StatInfo si);
+void statinfo_update(StatInfo si, void *user_data);
 
 int get_t_units(StatInfo si);
 int get_t_units_fil(StatInfo si, int filial);

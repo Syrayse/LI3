@@ -5,13 +5,12 @@
 #ifndef KHEAP_H
 #define KHEAP_H
 
-#include "util.h"
 #include <glib.h>
 
 typedef struct kheap *KHeap;
 
-KHeap kheap_make(fcompare, freefunc);
-KHeap kheap_heapify_array(void **d, int length, fcompare fc, freefunc ff);
+KHeap kheap_make(GCompareFunc, GFreeFunc);
+KHeap kheap_heapify_array(void **d, int length, GCompareFunc fc, GFreeFunc ff);
 void kheap_destroy(KHeap);
 void kheap_add(KHeap, void *);
 void *kheap_check_root(KHeap);

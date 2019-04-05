@@ -74,4 +74,6 @@ guint client_hash(gconstpointer v);
  */
 gboolean client_equal(gconstpointer v1, gconstpointer v2);
 
+void wrapclient_destroy(gpointer v);
+
 #endif

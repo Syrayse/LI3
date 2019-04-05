@@ -20,7 +20,7 @@ typedef void (*f_update)(gpointer, gpointer);
  */
 typedef gpointer (*f_maker)();
 
-Set set_make(GHashFunc hash_f, GEqualFunc key_equal_f, freefunc ffkey, freefunc ffvalue, f_maker fm, f_update fu);
+Set set_make(GHashFunc hash_f, GEqualFunc key_equal_f, GFreeFunc ffkey, GFreeFunc ffvalue, f_maker fm, f_update fu);
 void set_destroy(Set set);
 int set_add(Set set, gpointer key, gpointer user_data);
 int set_remove(Set set, gpointer key);

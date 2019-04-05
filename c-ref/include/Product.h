@@ -56,13 +56,23 @@ Product product_clone(Product p);
 char *product_get_code(Product p);
 
 /**
- * \brief Indica qual é a primeira letra do código de um produto.
+ * \brief Em vez de passar como argumento um produto passa um tipo abstrato de dados que representa este.
  * 
- * @param p Produto a considerar.
- * 
- * @returns Primeira letra do código do produto.
+ * Está função é utilizada unicamente para evitar warnings do compilador.
  */
-int product_get_first_let(Product p);
+void wrapproduct_destroy(gpointer v);
+
+/**
+ * \brief Calcula o indice correspondente ao produto.
+ * 
+ * Este indice é calculado apartir da primeira letra do código do produto,
+ * aplicando um offset de 'A'.
+ * 
+ * @param p Produto que se pretender utilizar.
+ * 
+ * @returns Indice calculado.
+ */
+int get_i(Product p);
 
 /**
  * \brief Calcula o _hash code_ de uma instância da classe `Product`.

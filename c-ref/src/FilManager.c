@@ -2,32 +2,37 @@
 #include "Appender.h"
 #include "Adition.h"
 #include "set.h"
+#include "TAD_List.h"
+#include "Client.h"
+#include "Product.h"
 #include <glib.h>
+
+/* ------------------------------------------------------------------------------ */
+
+typedef struct filmanager
+{
+    Set client_set,
+        product_set;
+} * FilManager;
 
 /* ------------------------------------------------------------------------------ */
 
 /* Metódos publicos */
 FilManager filmanager_make();
 void filmanager_destroy(FilManager fm);
-void filmanager_update(FilManager fm, char *product, char *client, int filial, int month, int promo, int units, double spent);
-char **filmanager_get_overall_clients(FilManager fm, int *size);
-int **filmanager_get_units_matrix(FilManager fm, char *client);
-char **filmanager_get_client_at_fil(FilManager fm, char *product, int filial, int promo, int *size);
-char **filmanager_get_most_bought(FilManager fm, char *client, int month, int *size);
-int filmanager_get_n_of_clients(FilManager fm, char *product);
-char **filmanager_get_top3(FilManager fm, char *client, int *size);
+void filmanager_update(FilManager fm, Product product, Client client, int filial, int month, int promo, int units, double spent);
+TAD_List filmanager_get_overall_clients(FilManager fm);
+int **filmanager_get_units_matrix(FilManager fm, Client client);
+TAD_List filmanager_get_client_at_fil(FilManager fm, Product product, int filial, int promo);
+TAD_List filmanager_get_most_bought(FilManager fm, Client client, int month);
+int filmanager_get_n_of_clients(FilManager fm, Product product);
+TAD_List filmanager_get_top3(FilManager fm, Client client);
 int filmanager_get_active_n_clients(FilManager fm);
 int filmanager_get_active_n_products(FilManager fm);
 
 /* Metódos privados */
 static void foreach_add_overall(gpointer key, gpointer value, gpointer user_data);
-/* ------------------------------------------------------------------------------ */
-
-typedef struct filmanager
-{
-    StrSet client_set,
-        product_set;
-} * FilManager;
+static int mystrcmp(gconstpointer v1, gconstpointer v2);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -35,9 +40,9 @@ FilManager filmanager_make()
 {
     FilManager fm = g_malloc(sizeof(struct filmanager));
 
-    fm->client_set = strset_make(g_free, appender_destroy, appender_make, appender_update, NULL);
+    fm->client_set = set_make(client_hash, client_equal, wrapclient_destroy, appender_destroy, appender_make, appender_update);
 
-    fm->product_set = strset_make(g_free, adition_destroy, adition_make, adition_update, NULL);
+    fm->product_set = set_make(product_hash, product_equal, wrapproduct_destroy, adition_destroy, adition_make, adition_update);
 
     return fm;
 }
@@ -46,24 +51,23 @@ void filmanager_destroy(FilManager fm)
 {
     if (fm)
     {
-        strset_destroy(fm->client_set);
-        strset_destroy(fm->product_set);
+        set_destroy(fm->client_set);
+        set_destroy(fm->product_set);
         g_free(fm);
     }
 }
 
-void filmanager_update(FilManager fm, char *product, char *client, int filial, int month, int promo, int units, double spent)
+void filmanager_update(FilManager fm, Product product, Client client, int filial, int month, int promo, int units, double spent)
 {
     void *tmp[5];
-    char *copy_product, *copy_client;
-    copy_product = g_strdup(product);
-    copy_client = g_strdup(client);
+    Product copy_product = product_clone(product);
+    Client copy_client = client_clone(client);
 
     /* Adicionar aos produtos */
     tmp[0] = copy_client;
     tmp[1] = &filial;
     tmp[2] = &promo;
-    strset_add(fm->product_set, copy_product, tmp);
+    set_add(fm->product_set, copy_product, tmp);
 
     /* Adicionar aos clients */
     tmp[0] = copy_product;
@@ -71,37 +75,26 @@ void filmanager_update(FilManager fm, char *product, char *client, int filial, i
     tmp[2] = &month;
     tmp[3] = &units;
     tmp[4] = &spent;
-    strset_add(fm->client_set, copy_client, tmp);
+    set_add(fm->client_set, copy_client, tmp);
 }
 
-char **filmanager_get_overall_clients(FilManager fm, int *size)
+TAD_List filmanager_get_overall_clients(FilManager fm)
 {
-    int i = 0;
-    char **r = g_malloc(sizeof(char *) * strset_size(fm->client_set));
-    void *tmp[2];
+    TAD_List tl = list_make(g_free, set_size(fm->client_set));
 
-    tmp[0] = r;
-    tmp[1] = &i;
+    set_foreach(fm->client_set, foreach_add_overall, tl);
 
-    strset_foreach(fm->client_set, foreach_add_overall, tmp);
+    list_sort(tl, mystrcmp);
 
-    *size = i;
-
-    if (i == 0)
-    {
-        g_free(r);
-        r = NULL;
-    }
-
-    return r;
+    return tl;
 }
 
-int **filmanager_get_units_matrix(FilManager fm, char *client)
+int **filmanager_get_units_matrix(FilManager fm, Client client)
 {
     int **r = NULL;
-    void *val;
+    gpointer val;
 
-    if ((val = strset_lookup(fm->client_set, client)))
+    if ((val = set_lookup(fm->client_set, client)))
     {
         r = appender_clone_matrix((Appender)val);
     }
@@ -109,38 +102,38 @@ int **filmanager_get_units_matrix(FilManager fm, char *client)
     return r;
 }
 
-char **filmanager_get_client_at_fil(FilManager fm, char *product, int filial, int promo, int *size)
+TAD_List filmanager_get_client_at_fil(FilManager fm, Product product, int filial, int promo)
 {
-    char **r = NULL;
-    void *val;
+    TAD_List tl = NULL;
+    gpointer val;
 
-    if (promo >= 0 && (val = strset_lookup(fm->product_set, product)))
+    if (promo >= 0 && (val = set_lookup(fm->product_set, product)))
     {
-        r = adition_dump_by_promo_fil((Adition)val, filial, promo, size);
+        tl = adition_dump_by_promo_fil((Adition)val, filial, promo);
     }
 
-    return r;
+    return tl;
 }
 
-char **filmanager_get_most_bought(FilManager fm, char *client, int month, int *size)
+TAD_List filmanager_get_most_bought(FilManager fm, Client client, int month)
 {
-    char **r = NULL;
-    void *val;
+    TAD_List tl = NULL;
+    gpointer val;
 
-    if ((val = strset_lookup(fm->client_set, client)))
+    if ((val = set_lookup(fm->client_set, client)))
     {
-        r = appender_get_most_bought((Appender)val, month, size);
+        tl = appender_get_most_bought((Appender)val, month);
     }
 
-    return r;
+    return tl;
 }
 
-int filmanager_get_n_of_clients(FilManager fm, char *product)
+int filmanager_get_n_of_clients(FilManager fm, Product product)
 {
     int r = -1;
-    void *val;
+    gpointer val;
 
-    if ((val = strset_lookup(fm->product_set, product)))
+    if ((val = set_lookup(fm->product_set, product)))
     {
         r = adition_size((Adition)val);
     }
@@ -148,35 +141,40 @@ int filmanager_get_n_of_clients(FilManager fm, char *product)
     return r;
 }
 
-char **filmanager_get_top3(FilManager fm, char *client, int *size)
+TAD_List filmanager_get_top3(FilManager fm, Client client)
 {
-    char **r = NULL;
-    void *val;
+    TAD_List tl = NULL;
+    gpointer val;
 
-    if ((val = strset_lookup(fm->client_set, client)))
+    if ((val = set_lookup(fm->client_set, client)))
     {
-        r = appender_get_top3((Appender)val, size);
+        tl = appender_get_top3((Appender)val);
     }
 
-    return r;
+    return tl;
 }
 
 int filmanager_get_active_n_clients(FilManager fm)
 {
-    return strset_size(fm->client_set);
+    return set_size(fm->client_set);
 }
 
 int filmanager_get_active_n_products(FilManager fm)
 {
-    return strset_size(fm->product_set);
+    return set_size(fm->product_set);
 }
 
 static void foreach_add_overall(gpointer key, gpointer value, gpointer user_data)
 {
-    void **holder = (void **)user_data;
+    TAD_List tl = (TAD_List)user_data;
 
     if (is_bought_in_all((Appender)value))
     {
-        ((char **)holder[0])[(*(int *)holder[1])++] = g_strdup((char *)key);
+        list_add(tl, client_get_code((Client)key));
     }
+}
+
+static int mystrcmp(gconstpointer v1, gconstpointer v2)
+{
+    return strcmp((char *)v1, (char *)v2);
 }

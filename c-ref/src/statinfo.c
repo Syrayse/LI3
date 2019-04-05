@@ -16,9 +16,9 @@
 /* ------------------------------------------------------------------------------ */
 
 /* Metodos publicos */
-void *statinfo_make();
-void statinfo_destroy(void *);
-void statinfo_update(void *e, void *user);
+StatInfo statinfo_make();
+void statinfo_destroy(StatInfo si);
+void statinfo_update(StatInfo si, void *user);
 
 int get_t_units(StatInfo si);
 int get_t_units_fil(StatInfo si, int filial);
@@ -69,7 +69,7 @@ typedef struct statistical_info
  * 
  * @returns Uma nova instância.
  */
-void *statinfo_make()
+StatInfo statinfo_make()
 {
     int l, c, k;
     StatInfo a = g_malloc(sizeof(struct statistical_info));
@@ -103,18 +103,17 @@ void *statinfo_make()
  * 
  * @param a Instância que se pretende destruir.
  */
-void statinfo_destroy(void *a)
+void statinfo_destroy(StatInfo si)
 {
-    if (a)
+    if (si)
     {
-        g_free((StatInfo)a);
+        g_free(si);
     }
 }
 
 /* Assume que recebe [month]+[filial]+[units]+[promo]+[spent] */
-void statinfo_update(void *e, void *user_data)
+void statinfo_update(StatInfo si, void *user_data)
 {
-    StatInfo si = (StatInfo)e;
     void **holder = (void **)user_data;
     double spent = *(double *)holder[4];
     int units, filial, month, promo = *(int *)holder[3];

@@ -22,7 +22,8 @@ char *product_get_code(Product p);
 int product_get_first_let(Product p);
 guint product_hash(gconstpointer v);
 gboolean product_equal(gconstpointer v1, gconstpointer v2);
-
+void wrapproduct_destroy(gpointer v);
+int get_i(Product p);
 /* Metódos privados */
 
 /* ------------------------------------------------------------------------------ */
@@ -54,9 +55,14 @@ char *product_get_code(Product p)
     return g_strdup(p->product_code);
 }
 
-int product_get_first_let(Product p)
+void wrapproduct_destroy(gpointer v)
 {
-    return *(p->product_code);
+    product_destroy((Product)v);
+}
+
+int get_i(Product p)
+{
+    return (*(p->product_code) - 'A');
 }
 
 guint product_hash(gconstpointer v)

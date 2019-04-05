@@ -27,7 +27,6 @@ int CatClients_exists(CatClients cc, Client client);
 void CatClients_add_client(CatClients cc, Client client);
 
 /* Metodos privados */
-static void wrapclient_destroy(gpointer v);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -51,15 +50,10 @@ void CatClients_destroy(CatClients cc)
 
 int CatClients_exists(CatClients cc, Client client)
 {
-    return strset_contains(cc->clients, client);
+    return set_contains(cc->clients, client);
 }
 
 void CatClients_add_client(CatClients cc, Client client)
 {
-    strset_add(cc->clients, client, NULL);
-}
-
-static void wrapclient_destroy(gpointer v)
-{
-    client_destroy((Client)v);
+    set_add(cc->clients, client, NULL);
 }
