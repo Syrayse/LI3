@@ -4,6 +4,13 @@
 
 /* ------------------------------------------------------------------------------ */
 
+typedef struct clntinfo
+{
+    signed char promo_code[N_FILIAIS];
+} * ClntInfo;
+
+/* ------------------------------------------------------------------------------ */
+
 /* Metodos publicos */
 void *clntinfo_make();
 void clntinfo_destroy(void *e);
@@ -11,13 +18,6 @@ void clntinfo_update(void *e, void *user_data);
 int clntinfo_promo(ClntInfo ci, int filial);
 
 /* Metodos privados */
-
-/* ------------------------------------------------------------------------------ */
-
-typedef struct clntinfo
-{
-    signed char promo_code[N_FILIAIS];
-} * ClntInfo;
 
 /* ------------------------------------------------------------------------------ */
 

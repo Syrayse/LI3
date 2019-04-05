@@ -18,6 +18,7 @@ typedef struct tad_list *TAD_List;
 /**
  * \brief Permite criar uma instância da classe `TAD_List`.
  * 
+ * @param f Função de destruição dos elementos da lista.
  * @param size Capacidade máxima que se pretende fornecer à instância.
  * 
  * @returns Nova instância.

@@ -18,7 +18,7 @@ typedef struct tad_list
     unsigned int used, /**< Número de elementos utilizados.  */
         max;           /**< Máxima capacidade da lista. */
     gpointer *array;   /**< Contentor de informação da lista. */
-    GFreeFunc f;
+    GFreeFunc f;       /**< Função de remoção dos elementos da lista. */
 } * TAD_List;
 
 /* ------------------------------------------------------------------------------ */

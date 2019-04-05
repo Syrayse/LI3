@@ -87,7 +87,8 @@ TAD_List filmanager_get_client_at_fil(FilManager fm, Product product, int filial
  * \brief Produz uma lista com o código dos produtos mais comprados por um certo cliente num mês, por ordem descendente segundo a quantidade comprada. 
  *
  * @param fm Instância a considerar.
- * @param product Produto do qual se pretende obter informação.
+ * @param client Cliente do qual se pretende obter informação.
+ * @param month Mês a considerar.
  * 
  * @returns A nova lista criada, ou NULL caso o cliente não exista na instância.
  */
@@ -107,7 +108,7 @@ int filmanager_get_n_of_clients(FilManager fm, Product product);
  * \brief Produz uma lista com o código dos _top 3_ produtos em que um dado cliente gastou mais dinheiro.
  * 
  * @param fm Instância a considerar.
- * @param cliente Cliente do qual se pretende obter informação.
+ * @param client Cliente do qual se pretende obter informação.
  * 
  * @returns A nova lista criada, ou NULL caso o cliente não exista na instância.
  */

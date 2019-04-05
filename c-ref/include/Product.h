@@ -55,7 +55,7 @@ char *product_get_code(Product p);
  * 
  * Está função é utilizada unicamente para evitar warnings do compilador.
  * 
- * * @param v Tipo abstrato de dados que representa o produto.
+ * @param v Tipo abstrato de dados que representa o produto.
  */
 void wrapproduct_destroy(gpointer v);
 
@@ -74,7 +74,7 @@ int get_i(Product p);
 /**
  * \brief Calcula o _hash code_ de uma instância da classe `Product`.
  * 
- * @param p Instância a considerar.
+ * @param v Instância a considerar.
  * 
  * @returns _Hash code_ calculado.
  */

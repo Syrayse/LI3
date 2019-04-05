@@ -42,6 +42,7 @@ int CatProducts_exists(CatProducts cp, Product product);
  * \brief Adiciona um produto a um catálogo de produtos.
  * 
  * @param cp Catálogo de produtos no qual se pretende adicionar.
+ * @param product Produto que se pretende adicionar.
  */
 void CatProducts_add_product(CatProducts cp, Product product);
 

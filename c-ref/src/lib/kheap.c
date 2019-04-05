@@ -95,7 +95,7 @@ void kheap_destroy(KHeap kh)
     }
 }
 
-void kheap_add(KHeap kh, gpointer d)
+void kheap_add(KHeap kh, gpointer v)
 {
     if (kh->used == kh->size)
         double_heap(kh);

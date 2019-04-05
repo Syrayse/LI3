@@ -49,7 +49,7 @@ void NavControl_destroy(NavControl nc);
  * deste metódo escolher como permite imprimir cada elemento.
  * 
  * @param nc Instância a ser considerada.
- * @param dict Novo dicionário a ser colocado.
+ * @param tl Novo dicionário a ser colocado.
  * @param user_data Informação pertinente ao conteúdo do dicionário.
  * @param fp_elem Função de impessão do novo dicionário, a ser aplicada a cada elemento deste. 
  * @param fp_user Função de impressão de informação pertinente ao conteúdo do dicionário.

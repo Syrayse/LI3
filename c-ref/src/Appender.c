@@ -10,6 +10,14 @@
 
 /* ------------------------------------------------------------------------------ */
 
+typedef struct appender
+{
+    int matrix[N_FILIAIS][N_MONTHS + 1];
+    Set product_set;
+} * Appender;
+
+/* ------------------------------------------------------------------------------ */
+
 /* Metodos publicos */
 gpointer appender_make();
 void appender_destroy(gpointer v);
@@ -30,14 +38,6 @@ static void foreach_add_to_heap(gpointer key, gpointer value, gpointer user_data
 static int compare_curr_quants(gconstpointer a, gconstpointer b);
 static int compare_curr_spent(gconstpointer a, gconstpointer b);
 static void mycurrier_destroy(gpointer a);
-
-/* ------------------------------------------------------------------------------ */
-
-typedef struct appender
-{
-    int matrix[N_FILIAIS][N_MONTHS + 1];
-    Set product_set;
-} * Appender;
 
 /* ------------------------------------------------------------------------------ */
 

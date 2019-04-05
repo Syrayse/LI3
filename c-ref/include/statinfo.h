@@ -12,6 +12,8 @@
 #ifndef STATINFO_H
 #define STATINFO_H
 
+#include <glib.h>
+
 /**
  * \brief Tipo opaco representativo de uma instância da classe `StatInfo`.
  */
@@ -27,7 +29,7 @@ StatInfo statinfo_make();
 /**
  * \brief Destrói uma instância da classe `StatInfo`.
  * 
- * @param a Instância que se pretende destruir.
+ * @param si Instância que se pretende destruir.
  */
 void statinfo_destroy(StatInfo si);
 
@@ -39,9 +41,9 @@ void statinfo_destroy(StatInfo si);
  * [month]+[filial]+[units]+[promo]+[spent].
  * 
  * @param si Instància que se pretende atualizar.
- * @param uset_data Valores utilizados na atualização.
+ * @param user_data Valores utilizados na atualização.
  */
-void statinfo_update(StatInfo si, void *user_data);
+void statinfo_update(StatInfo si, gpointer user_data);
 
 /**
  * \brief Calcula o número de unidades totais vendidas.
@@ -74,107 +76,107 @@ int get_t_vendas(StatInfo);
 /**
  * \brief Calcula o número total de transações por mês e filial.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * @param filial Filial que se pretende verificar.
  * 
  * @returns O número total de transações por mês e filial.
  */
-int get_t_month_fil_vendas(StatInfo, int month, int filial);
+int get_t_month_fil_vendas(StatInfo si, int month, int filial);
 
 /**
  * \brief Calcula o número total de transações por mês e filial, com promoção.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * @param filial Filial que se pretende verificar.
  * 
  * @returns O número total de transações por mês e filial, com promoção.
  */
-int get_t_month_fil_vendas_promo(StatInfo, int month, int filial);
+int get_t_month_fil_vendas_promo(StatInfo si, int month, int filial);
 
 /**
  * \brief Calcula o número total de transações por mês e filial, sem promoção.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * @param filial Filial que se pretende verificar.
  * 
  * @returns O número total de transações por mês e filial, sem promoção.
  */
-int get_t_month_fil_vendas_no_promo(StatInfo, int month, int filial);
+int get_t_month_fil_vendas_no_promo(StatInfo si, int month, int filial);
 
 /**
  * \brief Calcula o número total de transações por mês.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * 
  * @returns O número total de transações por mês.
  */
-int get_t_month_vendas(StatInfo, int month);
+int get_t_month_vendas(StatInfo si, int month);
 
 /**
  * \brief Calcula o número total de transações por mês, com promoção.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * 
  * @returns O número total de transações por mês, com promoção.
  */
-int get_t_month_vendas_promo(StatInfo, int month);
+int get_t_month_vendas_promo(StatInfo si, int month);
 
 /**
  * \brief Calcula o número total de transações por mês, sem promoção.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * 
  * @returns O número total de transações por mês, sem promoção.
  */
-int get_t_month_vendas_no_promo(StatInfo, int month);
+int get_t_month_vendas_no_promo(StatInfo si, int month);
 
 /**
  * \brief Calcula o fluxo monetário total associado à instância.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * 
  * @returns O Fluxo monetário total.
  */
-double get_t_rev(StatInfo);
+double get_t_rev(StatInfo si);
 
 /**
  * \brief Calcula o fluxo monetário total de um dado mês e filial.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * @param filial Filial que se pretende verificar.
  * 
  * @returns O fluxo monetário total associado a um dado mês e filial.
  */
-double get_t_month_fil_rev(StatInfo, int month, int filial);
+double get_t_month_fil_rev(StatInfo si, int month, int filial);
 
 /**
  * \brief Calcula o fluxo monetário total de um dado mês e filial, com promoção.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * @param filial Filial que se pretende verificar.
  * 
  * @returns O fluxo monetário total associado a um dado mês e filial, com promoção.
  */
-double get_t_month_fil_rev_promo(StatInfo, int month, int filial);
+double get_t_month_fil_rev_promo(StatInfo si, int month, int filial);
 
 /**
  * \brief Calcula o fluxo monetário total de um dado mês e filial, sem promoção.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * @param filial Filial que se pretende verificar.
  * 
  * @returns O fluxo monetário total associado a um dado mês e filial, sem promoção.
  */
-double get_t_month_fil_rev_no_promo(StatInfo, int month, int filial);
+double get_t_month_fil_rev_no_promo(StatInfo si, int month, int filial);
 
 /**
  * \brief Calcula o fluxo monetário total de um dado mês.
@@ -182,12 +184,12 @@ double get_t_month_fil_rev_no_promo(StatInfo, int month, int filial);
  * Este método tira partido de uma função que permite a iteração sobre a matriz
  * recipiente atual utilizada, de forma a calcular os valores pretendidos.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * 
  * @returns O fluxo monetário total de um dado mês.
  */
-double get_t_month_rev(StatInfo, int month);
+double get_t_month_rev(StatInfo si, int month);
 
 /**
  * \brief Calcula o fluxo monetário total de um dado mês, com promoção.
@@ -195,12 +197,12 @@ double get_t_month_rev(StatInfo, int month);
  * Este método tira partido de uma função que permite a iteração sobre a matriz
  * recipiente atual utilizada, de forma a calcular os valores pretendidos.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * 
  * @returns O fluxo monetário total de um dado mês, com promoção.
  */
-double get_t_month_rev_promo(StatInfo, int month);
+double get_t_month_rev_promo(StatInfo si, int month);
 
 /**
  * \brief Calcula o fluxo monetário total de um dado mês, sem promoção.
@@ -208,11 +210,11 @@ double get_t_month_rev_promo(StatInfo, int month);
  * Este método tira partido de uma função que permite a iteração sobre a matriz
  * recipiente atual utilizada, de forma a calcular os valores pretendidos.
  * 
- * @param a Instância a ser considerada.
+ * @param si Instância a ser considerada.
  * @param month Mês que se pretende verificar.
  * 
  * @returns O fluxo monetário total de um dado mês, sem promoção.
  */
-double get_t_month_rev_no_promo(StatInfo, int month);
+double get_t_month_rev_no_promo(StatInfo si, int month);
 
 #endif

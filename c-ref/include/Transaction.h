@@ -27,7 +27,7 @@ Transaction trans_make();
 /**
  * \brief Destrói uma transação.
  * 
- * @param e Transação a destruir.
+ * @param t Transação a destruir.
  */
 void trans_destroy(Transaction t);
 

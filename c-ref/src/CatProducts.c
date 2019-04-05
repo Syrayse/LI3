@@ -15,6 +15,17 @@
 
 /* ------------------------------------------------------------------------------ */
 
+/**
+ * \brief Estrutura que define a classe `CatProducts`.
+ */
+typedef struct cat_products
+{
+    Set product_set[N_LETTER],            /**< Contem todos os produtos, separados por conjuntos que estão indexados por primeira letra. */
+        not_bought_regist[N_FILIAIS + 1]; /**< Contem todos os produtos não comprados em global e por filial     */
+} * CatProducts;
+
+/* ------------------------------------------------------------------------------ */
+
 /* Metodos publicos */
 CatProducts CatProducts_make();
 void CatProducts_destroy(CatProducts cp);
@@ -30,14 +41,6 @@ TAD_List CatProducts_not_bought_fil(CatProducts cp, int filial);
 static void foreach_add_code(gpointer key, gpointer value, gpointer data);
 static TAD_List dump_not_bought_reg(CatProducts cp, int ind);
 static int mystrcmp(gconstpointer v1, gconstpointer v2);
-
-/* ------------------------------------------------------------------------------ */
-
-typedef struct cat_products
-{
-    Set product_set[N_LETTER],            /**< Contem todos os produtos, separados por conjuntos que estão indexados por primeira letra. */
-        not_bought_regist[N_FILIAIS + 1]; /**< Contem todos os produtos não comprados em global e por filial     */
-} * CatProducts;
 
 /* ------------------------------------------------------------------------------ */
 

@@ -95,16 +95,16 @@ int set_remove(Set set, gpointer key);
  * \brief Aplica uma função a todas as chaves e respectivos valores no conjunto.
  * 
  * @param set Conjunto a considerar.
- * @param fe Função que será aplicada a todos os elementos do conjunto.
+ * @param fer Função que será aplicada a todos os elementos do conjunto.
  * @param user_data Informação adicional, útil à função de iteração.
  */
-void set_foreach(Set set, GHFunc fe, gpointer user_data);
+void set_foreach(Set set, GHFunc fer, gpointer user_data);
 
 /**
  * \brief Verifica se uma certa chave existe no conjunto
  * 
  * @param set Conjunto a considerar.
- * @param ket Chave de acesso ao conjunto.
+ * @param key Chave de acesso ao conjunto.
  * 
  * @returns 1 caso a chave exista no conjunto, 0 caso contrário.
  */

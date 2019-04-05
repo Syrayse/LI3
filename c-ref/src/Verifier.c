@@ -20,26 +20,6 @@
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
-Verifier Verifier_make();
-void Verifier_destroy(Verifier v);
-Client verify_client(char *client);
-Product verify_product(char *product);
-Transaction verify_sale(Verifier v, char *trans_code);
-
-/* Metodos privados */
-static int is_valid_client(char *client);
-static int is_valid_product(char *product);
-static int _set_trans_valid_product(char *product, Transaction t);
-static int is_valid_price(char *price, Transaction t);
-static int is_valid_units(char *units, Transaction t);
-static int is_valid_promo(char *promo, Transaction t);
-static int _set_trans_valid_client(char *client, Transaction t);
-static int is_valid_month(char *month, Transaction t);
-static int is_valid_filial(char *filial, Transaction t);
-
-/* ------------------------------------------------------------------------------ */
-
 /**
  * \brief Typedef utilizado de forma a simplificar parametrização de funções.
  */
@@ -69,8 +49,28 @@ typedef int (*scompare)(char *, Transaction);
  */
 typedef struct verifier
 {
-    scompare fa[N_TRANS_ARGS];
+    scompare fa[N_TRANS_ARGS]; /**< Array com funções de validação e atribuição. */
 } * Verifier;
+
+/* ------------------------------------------------------------------------------ */
+
+/* Metodos publicos */
+Verifier Verifier_make();
+void Verifier_destroy(Verifier v);
+Client verify_client(char *client);
+Product verify_product(char *product);
+Transaction verify_sale(Verifier v, char *trans_code);
+
+/* Metodos privados */
+static int is_valid_client(char *client);
+static int is_valid_product(char *product);
+static int _set_trans_valid_product(char *product, Transaction t);
+static int is_valid_price(char *price, Transaction t);
+static int is_valid_units(char *units, Transaction t);
+static int is_valid_promo(char *promo, Transaction t);
+static int _set_trans_valid_client(char *client, Transaction t);
+static int is_valid_month(char *month, Transaction t);
+static int is_valid_filial(char *filial, Transaction t);
 
 /* ------------------------------------------------------------------------------ */
 
