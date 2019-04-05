@@ -15,10 +15,9 @@
  */
 typedef struct tad_list
 {
-    unsigned int next_ind, /**< Próximo elemento a ser retirado da lista.  */
-        used,              /**< Número de elementos utilizados.  */
-        max;               /**< Máxima capacidade da lista. */
-    gpointer *array;       /**< Contentor de informação da lista. */
+    unsigned int used, /**< Número de elementos utilizados.  */
+        max;           /**< Máxima capacidade da lista. */
+    gpointer *array;   /**< Contentor de informação da lista. */
     GDestroyNotify f;
 } * TAD_List;
 
@@ -28,7 +27,7 @@ typedef struct tad_list
 TAD_List list_make(GDestroyNotify f, unsigned int size);
 void list_destroy(TAD_List tl);
 unsigned int list_size(TAD_List tl);
-gpointer list_get_next(TAD_List tl);
+gpointer list_get_index(TAD_List tl, unsigned int index);
 int list_add(TAD_List tl, gpointer v);
 void list_sort(TAD_List tl, GCompareFunc fc);
 
@@ -40,7 +39,7 @@ TAD_List list_make(GDestroyNotify f, unsigned int size)
 {
     TAD_List tl = g_malloc(sizeof(struct tad_list));
 
-    tl->next_ind = tl->used = 0;
+    tl->used = 0;
 
     tl->max = size;
 
@@ -75,9 +74,9 @@ unsigned int list_size(TAD_List tl)
     return tl->used;
 }
 
-gpointer list_get_next(TAD_List tl)
+gpointer list_get_index(TAD_List tl, unsigned int index)
 {
-    return (tl->next_ind < tl->used) ? tl->array[tl->used++] : NULL;
+    return (index < tl->used) ? tl->array[index] : NULL;
 }
 
 int list_add(TAD_List tl, gpointer v)

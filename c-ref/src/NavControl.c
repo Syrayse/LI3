@@ -6,22 +6,9 @@
  * mais user-friendly com o cliente do serviço SGV.
  */
 #include "NavControl.h"
+#include "TAD_List.h"
 #include <glib.h>
 #include <stdio.h>
-
-/* ------------------------------------------------------------------------------ */
-
-/* Metodos publicos */
-NavControl NavControl_make();
-void NavControl_destroy(NavControl nc);
-void NavControl_change_dict(NavControl nc, void **dict, void *user_data, int size, f_print fp_elem, f_print fp_user);
-int NavControl_next_page(NavControl nc);
-int NavControl_previous_page(NavControl nc);
-void NavControl_show(NavControl nc);
-
-/* Metodos privados */
-static void show_header(NavControl nc);
-static void show_footer(NavControl nc);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -32,16 +19,30 @@ static void show_footer(NavControl nc);
  */
 typedef struct nav_control
 {
-    int nPerPage,      /**< Numero de elementos por página a serem apresentados. */
-        page,          /**< Indice da página corresponte do dicionário, começa em 1. */
-        init,          /**< Indice do primeiro elemento do dicionário a ser apresentado na página corrente. */
-        end,           /**< Indice do ultimo elemento do dicionário a ser apresentado na página corrente. */
-        size;          /**< Número total de elementos no dicionário. */
-    void **dictionary, /**< Dicionário corrente. */
-        *user_data;    /**< Informação útil sobre o dicionário. */
-    f_print fp_elem,   /**< Função de impressão a ser aplicada a cada elemento do dicionário. */
-        fp_user;       /**< Função de impressão a ser aplicada à informação passada pelo usuário. */
+    int nPerPage,        /**< Numero de elementos por página a serem apresentados. */
+        page,            /**< Indice da página corresponte do dicionário, começa em 1. */
+        init,            /**< Indice do primeiro elemento do dicionário a ser apresentado na página corrente. */
+        end,             /**< Indice do ultimo elemento do dicionário a ser apresentado na página corrente. */
+        size;            /**< Número total de elementos no dicionário. */
+    TAD_List dictionary; /**< Dicionário corrente. */
+    gpointer user_data;  /**< Informação útil sobre o dicionário. */
+    f_print fp_elem,     /**< Função de impressão a ser aplicada a cada elemento do dicionário. */
+        fp_user;         /**< Função de impressão a ser aplicada à informação passada pelo usuário. */
 } * NavControl;
+
+/* ------------------------------------------------------------------------------ */
+
+/* Metodos publicos */
+NavControl NavControl_make();
+void NavControl_destroy(NavControl nc);
+void NavControl_change_dict(NavControl nc, TAD_List tl, void *user_data, f_print fp_elem, f_print fp_user);
+int NavControl_next_page(NavControl nc);
+int NavControl_previous_page(NavControl nc);
+void NavControl_show(NavControl nc);
+
+/* Metodos privados */
+static void show_header(NavControl nc);
+static void show_footer(NavControl nc);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -90,6 +91,11 @@ void NavControl_destroy(NavControl nc)
 {
     if (nc)
     {
+        if (nc->dictionary)
+        {
+            list_destroy(nc->dictionary);
+        }
+
         g_free(nc);
     }
 }
@@ -106,20 +112,24 @@ void NavControl_destroy(NavControl nc)
  * @param nc Instância a ser considerada.
  * @param dict Novo dicionário a ser colocado.
  * @param user_data Informação pertinente ao conteúdo do dicionário.
- * @param size Tamanho do novo dicionário.
  * @param fp_elem Função de impessão do novo dicionário, a ser aplicada a cada elemento deste. 
  * @param fp_user Função de impressão de informação pertinente ao conteúdo do dicionário.
  */
-void NavControl_change_dict(NavControl nc, void **dict, void *user_data, int size, f_print fp_elem, f_print fp_user)
+void NavControl_change_dict(NavControl nc, TAD_List dict, void *user_data, f_print fp_elem, f_print fp_user)
 {
-    if (!nc || size <= 0)
+    if (!dict)
         return;
+
+    if (nc->dictionary)
+    {
+        list_destroy(nc->dictionary);
+    }
 
     nc->dictionary = dict;
 
     nc->user_data = user_data;
 
-    nc->size = size;
+    nc->size = list_size(dict);
 
     nc->page = 1;
 
@@ -129,7 +139,7 @@ void NavControl_change_dict(NavControl nc, void **dict, void *user_data, int siz
 
     nc->init = 0;
 
-    nc->end = max(size, nc->nPerPage);
+    nc->end = max(nc->size, nc->nPerPage);
 }
 
 /**
@@ -156,7 +166,7 @@ int NavControl_next_page(NavControl nc)
 
         if (nc->end > nc->size)
         {
-            nc->end -= (nc->end - nc->size);
+            nc->end = nc->size;
         }
     }
 
@@ -205,7 +215,7 @@ int NavControl_previous_page(NavControl nc)
  */
 void NavControl_show(NavControl nc)
 {
-    if (!nc || !nc->fp_elem)
+    if (!nc->fp_elem)
         return;
 
     int i;
@@ -214,7 +224,7 @@ void NavControl_show(NavControl nc)
 
     for (i = nc->init; i < nc->end; i++)
     {
-        (*nc->fp_elem)(nc->dictionary[i]);
+        (*nc->fp_elem)(list_get_index(nc->dictionary, i));
     }
 
     show_footer(nc);

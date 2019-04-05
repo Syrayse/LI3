@@ -13,6 +13,8 @@
 #ifndef __CONTROL_NAVIGATOR__
 #define __CONTROL_NAVIGATOR__
 
+#include "TAD_List.h"
+
 /**
  * \brief Typedef para simplificar a escrita de uma função que tem a capacidade de impressão.
  */
@@ -22,8 +24,9 @@ typedef struct nav_control *NavControl;
 
 NavControl NavControl_make();
 void NavControl_destroy(NavControl nc);
-void NavControl_change_dict(NavControl nc, void **dict, void *user_data, int size, f_print fp_elem, f_print fp_user);
+void NavControl_change_dict(NavControl nc, TAD_List tl, void *user_data, f_print fp_elem, f_print fp_user);
 int NavControl_next_page(NavControl nc);
 int NavControl_previous_page(NavControl nc);
+void NavControl_show(NavControl nc);
 
 #endif

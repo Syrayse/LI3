@@ -38,13 +38,14 @@ void list_destroy(TAD_List tl);
 unsigned int list_size(TAD_List tl);
 
 /**
- * \brief Permite obter o próximo elemento da `TAD_List`.
+ * \brief Obter um elemento da `TAD_List` segundo um indice.
  * 
  * @param tl Instância que se pretende utilizar.
+ * @param index Indice do elemento.
  * 
- * @returns O próximo elemento da `TAD_List`, ou NULL caso não exista próximo.
+ * @returns Elemento na posição `index`, ou NULL caso este não exista.
  */
-gpointer list_get_next(TAD_List tl);
+gpointer list_get_index(TAD_List tl, unsigned int index);
 
 /**
  * \brief Adiciona um novo elemento à `TAD_List`.
