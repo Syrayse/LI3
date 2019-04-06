@@ -10,6 +10,7 @@
 #include "Transaction.h"
 #include "Verifier.h"
 #include "Queries.h"
+#include "util.h"
 #include <glib.h>
 #include <time.h>
 #include <stdio.h>
@@ -167,7 +168,16 @@ void show10_elements(TAD_List tl)
 
 int main()
 {
-    int valid1, valid2, valid3, total1, total2, total3, i;
+    int valid1, valid2, valid3, total1, total2, total3, i, j, **r;
+    int *fils[N_FILIAIS], geral[2];
+    double *dfils[N_FILIAIS], dgeral[2];
+
+    for (i = 0; i < N_FILIAIS; i++)
+    {
+        fils[i] = g_malloc(sizeof(int) * 2);
+        dfils[i] = g_malloc(sizeof(double) * 2);
+    }
+
     clock_t defstart, start, qstart;
     TAD_List l;
 
@@ -186,10 +196,76 @@ int main()
     show10_elements(get_sorted_products(cp, 'A'));
     c_t(start);
 
+    start = clock();
+    puts("Query 3:");
+    get_product_global_stats(ac, "AF1184", 6, geral, dgeral);
+    get_product_per_filial_stats(ac, "AF1184", 6, fils, dfils);
+    puts("For product AF1184");
+    printf("\n\tMonth 6\n");
+    for (i = 1; i <= N_FILIAIS; i++)
+    {
+        printf("\tFor filial %d:\n", i);
+        printf("\t\tSales, Promo %d, No Promo %d\n", fils[i - 1][1], fils[i - 1][0]);
+        printf("\t\tRevenue, Promo %f, No Promo %f\n", dfils[i - 1][1], dfils[i - 1][0]);
+    }
+
+    printf("\tIn all:\n");
+    printf("\t\tSales, Promo %d, No Promo %d\n", geral[1], geral[0]);
+    printf("\t\tRevenue, Promo %f, No Promo %f\n", dgeral[1], dgeral[0]);
+    c_t(start);
+
+    start = clock();
+    puts("Query 4:");
+    for (i = 0; i < 4; i++)
+    {
+        l = get_not_bought_products(cp, i);
+        printf("size %d,fil%d ->", list_size(l), i);
+        show10_elements(l);
+    }
+    c_t(start);
+
+    start = clock();
+    puts("Query 5:");
+    show10_elements(get_overall_clients(fm));
+    c_t(start);
+
     puts("Query 6:");
     start = clock();
     printf("\tIsto tem de dar 0 -> %d!\n", get_n_not_bought_clients(cc, fm));
     printf("\tIsto tem de dar 928 -> %d!\n", get_n_not_bought_products(cp));
+    c_t(start);
+
+    start = clock();
+    puts("Query 7:");
+    puts("For client Z5000:");
+    r = get_matrix(fm, "Z5000");
+    puts("\t\t|1|\t|2|\t|3|");
+    for (i = 0; i < N_MONTHS; i++)
+    {
+        printf("\tmes%d\t", i + 1);
+
+        for (j = 0; j < N_FILIAIS; j++)
+        {
+            printf("%d\t", r[j][i]);
+        }
+
+        putchar('\n');
+    }
+    c_t(start);
+
+    start = clock();
+    puts("Query 8:");
+    printf("In the range [1,3], %d transactions were registred\n", get_interval_trans(ac, 1, 3));
+    printf("In the range [1,3], the cashflow was %f\n", get_interval_rev(ac, 1, 3));
+    c_t(start);
+
+    start = clock();
+    puts("Query 9:");
+    puts("\tFor product AF1184, filial 2:");
+    puts("\tWithout promotion:");
+    show10_elements(get_product_buyers(fm, "AF1184", 2, 0));
+    puts("\tWith promotion:");
+    show10_elements(get_product_buyers(fm, "AF1184", 2, 1));
     c_t(start);
 
     start = clock();
@@ -199,7 +275,7 @@ int main()
     c_t(start);
 
     start = clock();
-    puts("Query 11:");
+    puts("Query 12:");
     puts("\tFor client Z5000");
     show10_elements(get_clients_top3(fm, "Z5000"));
     c_t(start);

@@ -46,7 +46,7 @@ TAD_List get_sorted_products(CatProducts cp, char let);
  * 
  * @returns 1 caso o produto exista em `Accounting`, 0 caso contrário.
  */
-int get_product_global_stats(Accounting a, char *product_code, int month, int *trans_vec, int *spent_vec);
+int get_product_global_stats(Accounting a, char *product_code, int month, int *trans_vec, double *spent_vec);
 
 /**
  * \brief Calcula o valor global de transações e cashflow com e sem promoção por filial naquele produto.
@@ -66,7 +66,7 @@ int get_product_global_stats(Accounting a, char *product_code, int month, int *t
  * 
  * @returns 1 caso o produto exista em `Accounting`, 0 caso contrário.
  */
-int get_product_per_filial_stats(Accounting a, char *product_code, int month, int **trans_vec, int **spent_vec);
+int get_product_per_filial_stats(Accounting a, char *product_code, int month, int **trans_vec, double **spent_vec);
 
 /**
  * \brief Cria uma lista com todos os produtos que não foram comprados, no total ou por filial.

@@ -110,9 +110,9 @@ void statinfo_update(StatInfo si, gpointer user_data)
     si->nVendasFilialMonth[month][0][promo]++;
     si->nVendasFilialMonth[month][filial][promo]++;
 
-    si->totalCashFlow += spent;
-    si->monthlyFilialRev[month][0][promo] += spent;
-    si->monthlyFilialRev[month][filial][promo] += spent;
+    si->totalCashFlow += units * spent;
+    si->monthlyFilialRev[month][0][promo] += units * spent;
+    si->monthlyFilialRev[month][filial][promo] += units * spent;
 
     si->totalUnits += units;
     si->nQuantFilial[filial - 1] += units;

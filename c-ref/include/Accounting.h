@@ -75,7 +75,7 @@ double Accounting_n_cash_range(Accounting a, int init, int end);
  * 
  * @returns 1 caso o produto exista em `Accounting`, 0 caso contrário.
  */
-int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, int *spent_vec);
+int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, double *spent_vec);
 
 /**
  * \brief Calcula o valor global de transações e cashflow com e sem promoção por filial naquele produto.
@@ -93,6 +93,6 @@ int Accounting_get_global_stats(Accounting a, Product product, int month, int *t
  * 
  * @returns 1 caso o produto exista em `Accounting`, 0 caso contrário.
  */
-int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, int **spent_vec);
+int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, double **spent_vec);
 
 #endif

@@ -154,6 +154,8 @@ static TAD_List dump_not_bought_reg(CatProducts cp, int ind)
 
     set_foreach(ref, foreach_add_code, tl);
 
+    list_sort(tl, mystrcmp);
+
     return tl;
 }
 

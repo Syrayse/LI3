@@ -231,7 +231,6 @@ static void foreach_add_by_month(gpointer key, gpointer value, gpointer user_dat
     gpointer *holder = (gpointer *)user_data;
     int month = *(int *)holder[2];
     Currier *arr = (Currier *)holder[0];
-    Currier c;
 
     if (prdtinfo_month_units((PrdtInfo)value, month) > 0)
     {

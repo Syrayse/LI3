@@ -193,5 +193,5 @@ static void foreach_add_overall(gpointer key, gpointer value, gpointer user_data
 
 static int mystrcmp(gconstpointer v1, gconstpointer v2)
 {
-    return strcmp((char *)v1, (char *)v2);
+    return strcmp(*(char **)v1, *(char **)v2);
 }

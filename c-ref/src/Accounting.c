@@ -32,8 +32,8 @@ void Accounting_destroy(Accounting a);
 void Accounting_update(Accounting a, Product product, int month, int filial, int units, int promo, double spent);
 int Accounting_n_trans_range(Accounting a, int init, int end);
 double Accounting_n_cash_range(Accounting a, int init, int end);
-int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, int *spent_vec);
-int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, int **spent_vec);
+int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, double *spent_vec);
+int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, double **spent_vec);
 
 /* Métodos privados */
 static gpointer wrapstatinfo_make();
@@ -107,8 +107,8 @@ int Accounting_n_trans_range(Accounting a, int init, int end)
     {
         r = 0;
 
-        for (i = init; i <= end; r += a->nTrans[i], i++)
-            ;
+        for (i = init - 1; i < end; i++)
+            r += a->nTrans[i];
     }
 
     return r;
@@ -123,14 +123,14 @@ double Accounting_n_cash_range(Accounting a, int init, int end)
     {
         r = 0.0;
 
-        for (i = init; i <= end; r += a->totCashFlow[i], i++)
-            ;
+        for (i = init - 1; i < end; i++)
+            r += a->totCashFlow[i];
     }
 
     return r;
 }
 
-int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, int *spent_vec)
+int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, double *spent_vec)
 {
     int r = 0;
     gpointer val;
@@ -150,7 +150,7 @@ int Accounting_get_global_stats(Accounting a, Product product, int month, int *t
     return r;
 }
 
-int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, int **spent_vec)
+int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, double **spent_vec)
 {
     int i, r = 0;
     gpointer val;
