@@ -125,7 +125,7 @@ int get_n_not_bought_products(CatProducts cp);
  * @param fm Gestor de filiais utilizado.
  * @param client_code Código do produto que se pretende verificar.
  *
- * @returns Uma matriz de inteiros com o número de filiais (3 colunas) e o total de produtos vendidos, por mês (12 linhas).
+ * @returns Uma matriz de inteiros com 12 linhas (meses) e 3 colunas (filiais), em que, cada célula contém o número total de produtos vendidos, naquele mês e naquela filial.
  */
 int **get_matrix(FilManager fm, char *client_code);
 
