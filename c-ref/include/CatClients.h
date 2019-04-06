@@ -45,4 +45,13 @@ int CatClients_exists(CatClients cc, Client client);
  */
 void CatClients_add_client(CatClients cc, Client client);
 
+/**
+ * \brief Calcula o número de elementos inseridos no catálogo de clientes.
+ * 
+ * @param cc Catálogo de clientes a considerar.
+ * 
+ * @retursn O número de elementos inseridos no catálogo de clientes.
+ */
+int CatClients_size(CatClients cc);
+
 #endif

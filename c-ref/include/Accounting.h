@@ -44,7 +44,7 @@ void Accounting_update(Accounting a, Product product, int month, int filial, int
  * @param init Primeiro mês.
  * @param end Segundo mês, deve ser mais ou igual ao primeiro.
  * 
- * @returns O valor calculado.
+ * @returns O valor calculado, -1 caso init > end.
  */
 int Accounting_n_trans_range(Accounting a, int init, int end);
 
@@ -55,7 +55,7 @@ int Accounting_n_trans_range(Accounting a, int init, int end);
  * @param init Primeiro mês.
  * @param end Segundo mês, deve ser mais ou igual ao primeiro.
  * 
- * @returns O valor calculado.
+ * @returns O valor calculado, -1.0 caso init > end.
  */
 double Accounting_n_cash_range(Accounting a, int init, int end);
 

@@ -112,11 +112,10 @@ int get_n_not_bought_clients(CatClients cc, FilManager fm);
  * Juntamente com a função `get_n_not_bought_clients` permite resolver a query nº6 do SGV.
  * 
  * @param cp Catálogo de produtos utilizado.
- * @param fm Gestor de filiais utilizado.
  * 
  * @returns O número de produtos que não foram comprados.
  */
-int get_n_not_bought_products(CatProducts cp, FilManager fm);
+int get_n_not_bought_products(CatProducts cp);
 
 /**
  * \brief Cria uma matriz com dimensão [N_FILIAIS][N_MONTHS] com todos os valores necessários.
@@ -139,12 +138,12 @@ int **get_matrix(FilManager fm, char *client_code);
  * 
  * @returns O número total de transações entre 2 meses, -1 caso os meses sejam inválidos.
  */
-int get_interval_units(Accounting ac, int init, int end);
+int get_interval_trans(Accounting ac, int init, int end);
 
 /**
  * \brief Calcula o fluxo monetário total entre 2 meses.
  * 
- * Juntamente com a função `get_interval_units` permite realizar a query nº8 do SGV.
+ * Juntamente com a função `get_interval_trans` permite realizar a query nº8 do SGV.
  * 
  * @param ac Contabilidade utilizada.
  * @param init Mês inicial.

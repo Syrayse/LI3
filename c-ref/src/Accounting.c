@@ -78,7 +78,7 @@ void Accounting_destroy(Accounting a)
 
 void Accounting_update(Accounting a, Product product, int month, int filial, int units, int promo, double spent)
 {
-    void *tmp[5];
+    gpointer tmp[5];
     int p = get_i(product);
     Product ef_product = product;
 
@@ -103,7 +103,7 @@ int Accounting_n_trans_range(Accounting a, int init, int end)
 {
     int i, r = -1;
 
-    if (is_between(init, 1, N_MONTHS) && is_between(end, 1, N_MONTHS) && init <= end)
+    if (init <= end)
     {
         r = 0;
 
@@ -119,7 +119,7 @@ double Accounting_n_cash_range(Accounting a, int init, int end)
     int i;
     double r = -1.0;
 
-    if (is_between(init, 1, N_MONTHS) && is_between(end, 1, N_MONTHS) && init <= end)
+    if (init <= end)
     {
         r = 0.0;
 
@@ -153,7 +153,7 @@ int Accounting_get_global_stats(Accounting a, Product product, int month, int *t
 int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, int **spent_vec)
 {
     int i, r = 0;
-    void *val;
+    gpointer val;
     StatInfo si;
 
     if ((val = set_lookup(a->products[get_i(product)], product)))
