@@ -192,6 +192,12 @@ int main()
     printf("\tIsto tem de dar 928 -> %d!\n", get_n_not_bought_products(cp));
     c_t(start);
 
+    start = clock();
+    puts("Query 10:");
+    puts("\nFor client Z5000 and month 1");
+    show10_elements(get_clients_most_bought(fm, "Z5000", 1));
+    c_t(start);
+
     puts("Just for the queries:");
     c_t(qstart);
 

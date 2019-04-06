@@ -16,7 +16,6 @@
 #include "Product.h"
 #include "TAD_List.h"
 #include "util.h"
-#include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 
@@ -26,7 +25,7 @@
 typedef struct appender
 {
     int matrix[N_FILIAIS][N_MONTHS + 1]; /**< Matriz que armazenada as quantidades compradas pelo cliente, ordenadas por filial e mês. */
-    Set product_set; /**< Conjunto de todos os produtos comprados pelo cliente. */
+    Set product_set;                     /**< Conjunto de todos os produtos comprados pelo cliente. */
 } * Appender;
 
 /* ------------------------------------------------------------------------------ */
@@ -172,7 +171,6 @@ TAD_List appender_get_most_bought(Appender ap, int month)
     tmp[0] = c_arr;
     tmp[1] = &i;
     tmp[2] = &month;
-
     set_foreach(ap->product_set, foreach_add_by_month, tmp);
 
     if (i != 0)
@@ -180,11 +178,10 @@ TAD_List appender_get_most_bought(Appender ap, int month)
         qsort(c_arr, i, sizeof(Currier), compare_curr_quants);
 
         tl = list_make(g_free, i);
-
         for (j = 0; j < i; j++)
         {
-            list_add(tl, product_get_code((Product)uncurry_by_key(c_arr[i])));
-            currier_destroy(c_arr[i]);
+            list_add(tl, product_get_code((Product)uncurry_by_key(c_arr[j])));
+            currier_destroy(c_arr[j]);
         }
     }
 
@@ -231,10 +228,12 @@ static void foreach_add_by_month(gpointer key, gpointer value, gpointer user_dat
 {
     gpointer *holder = (gpointer *)user_data;
     int month = *(int *)holder[2];
+    Currier *arr = (Currier *)holder[0];
+    Currier c;
 
     if (prdtinfo_month_units((PrdtInfo)value, month) > 0)
     {
-        ((Currier *)holder[0])[(*(int *)holder[1])++] = currier_make(key, value, holder[2]);
+        arr[(*(int *)holder[1])++] = currier_make(key, value, holder[2]);
     }
 }
 
