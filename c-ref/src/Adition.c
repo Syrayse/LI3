@@ -70,21 +70,13 @@ void adition_update(gpointer e, gpointer user_data)
 
 TAD_List adition_dump_by_promo_fil(Adition ad, int filial, int promo)
 {
-    int i = 0;
     gpointer tmp[3];
     TAD_List tl = list_make(g_free, set_size(ad->client_set));
 
     tmp[0] = tl;
     tmp[1] = &promo;
     tmp[2] = &filial;
-
     set_foreach(ad->client_set, foreach_add, tmp);
-
-    if (i == 0)
-    {
-        list_destroy(tl);
-        tl = NULL;
-    }
 
     return tl;
 }
