@@ -34,7 +34,7 @@ TAD_List get_sorted_products(CatProducts cp, char let)
 
 int get_product_global_stats(Accounting a, char *product_code, int month, int *trans_vec, int *spent_vec)
 {
-    Product p = product_make(p);
+    Product p = product_make(product_code);
 
     int r = Accounting_get_global_stats(a, p, month, trans_vec, spent_vec);
 
@@ -45,7 +45,7 @@ int get_product_global_stats(Accounting a, char *product_code, int month, int *t
 
 int get_product_per_filial_stats(Accounting a, char *product_code, int month, int **trans_vec, int **spent_vec)
 {
-    Product p = product_make(p);
+    Product p = product_make(product_code);
 
     int r = Accounting_get_per_filial_stats(a, p, month, trans_vec, spent_vec);
 
@@ -56,7 +56,7 @@ int get_product_per_filial_stats(Accounting a, char *product_code, int month, in
 
 TAD_List get_not_bought_products(CatProducts cp, int filial)
 {
-    return (filial) ? CatProducts_not_bought_fil(cp, filial) : CatProducts_not_bought(cp, filial);
+    return (filial) ? CatProducts_not_bought_fil(cp, filial) : CatProducts_not_bought(cp);
 }
 
 TAD_List get_overall_clients(FilManager fm)
@@ -78,7 +78,7 @@ int **get_matrix(FilManager fm, char *client_code)
 {
     Client c = client_make(client_code);
 
-    int **r = filmanager_get_units_matrix(c);
+    int **r = filmanager_get_units_matrix(fm, c);
 
     client_destroy(c);
 
