@@ -194,8 +194,14 @@ int main()
 
     start = clock();
     puts("Query 10:");
-    puts("\nFor client Z5000 and month 1");
+    puts("\tFor client Z5000 and month 1");
     show10_elements(get_clients_most_bought(fm, "Z5000", 1));
+    c_t(start);
+
+    start = clock();
+    puts("Query 11:");
+    puts("\tFor client Z5000");
+    show10_elements(get_clients_top3(fm, "Z5000"));
     c_t(start);
 
     puts("Just for the queries:");

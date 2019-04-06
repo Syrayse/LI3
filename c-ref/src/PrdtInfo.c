@@ -72,9 +72,11 @@ void prdtinfo_update(gpointer e, gpointer user_data)
 {
     PrdtInfo pi = (PrdtInfo)e;
     gpointer *user = (gpointer *)user_data;
-    int month = *(int *)user[2] - 1;
-    pi->total_spent += *(double *)user[0];
-    pi->month_units[month] += *(int *)user[1];
+    int units, month = *(int *)user[2] - 1;
+    units = *(int *)user[1];
+    double cost = *(double *)user[0];
+    pi->total_spent += cost * units;
+    pi->month_units[month] += units;
 }
 
 double prdtinfo_total_spent(PrdtInfo pi)

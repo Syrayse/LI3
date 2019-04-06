@@ -209,6 +209,8 @@ TAD_List appender_get_top3(Appender ap)
         currier_destroy(val);
     }
 
+    kheap_destroy(kh);
+
     return tl;
 }
 
