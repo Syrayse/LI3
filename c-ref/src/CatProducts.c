@@ -159,5 +159,5 @@ static TAD_List dump_not_bought_reg(CatProducts cp, int ind)
 
 static int mystrcmp(gconstpointer v1, gconstpointer v2)
 {
-    return strcmp((char *)v1, (char *)v2);
+    return strcmp(*(char **)v1, *(char **)v2);
 }

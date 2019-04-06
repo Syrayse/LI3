@@ -11,8 +11,14 @@
 #include "Verifier.h"
 #include "Queries.h"
 #include <glib.h>
+#include <time.h>
 #include <stdio.h>
+#include <TAD_List.h>
 #include <stdlib.h>
+
+#define cpu_time(start, end) (((double)(end - start)) / CLOCKS_PER_SEC)
+#define show_cpu_time(start, end) (printf("\tCPU Time:%f\n", cpu_time(start, end)))
+#define c_t(start) (show_cpu_time(start, clock()))
 
 CatClients build_catclients(char *filename, int *valids, int *total)
 {
@@ -143,45 +149,67 @@ Accounting build_transactions(char *filename, int *valids, int *total, CatProduc
     return ac;
 }
 
+void show10_elements(TAD_List tl)
+{
+    int i, s;
+    if (tl)
+    {
+        s = list_size(tl);
+
+        for (i = 0; i < 10 && i < s; i++)
+        {
+            printf("%s ", (char *)list_get_index(tl, i));
+        }
+
+        putchar('\n');
+    }
+}
+
 int main()
 {
-    int valid1, valid2, valid3, total1, total2, total3;
+    int valid1, valid2, valid3, total1, total2, total3, i;
+    clock_t defstart, start, qstart;
+    TAD_List l;
+
+    defstart = start = clock();
 
     FilManager fm;
     CatProducts cp = build_catproducts("tests/Produtos.txt", &valid1, &total1);
     CatClients cc = build_catclients("tests/Clientes.txt", &valid2, &total2);
     Accounting ac = build_transactions("tests/Vendas_1M.txt", &valid3, &total3, cp, cc, &fm);
 
-    printf("total %d valids %d\n", total3, valid3);
+    printf("Just for building:\n");
+    c_t(start);
 
-    /*
-    puts("Para os produtos");
+    qstart = start = clock();
+    puts("Query 2:");
+    show10_elements(get_sorted_products(cp, 'A'));
+    c_t(start);
 
-    printf("\tRead %d, total valids %d!\n", total1, valid1);
+    puts("Query 6:");
+    start = clock();
+    printf("\tIsto tem de dar 0 -> %d!\n", get_n_not_bought_clients(cc, fm));
+    printf("\tIsto tem de dar 928 -> %d!\n", get_n_not_bought_products(cp));
+    c_t(start);
 
-    printf("\ttotal not bought:%d!\n", CatProducts_get_total_not_bought(cp));
+    start = clock();
+    puts("Query 10:");
+    puts("\nFor client Z5000 and month 1");
+    show10_elements(get_clients_most_bought(fm, "Z5000", 1));
+    c_t(start);
 
-    printf("\tExiste o client AF1184? %d (e suposto dar 1).\n", CatProducts_exists(cp, product_make("AF1184")));
+    puts("Just for the queries:");
+    c_t(qstart);
 
-    printf("\tExiste o client OS1139? %d (e suposto dar 0).\n", CatProducts_exists(cp, product_make("OS1139")));
-
-    puts("Para os clientes");
-
-    printf("\tRead %d, total valids %d!\n", total2, valid2);
-
-    printf("\tNúmero total de clientes:%d!\n", CatClients_size(cc));
-
-    printf("\tExiste o client Z5000? %d (e suposto dar 1).\n", CatClients_exists(cc, client_make("Z5000")));
-
-    printf("\tExiste o client Q2719? %d (e suposto dar 0).\n", CatClients_exists(cc, client_make("Q2719")));
-    */
-
-    printf("Isto tem de dar 0 -> %d!\n", get_n_not_bought_clients(cc, fm));
-    printf("Isto tem de dar 928 -> %d!\n", get_n_not_bought_products(cp));
-
+    start = clock();
     CatProducts_destroy(cp);
     CatClients_destroy(cc);
     filmanager_destroy(fm);
     Accounting_destroy(ac);
+    puts("Just for freeing:");
+    c_t(start);
+
+    puts("total:");
+    c_t(defstart);
     return 0;
 }
