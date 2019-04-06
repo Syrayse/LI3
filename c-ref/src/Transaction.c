@@ -69,12 +69,12 @@ void trans_destroy(Transaction t)
 
 Client trans_get_client(Transaction t)
 {
-    return client_clone(t->client);
+    return t->client;
 }
 
 Product trans_get_product(Transaction t)
 {
-    return product_clone(t->product);
+    return t->product;
 }
 
 unsigned char trans_get_month(Transaction t)
