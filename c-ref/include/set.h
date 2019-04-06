@@ -1,8 +1,8 @@
 /**
  * @file set.h
- * \brief Interface de todos os metódos que permitem a interação com instâncias da classe `Set`.
+ * \brief Interface de todos os métodos que permitem a interação com instâncias da classe `Set`.
  * 
- * Esta classe permite que dada uma chave exista uma correspondência unívoca à mesma ou ao valor anexado a esta.
+ * Esta classe permite que dada numa chave exista uma correspondência unívoca à mesma ou ao valor anexado a esta.
  */
 
 #ifndef SET_H
@@ -28,8 +28,8 @@ typedef gpointer (*f_maker)();
 /**
  * \brief Cria e inicializa uma instância da classe `Set`.
  * 
- * Esta função atualmente recebe só paramêtros como funções,
- * este parametros correspondem às diferentes propriedades das chaves e valores existentes.
+ * Esta função atualmente recebe só parâmetros como funções,
+ * estes parâmetros correspondem às diferentes propriedades das chaves e valores existentes.
  * 
  * Para além de funções de igualdade, mapeamento e libertação de memória, podem ser
  * também passadas como argumento funções que permitem criar e atualizar valores associados a chaves.
@@ -41,8 +41,8 @@ typedef gpointer (*f_maker)();
  * A função do tipo `f_update` permite definir como se pretende que o valor anexado a cada chave
  * seja atualizado quando se adiciona mais informação sobre a chave.
  * 
- * A únicas funções essenciais ao funcionamento interno do `Set` são os dois primeiros argumentos,
- * se estes não forem passados então o conjunto retornado é NULL. Todos os outros paramêtros, exceto
+ * As únicas funções essenciais ao funcionamento interno do `Set` são os dois primeiros argumentos,
+ * se estes não forem passados então o conjunto retornado é NULL. Todos os outros parâmetros, exceto
  * os dois primeiros podem ser passados como NULL.
  * 
  * @param hash_f Função de _hash_ que deve ser aplicada às chaves.
@@ -57,7 +57,7 @@ typedef gpointer (*f_maker)();
 Set set_make(GHashFunc hash_f, GEqualFunc key_equal_f, GFreeFunc ffkey, GFreeFunc ffvalue, f_maker fm, f_update fu);
 
 /**
- * \brief Permite libertar a memória associada à instància da classe `Set`.
+ * \brief Permite libertar a memória associada à instância da classe `Set`.
  * 
  * Para além de libertar a memória associada à instância, são também libertadas
  * as chaves e valores segundo as funções de destruição passadas como argumento
@@ -75,14 +75,14 @@ void set_destroy(Set set);
  * 
  * @param set Conjunto no qual se pretende adicionar.
  * @param key Chave de acesso ao conjunto.
- * @param user_data Informação utilizada na atualização do valor anexado à chaves respectiva. Se for passado NULL então não é efetuado nenhum update.
+ * @param user_data Informação utilizada na atualização do valor anexado à chave respetiva. Se for passado NULL então não é efetuado nenhum update.
  * 
  * @returns 1 caso a chave já exista, 0 caso contrário.
  */
 int set_add(Set set, gpointer key, gpointer user_data);
 
 /**
- * \brief Remove e liberta a respectiva memória associada a uma chave no conjunto.
+ * \brief Remove e liberta a respetiva memória associada a uma chave no conjunto.
  * 
  * @param set Conjunto a considerar.
  * @param key Chave de acesso ao conjunto.
@@ -92,7 +92,7 @@ int set_add(Set set, gpointer key, gpointer user_data);
 int set_remove(Set set, gpointer key);
 
 /**
- * \brief Aplica uma função a todas as chaves e respectivos valores no conjunto.
+ * \brief Aplica uma função a todas as chaves e respetivos valores no conjunto.
  * 
  * @param set Conjunto a considerar.
  * @param fer Função que será aplicada a todos os elementos do conjunto.
@@ -101,7 +101,7 @@ int set_remove(Set set, gpointer key);
 void set_foreach(Set set, GHFunc fer, gpointer user_data);
 
 /**
- * \brief Verifica se uma certa chave existe no conjunto
+ * \brief Verifica se uma certa chave existe no conjunto.
  * 
  * @param set Conjunto a considerar.
  * @param key Chave de acesso ao conjunto.

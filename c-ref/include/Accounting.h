@@ -1,6 +1,6 @@
 /**
  * @file Accounting.h
- * \brief Interface de metódos públicos que permitem a interação com instâncias da classe `Accounting`.
+ * \brief Interface de métodos públicos que permitem a interação com instâncias da classe `Accounting`.
  * 
  * Esta classe tem como objetivo tratar das contas do serviço SVG.
  */
@@ -16,7 +16,7 @@
 typedef struct accounting *Accounting;
 
 /**
- * \brief Permite criar uma instància da classe `Accounting`.
+ * \brief Permite criar uma instância da classe `Accounting`.
  * 
  * @returns Uma nova instância.
  */
@@ -25,15 +25,15 @@ Accounting Accounting_make();
 /**
  * \brief Liberta a memória associada a uma instância da classe `Accounting`.
  * 
- * @param a Instância a considerar.
+ * @param a instância a considerar.
  */
 void Accounting_destroy(Accounting a);
 
 /**
- * \brief Metódo que permite atualizar a informação interna da instância `Accounting`.
+ * \brief Método que permite atualizar a informação interna da instância `Accounting`.
  * 
- * Nesta função são passados todos os valores necessários por pelo `Accounting`
- * de forma a conseguir atualizar os seus dados internos com o máximo de informação util.
+ * Nesta função são passados todos os valores necessários pelo `Accounting`
+ * de forma a conseguir atualizar os seus dados internos com o máximo de informação útil.
  */
 void Accounting_update(Accounting a, Product product, int month, int filial, int units, int promo, double spent);
 
@@ -42,7 +42,7 @@ void Accounting_update(Accounting a, Product product, int month, int filial, int
  * 
  * @param a Instância a considerar.
  * @param init Primeiro mês.
- * @param end Segundo mês, deve ser mais ou igual ao primeiro.
+ * @param end Segundo mês, deve ser maior ou igual ao primeiro.
  * 
  * @returns O valor calculado, -1 caso init > end.
  */
@@ -53,7 +53,7 @@ int Accounting_n_trans_range(Accounting a, int init, int end);
  * 
  * @param a Instância a considerar.
  * @param init Primeiro mês.
- * @param end Segundo mês, deve ser mais ou igual ao primeiro.
+ * @param end Segundo mês, deve ser maior ou igual ao primeiro.
  * 
  * @returns O valor calculado, -1.0 caso init > end.
  */
@@ -62,7 +62,7 @@ double Accounting_n_cash_range(Accounting a, int init, int end);
 /**
  * \brief Calcula o valor global de transações e cashflow com e sem promoção naquele produto.
  * 
- * Todos os valores calculados são colocados nos endereçoes passados como argumento
+ * Todos os valores calculados são colocados nos endereços passados como argumento.
  * Logo, cada endereço deve possuir a capacidade para valores do seu respetivo tipo.
  * Por exemplo, o `trans_vec` deve ser capaz de armazenar 2 valores inteiros, de modo
  * a contemplar o caso sem promoção e com promoção.
@@ -80,10 +80,10 @@ int Accounting_get_global_stats(Accounting a, Product product, int month, int *t
 /**
  * \brief Calcula o valor global de transações e cashflow com e sem promoção por filial naquele produto.
  * 
- * Todos os valores calculados são colocados nos endereçoes passados como argumento
+ * Todos os valores calculados são colocados nos endereços passados como argumento.
  * Logo, cada endereço deve possuir a capacidade para valores do seu respetivo tipo.
  * Por exemplo, o `trans_vec` deve ser capaz de armazenar `N_FILIAIS`*2 valores inteiros, de modo
- * a contemplar o caso sem promoção e com promoção para todas as filiais.
+ * a contemplar o caso sem promoção e com promoção, para todas as filiais.
  * 
  * @param a Instância a considerar.
  * @param product Produto do qual se pretende obter informação.

@@ -15,7 +15,7 @@
 /**
  * \brief Estrutura de dados que define a classe `Client`.
  * 
- * Atualmente esta classe é unicamente composta pelo respectivo código de cliente.
+ * Atualmente esta classe é unicamente composta pelo respetivo código de cliente.
  */
 typedef struct client
 {
@@ -24,7 +24,7 @@ typedef struct client
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 Client client_make(char *client_code);
 void client_destroy(Client c);
 Client client_clone(Client c);
@@ -33,7 +33,7 @@ guint client_hash(gconstpointer v);
 gboolean client_equal(gconstpointer v1, gconstpointer v2);
 void wrapclient_destroy(gpointer v);
 
-/* Metodos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 

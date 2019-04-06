@@ -3,10 +3,10 @@
  * \brief Ficheiro que contém toda a codificação associada à classe `PrdtInfo`.
  * 
  * Esta classe tem como objetivo principal ser utilizada por classes acima na hierarquia,
- * classes essas necessitam de informação guardada numa classe do tipo `PrdtInfo`.
+ * classes essas que necessitam de informação guardada numa classe do tipo `PrdtInfo`.
  * 
- * Possui capacidade de armazenar informação útil, que dado um Produto seja capaz de indicar
- * quanto dinheiro foi gasto no total nesse produto, e quantas unidades compradas mensalmente.
+ * Possui capacidade de armazenar informação útil que, dado um Produto, seja capaz de indicar
+ * quanto dinheiro foi gasto no total nesse produto, e quantas unidades foram compradas mensalmente.
  * 
  * Pretende-se que esta classe seja utilizada como uma forma de representar informação
  * entre um cliente e um produto, sendo que contém toda a informação para que este meio seja
@@ -19,21 +19,21 @@
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 gpointer prdtinfo_make();
 void prdtinfo_destroy(gpointer e);
 void prdtinfo_update(gpointer e, gpointer user_data);
 double prdtinfo_total_spent(PrdtInfo pi);
 int prdtinfo_month_units(PrdtInfo pi, int month);
 
-/* Metodos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Estrutura da classe `PrdtInfo`
  * 
- * Implicitamente, pela hierarquia composta no serviço SVG, uma instância da classe `PrdtInfo`.
+ * Implicitamente, pela hierarquia composta no serviço SVG, uma instância da classe `PrdtInfo`
  * é representativa de toda a informação útil entre um dado cliente um produto especifico.
  */
 typedef struct prdtinfo

@@ -1,10 +1,10 @@
 /**
  * @file Client.h
- * \brief Define a interface de metódos aplicáveis em instâncias da classe `Client`.
+ * \brief Define a interface de métodos aplicáveis em instâncias da classe `Client`.
  * 
- * Esta interface visa facilitar a comunicação com entidades externa que pretendam obter informação
+ * Esta interface visa facilitar a comunicação com entidades externas que pretendam obter informação
  * de um instância de `Client`. Este módulo está especificamente desenhado de forma a facilitar a sua integração
- * em tabelas de hash, através de metódos `client_hash` e `client_equal`.
+ * em tabelas de hash, através de métodos `client_hash` e `client_equal`.
  */
 #ifndef __CLIENT_ADT__
 #define __CLIENT_ADT__
@@ -21,7 +21,7 @@ typedef struct client *Client;
  * 
  * @param client_code O código associado a um certo `Client`.
  * 
- * @returns Um nova instância.
+ * @returns Uma nova instância.
  */
 Client client_make(char *client_code);
 
@@ -42,9 +42,9 @@ void client_destroy(Client c);
 Client client_clone(Client c);
 
 /**
- * \brief Obtem uma cópia do código associado à instância.
+ * \brief Obtém uma cópia do código associado à instância.
  * 
- * @param c instância a considerar.
+ * @param c Instância a considerar.
  * 
  * @returns Cópia do código associado à instância.
  */
@@ -65,16 +65,16 @@ guint client_hash(gconstpointer v);
  * @param v1 Primeira instância a considerar.
  * @param v2 Segunda instância a considerar.
  * 
- * @returns`TRUE` se as instâncias forem iguais, `FALSE` caso contrário.
+ * @returns `TRUE` se as instâncias forem iguais, `FALSE` caso contrário.
  */
 gboolean client_equal(gconstpointer v1, gconstpointer v2);
 
 /**
  * \brief Em vez de passar como argumento um client passa-se um tipo abstrato de dados que representa este.
  * 
- * Está função é utilizada unicamente para evitar warnings do compilador.
+ * Esta função é utilizada unicamente para evitar warnings do compilador.
  *
- * @param v Tipo abstrato de dados que representa o client
+ * @param v Tipo abstrato de dados que representa o client.
  */
 void wrapclient_destroy(gpointer v);
 

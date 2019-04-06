@@ -20,14 +20,14 @@ typedef struct cat_clients
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 CatClients CatClients_make();
 void CatClients_destroy(CatClients cc);
 int CatClients_exists(CatClients cc, Client client);
 void CatClients_add_client(CatClients cc, Client client);
 int CatClients_size(CatClients cc);
 
-/* Metodos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 

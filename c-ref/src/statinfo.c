@@ -2,11 +2,11 @@
  * @file statinfo.c
  * \brief Módulo que define a classe `StatInfo` que é utilizada como meio de obtenção de informação estatística.
  * 
- * Através da utilização desta classe é possivél armazenar informação considerada útil para comunicar ao utilizador
+ * Através da utilização desta classe é possível armazenar informação considerada útil para comunicar ao utilizador
  * do SGV importantes detalhes sobre registos de transações.
  * 
- * Este módulo vê a sua utilidade quando se pretende comunicar com o utilizador do SGV quando este pretende obter
- * valores contabilisticos associados a um dado cliente ou um dado produto.
+ * Este módulo vê a sua utilidade quando se pretende comunicar com o utilizador do SGV e quando este pretende obter
+ * valores contabilísticos associados a um dado cliente ou um dado produto.
  */
 
 #include "statinfo.h"
@@ -15,7 +15,7 @@
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 StatInfo statinfo_make();
 void statinfo_destroy(StatInfo si);
 void statinfo_update(StatInfo si, gpointer user_data);
@@ -36,24 +36,24 @@ double get_t_month_rev(StatInfo si, int month);
 double get_t_month_rev_promo(StatInfo si, int month);
 double get_t_month_rev_no_promo(StatInfo si, int month);
 
-/* Metodos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 
 /**
  * \brief Estrutura da classe `StatInfo`.
  * 
- * Contem a definação de todos os recipientes de informação possivelmente util.
+ * Contém a definação de todos os recipientes de informação possivelmente útil.
  * 
  * Em matrizes de recipientes de informação há uma posição extra (que surge por `N_FILIAIS + 1`), esta posição
- * adicional que corresponde ao indice 0 corresponde ao valor total para aquele mês com ou sem promoção.
+ * adicional, que corresponde ao índice 0, corresponde ao valor total para aquele mês com ou sem promoção.
  */
 typedef struct statistical_info
 {
     int nVendasTotal,                                          /**< Número de transações */
-        nVendasFilialMonth[N_MONTHS][N_FILIAIS + 1][N_PROMOS], /**< Matriz que contem o número de transações separados por Filial, mês e a utilização de código promocional. */
+        nVendasFilialMonth[N_MONTHS][N_FILIAIS + 1][N_PROMOS], /**< Matriz que contém o número de transações separadas por Filial, mês e a utilização de código promocional. */
         totalUnits,                                            /**< Número de unidades totais vendidas. */
-        nQuantFilial[N_FILIAIS];                               /**< Número de unidades vendidas por filial */
+        nQuantFilial[N_FILIAIS];                               /**< Número de unidades vendidas por filial. */
     double totalCashFlow,                                      /**< Fluxo monetário total realizado. */
         monthlyFilialRev[N_MONTHS][N_FILIAIS + 1][N_PROMOS];   /**< Fluxo monetário contabilizador por Filial, Mês, com ou sem promoção ou só Filial com ou sem promoção. */
 } * StatInfo;

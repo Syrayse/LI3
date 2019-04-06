@@ -2,7 +2,7 @@
  * @file CatProducts.c
  * \brief Módulo que define a classe que armazena o catálogo de produtos.
  * 
- * Nesta classe o catálogo é separados em 26 conjuntos de produtos, sendo que
+ * Nesta classe o catálogo é separado em 26 conjuntos de produtos, sendo que
  * cada um dos conjuntos corresponde a uma letra do alfabeto.
  */
 
@@ -20,13 +20,13 @@
  */
 typedef struct cat_products
 {
-    Set product_set[N_LETTER],            /**< Contem todos os produtos, separados por conjuntos que estão indexados por primeira letra. */
-        not_bought_regist[N_FILIAIS + 1]; /**< Contem todos os produtos não comprados em global e por filial     */
+    Set product_set[N_LETTER],            /**< Contém todos os produtos, separados por conjuntos que estão indexados pela primeira letra. */
+        not_bought_regist[N_FILIAIS + 1]; /**< Contém todos os produtos não comprados em global e por filial. */
 } * CatProducts;
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos publicos */
 CatProducts CatProducts_make();
 void CatProducts_destroy(CatProducts cp);
 int CatProducts_exists(CatProducts cp, Product product);
@@ -37,7 +37,7 @@ int CatProducts_get_total_not_bought(CatProducts cp);
 TAD_List CatProducts_not_bought(CatProducts cp);
 TAD_List CatProducts_not_bought_fil(CatProducts cp, int filial);
 
-/* Metodos privados */
+/* Métodos privados */
 static void foreach_add_code(gpointer key, gpointer value, gpointer data);
 static TAD_List dump_not_bought_reg(CatProducts cp, int ind);
 static int mystrcmp(gconstpointer v1, gconstpointer v2);

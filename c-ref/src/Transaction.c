@@ -1,6 +1,6 @@
 /**
  * @file Transaction.c
- * \brief Define toda a codificação dos metódos para interagir com a classe `Transaction`.
+ * \brief Define toda a codificação dos métodos para interagir com a classe `Transaction`.
  */
 #include "Transaction.h"
 #include "Client.h"
@@ -19,14 +19,14 @@ typedef struct transaction
     Product product;     /**< Produto associado à transação. */
     unsigned char month, /**< Mês da transação. */
         filial,          /**< Filial onde se deu a transação. */
-        promo,           /**< Código promocional associado à transação.  */
+        promo,           /**< Código promocional associado à transação. */
         units;           /**< Unidades envolvidas na transação. */
     double price;        /**< Preço do produto da transação. */
 } * Transaction;
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 Transaction trans_make();
 void trans_destroy(Transaction t);
 Client trans_get_client(Transaction t);
@@ -45,7 +45,7 @@ void trans_set_promo(Transaction t, unsigned char promo);
 void trans_set_units(Transaction t, unsigned char units);
 void trans_set_price(Transaction t, double price);
 
-/* Metodos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 

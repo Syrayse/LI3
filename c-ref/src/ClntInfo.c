@@ -4,7 +4,7 @@
  * 
  * Esta classe tem como objetivo relacionar os produtos com os clientes que o compraram.
  * 
- * Em módulos acima na hierarquia esta classe é utilizada de forma a representar de que forma
+ * Em módulos acima na hierarquia esta classe é utilizada de modo a representar de que forma
  * é que um dado produto foi comprado por um dado cliente em uma dada filial.
  */
 
@@ -24,13 +24,13 @@ typedef struct clntinfo
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 gpointer clntinfo_make();
 void clntinfo_destroy(gpointer e);
 void clntinfo_update(gpointer e, gpointer user_data);
 int clntinfo_promo(ClntInfo ci, int filial);
 
-/* Metodos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 

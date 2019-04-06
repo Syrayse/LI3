@@ -4,8 +4,8 @@
  * 
  * Em módulos acima na hierarquia esta classe representa a ligação entre clientes e os produtos
  * que este cliente comprou. Cada instância da classe `Appender` representa uma diferente ligação
- * entre cliente e produto. Sendo que para cada uma desta ligações é armazenadas informação útil de forma
- * a conseguir de forma eficiente responder às queries apresentadas.
+ * entre cliente e produto. Sendo que, para cada uma destas ligações é armazenada informação útil de modo
+ * a conseguir, de forma eficiente, responder às queries apresentadas.
  */
 
 #include "Appender.h"
@@ -30,7 +30,7 @@ typedef struct appender
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 gpointer appender_make();
 void appender_destroy(gpointer v);
 void appender_update(gpointer e, gpointer user_data);
@@ -44,7 +44,7 @@ TAD_List appender_get_most_bought(Appender ap, int month);
 TAD_List appender_get_top3(Appender ap);
 int is_bought_in_all(Appender ap);
 
-/* Metodos privados */
+/* Métodos privados */
 static void foreach_add_by_month(gpointer key, gpointer value, gpointer user_data);
 static void foreach_add_to_heap(gpointer key, gpointer value, gpointer user_data);
 static int compare_curr_quants(gconstpointer a, gconstpointer b);

@@ -19,7 +19,7 @@ typedef struct currier *Currier;
 /**
  * \brief Cria e inicializa uma instância da classe `Currier` com os valores passados com argumento.
  *
- * @returns Uma nova instância que contem os valores passados como argumento.
+ * @returns Uma nova instância que contém os valores passados como argumento.
  */
 Currier currier_make(gpointer key, gpointer value, gpointer user_data);
 
@@ -33,7 +33,7 @@ void currier_destroy(Currier cr);
 /**
  * \brief Indica o elemento considerado como chave da instância.
  * 
- * @returns cr Instância a considerar.
+ * @param cr Instância a considerar.
  * 
  * @returns O elemento considerado como chave da instância.
  */
@@ -42,7 +42,7 @@ gpointer uncurry_by_key(Currier cr);
 /**
  * \brief Indica o elemento considerado como valor da instância.
  * 
- * @returns cr Instância a considerar.
+ * @param cr Instância a considerar.
  * 
  * @returns O elemento considerado como valor da instância.
  */
@@ -51,7 +51,7 @@ gpointer uncurry_by_value(Currier cr);
 /**
  * \brief Indica o elemento considerado como informação adicional da instância.
  * 
- * @returns cr Instância a considerar.
+ * @param cr Instância a considerar.
  * 
  * @returns o elemento considerado como informação adicional da instância.
  */

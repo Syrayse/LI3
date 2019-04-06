@@ -1,6 +1,6 @@
 /**
  * @file kheap.h
- * \brief Interface de todos os metódos que permitem a interação com instâncias da classe `KHeap`.
+ * \brief Interface de todos os métodos que permitem a interação com instâncias da classe `KHeap`.
  */
 #ifndef KHEAP_H
 #define KHEAP_H
@@ -60,12 +60,12 @@ gpointer kheap_extract_root(KHeap kh);
  * 
  * @param kh Instância a considerar.
  * 
- * @returns O número de elemento na `KHeap`.
+ * @returns O número de elementos na `KHeap`.
  */
 size_t kheap_size(KHeap kh);
 
 /**
- * \brief Verificar se uma `KHeap` é vazia.
+ * \brief Verifica se uma `KHeap` é vazia.
  * 
  * @param kh Instância a considerar.
  * 

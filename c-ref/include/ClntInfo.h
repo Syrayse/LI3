@@ -4,7 +4,7 @@
  * 
  * Esta classe tem como objetivo relacionar os produtos com os clientes que o compraram.
  * 
- * Em módulos acima na hierarquia esta classe é utilizada de forma a representar de que forma
+ * Em módulos acima na hierarquia esta classe é utilizada de modo a representar de que forma
  * é que um dado produto foi comprado por um dado cliente em uma dada filial.
  */
 
@@ -47,7 +47,7 @@ void clntinfo_update(gpointer e, gpointer user_data);
 /**
  * \brief Calcula o código de promoções de uma instância numa dada filial.
  * 
- * O código de promoções varia no seguinte conjunto de valores.
+ * O código de promoções varia no seguinte conjunto de valores:
  * 
  * -1: O Cliente que `ClntInfo` representa nunca comprou naquela filial.
  * 0: Só efetuou compras sem promoção.

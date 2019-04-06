@@ -1,8 +1,8 @@
 /**
  * @file Adition.h
- * \brief Interface de todos os metódos utilizaveis da classe `Adition`.
+ * \brief Interface de todos os metódos utilizáveis da classe `Adition`.
  * 
- * Em módulo acima na hierarquia esta classe é utilizada de forma a armazenar todos
+ * Em módulos acima na hierarquia esta classe é utilizada de forma a armazenar todos
  * os clientes que estão associados a um dado produto, representando assim a relação
  * de um produto com todos os clientes que o compraram.
  * 
@@ -31,7 +31,7 @@ gpointer adition_make();
 /**
  * \brief Liberta a memória associada a uma instância da classe `Adition`. 
  * 
- * @param e Instância que se pretender libertar.
+ * @param e Instância que se pretende libertar.
  */
 void adition_destroy(gpointer e);
 
@@ -48,13 +48,13 @@ void adition_destroy(gpointer e);
 void adition_update(gpointer e, gpointer user_data);
 
 /**
- * \brief Cria uma lista com o código de todos os clientes que efetuaram numa dada filial compras com o código promocional referido.
+ * \brief Cria uma lista com o código de todos os clientes que efetuaram, numa dada filial, compras com o código promocional referido.
  * 
  * @param ad Instância a considerar.
  * @param filial Filial que se pretende verificar.
  * @param promo Código promocional a considerar.
  * 
- * @returns Uma lista com o código de todos os clientes que efetuaram numa dada filial compras com o código promocional referido.
+ * @returns Uma lista com o código de todos os clientes que efetuaram, numa dada filial, compras com o código promocional referido.
  */
 TAD_List adition_dump_by_promo_fil(Adition ad, int filial, int promo);
 

@@ -1,6 +1,6 @@
 /**
  * @file Accounting.c
- * \brief Ficheiro de código necessários para os metódos da classe `Accounting`.
+ * \brief Ficheiro de código necessário para os metódos da classe `Accounting`.
  * 
  * Esta classe tem como objetivo tratar das contas do serviço SVG.
  */
@@ -21,12 +21,12 @@ typedef struct accounting
 {
     int nTrans[N_MONTHS];         /**< Número de transações mensais. */
     double totCashFlow[N_MONTHS]; /**< Fluxo monetário mensal. */
-    Set products[N_LETTER];       /**< Conjunto que armazenada todos os produtos. */
+    Set products[N_LETTER];       /**< Conjunto que armazena todos os produtos. */
 } * Accounting;
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 Accounting Accounting_make();
 void Accounting_destroy(Accounting a);
 void Accounting_update(Accounting a, Product product, int month, int filial, int units, int promo, double spent);
@@ -35,7 +35,7 @@ double Accounting_n_cash_range(Accounting a, int init, int end);
 int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, int *spent_vec);
 int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, int **spent_vec);
 
-/* Metodos privados */
+/* Métodos privados */
 static gpointer wrapstatinfo_make();
 static void wrapstatinfo_destroy(gpointer v);
 static void wrapstatinfo_update(gpointer v1, gpointer v2);
