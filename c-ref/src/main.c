@@ -1,5 +1,5 @@
 /**
- * @file manin.c
+ * @file main.c
  * \brief testfile.
  */
 
@@ -118,13 +118,13 @@ Accounting build_transactions(char *filename, int *valids, int *total, CatProduc
                 units = trans_get_units(tmp);
                 cost = trans_get_price(tmp);
 
-                /* Update do catalogo de produtos */
+                /* Update do catálogo de produtos. */
                 CatProduct_report_trans(cp, p, filial);
 
-                /* Update da contabilidade */
+                /* Update da contabilidade. */
                 Accounting_update(ac, p, month, filial, units, promo, cost);
 
-                /* Update do gestor de filiais */
+                /* Update do gestor de filiais. */
                 filmanager_update(new_fm, p, c, filial, month, promo, units, cost);
             }
 

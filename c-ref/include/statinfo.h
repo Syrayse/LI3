@@ -1,12 +1,12 @@
 /**
  * @file statinfo.h
- * \brief Interface de todos os metódos que permitem a interação com instâncias da classe `StatInfo`.
+ * \brief Interface de todos os métodos que permitem a interação com instâncias da classe `StatInfo`.
  * 
- * Através da utilização desta classe é possivél armazenar informação considerada útil para comunicar ao utilizador
+ * Através da utilização desta classe é possível armazenar informação considerada útil para comunicar ao utilizador
  * do SGV importantes detalhes sobre registos de transações.
  * 
- * Este módulo vê a sua utilidade quando se pretende comunicar com o utilizador do SGV quando este pretende obter
- * valores contabilisticos associados a um dado cliente ou um dado produto.
+ * Este módulo vê a sua utilidade quando se pretende comunicar com o utilizador do SGV, quando este pretende obter
+ * valores contabilísticos associados a um dado cliente ou um dado produto.
  */
 
 #ifndef STATINFO_H
@@ -36,11 +36,11 @@ void statinfo_destroy(StatInfo si);
 /**
  * \brief Permite atualizar a informação presente na instância da classe `StatInfo`.
  * 
- * Assume-se que o valor utilizado na atualização se encontra no formato, correspondente aos indices:
+ * Assume-se que o valor utilizado na atualização se encontra no formato, correspondente aos índices:
  * 
  * [month]+[filial]+[units]+[promo]+[spent].
  * 
- * @param si Instància que se pretende atualizar.
+ * @param si Instância que se pretende atualizar.
  * @param user_data Valores utilizados na atualização.
  */
 void statinfo_update(StatInfo si, gpointer user_data);
@@ -48,7 +48,7 @@ void statinfo_update(StatInfo si, gpointer user_data);
 /**
  * \brief Calcula o número de unidades totais vendidas.
  * 
- * @param si Instància a considerar.
+ * @param si Instância a considerar.
  * 
  * @returns O valor calculado.
  */
@@ -58,7 +58,7 @@ int get_t_units(StatInfo si);
  * \brief Calcula o número de unidades vendidas numa dada filial.
  * 
  * @param si Instância a considerar.
- * @param filial Da qual se pretende obter informação.
+ * @param filial Filial da qual se pretende obter informação.
  * 
  * @returns O valor calculado.
  */

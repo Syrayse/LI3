@@ -1,11 +1,11 @@
 /**
  * @file Appender.h
- * \brief Interface que contém os metódos fornecidos para interagir com instâncias da classe `Appender`.
+ * \brief Interface que contém os métodos fornecidos para interagir com instâncias da classe `Appender`.
  * 
  * Em módulos acima na hierarquia esta classe representa a ligação entre clientes e os produtos
  * que este cliente comprou. Cada instância da classe `Appender` representa uma diferente ligação
- * entre cliente e produto. Sendo que para cada uma desta ligações é armazenadas informação útil de forma
- * a conseguir de forma eficiente responder às queries apresentadas.
+ * entre cliente e produto. Sendo que, para cada uma destas ligações é armazenada informação útil de modo
+ * a conseguir, de forma eficiente, responder às queries apresentadas.
  */
 
 #ifndef _APPENDER_
@@ -77,7 +77,7 @@ int appender_get_num_product(Appender ap);
 double appender_get_prod_spent(Appender ap, Product product);
 
 /**
- * \brief Calcula o número de unidades de um certo produto que foram compradas num certo mẽs pelo cliente.
+ * \brief Calcula o número de unidades de um certo produto que foram compradas num certo mês pelo cliente.
  * 
  * @param ap Instância a considerar.
  * @param product Produto que se pretende verificar.
@@ -112,7 +112,7 @@ int **appender_clone_matrix(Appender ap);
  * @param ap Instância a considerar.
  * @param month Mês que se pretende verificar.
  * 
- * @returns Um lista com os códigos dos produtos comprados num certo mês pelo cliente, por ordem descendente no número de unidades compradas.
+ * @returns Uma lista com os códigos dos produtos comprados num certo mês pelo cliente, por ordem descendente no número de unidades compradas.
  */
 TAD_List appender_get_most_bought(Appender ap, int month);
 

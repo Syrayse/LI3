@@ -1,12 +1,12 @@
 /**
  * @file PrdtInfo.h
- * \brief Interface de todos os metódos publicos para interagir com instância da classe `PrdtInfo`.
+ * \brief Interface de todos os métodos públicos para interagir com instância da classe `PrdtInfo`.
  * 
  * Esta classe tem como objetivo principal ser utilizada por classes acima na hierarquia,
- * classes essas necessitam de informação guardada numa classe do tipo `PrdtInfo`.
+ * classes essas que necessitam de informação guardada numa classe do tipo `PrdtInfo`.
  * 
- * Possui capacidade de armazenar informação útil, que dado um Produto seja capaz de indicar
- * quanto dinheiro foi gasto no total nesse produto, e quantas unidades compradas mensalmente.
+ * Possui capacidade de armazenar informação útil que, dado um Produto, seja capaz de indicar
+ * quanto dinheiro foi gasto no total nesse produto, e quantas unidades foram compradas mensalmente.
  * 
  * Pretende-se que esta classe seja utilizada como uma forma de representar informação
  * entre um cliente e um produto, sendo que contém toda a informação para que este meio seja
@@ -43,7 +43,7 @@ void prdtinfo_destroy(gpointer e);
  * Esta função assume que a informação necessária a sua atualização interna
  * é passada no seguinte formato: [spent]+[units]+[month].
  * 
- * Ou seja deve ser passado como argumento um array que esteja indexado com os valores
+ * Ou seja, deve ser passado como argumento um array que esteja indexado com os valores
  * acima indicados.
  * 
  * @param e Instância que se pretende atualizar.

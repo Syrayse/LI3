@@ -1,10 +1,10 @@
 /**
  * @file Product.h
- * \brief Define a interface de metódos aplicáveis em instâncias da classe `Product`.
+ * \brief Define a interface de métodos aplicáveis em instâncias da classe `Product`.
  * 
- * Esta interface visa facilitar a comunicação com entidades externa que pretendam obter informação
+ * Esta interface visa facilitar a comunicação com entidades externas que pretendam obter informação
  * de um instância de `Product`. Este módulo está especificamente desenhado de forma a facilitar a sua integração
- * em tabelas de hash, através de metódos `product_hash` e `product_equal`.
+ * em tabelas de hash, através de métodos `product_hash` e `product_equal`.
  */
 #ifndef __PRODUCT_ADT__
 #define __PRODUCT_ADT__
@@ -21,7 +21,7 @@ typedef struct product *Product;
  * 
  * @param product_code O código associado a um certo produto.
  * 
- * @returns Um nova instância.
+ * @returns Uma nova instância.
  */
 Product product_make(char *product_code);
 
@@ -42,9 +42,9 @@ void product_destroy(Product p);
 Product product_clone(Product p);
 
 /**
- * \brief Obtem uma cópia do código associado à instância.
+ * \brief Obtém uma cópia do código associado à instância.
  * 
- * @param p instância a considerar.
+ * @param p Instância a considerar.
  * 
  * @returns Cópia do código associado à instância.
  */
@@ -53,21 +53,21 @@ char *product_get_code(Product p);
 /**
  * \brief Em vez de passar como argumento um produto passa-se um tipo abstrato de dados que representa este.
  * 
- * Está função é utilizada unicamente para evitar warnings do compilador.
+ * Esta função é utilizada unicamente para evitar warnings do compilador.
  * 
  * @param v Tipo abstrato de dados que representa o produto.
  */
 void wrapproduct_destroy(gpointer v);
 
 /**
- * \brief Calcula o indice correspondente ao produto.
+ * \brief Calcula o índice correspondente ao produto.
  * 
- * Este indice é calculado apartir da primeira letra do código do produto,
+ * Este índice é calculado a partir da primeira letra do código do produto,
  * aplicando um offset de 'A'.
  * 
- * @param p Produto que se pretender utilizar.
+ * @param p Produto que se pretende utilizar.
  * 
- * @returns Indice calculado.
+ * @returns Índice calculado.
  */
 int get_i(Product p);
 
@@ -86,7 +86,7 @@ guint product_hash(gconstpointer v);
  * @param v1 Primeira instância a considerar.
  * @param v2 Segunda instância a considerar.
  * 
- * @returns`TRUE` se as instâncias forem iguais, `FALSE` caso contrário.
+ * @returns `TRUE` se as instâncias forem iguais, `FALSE` caso contrário.
  */
 gboolean product_equal(gconstpointer v1, gconstpointer v2);
 

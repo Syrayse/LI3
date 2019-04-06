@@ -1,6 +1,6 @@
 /**
  * @file util.h 
- * \brief Ficheiro que contèm funções e macros que podem ser úteis e ao longo do projeto.
+ * \brief Ficheiro que contém funções e macros que podem ser úteis ao longo do projeto.
  */
 
 #ifndef UTIL_H
@@ -49,7 +49,12 @@ enum utils
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
 /**
- * \brief Maximo entre dois números.
+ * \brief Máximo entre dois números.
+ * 
+ * @param a Primeiro número.
+ * @param b Segundo número.
+ * 
+ * @returns O maior dos dois.
  */
 #define max(a, b) ((a) > (b) ? (a) : (b))
 

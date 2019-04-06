@@ -7,7 +7,7 @@
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metódos publicos */
+/* Métodos públicos */
 TAD_List get_sorted_products(CatProducts cp, char let);                                                          /* Q2 */
 int get_product_global_stats(Accounting a, char *product_code, int month, int *trans_vec, int *spent_vec);       /* Q3 */
 int get_product_per_filial_stats(Accounting a, char *product_code, int month, int **trans_vec, int **spent_vec); /* Q3 */
@@ -23,7 +23,7 @@ TAD_List get_clients_most_bought(FilManager fm, char *client_code, int month);  
 TAD_List get_topN_most_sold(Accounting ac, FilManager fm, int N);                                                /* Q11 */
 TAD_List get_clients_top3(FilManager fm, char *client_code);                                                     /* Q12 */
 
-/* Metõdos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 

@@ -2,7 +2,7 @@
  * @file NavControl.c
  * \brief Módulo associado à classe `NavControl` que possibilita a interação dinâmica com um dicionário escolhido.
  *
- * Esta classe tem a capacidade de, associada com uma outra que lhe forneça dicionários, fazer um comunicação
+ * Esta classe tem a capacidade de, associada com uma outra que lhe forneça dicionários, fazer uma comunicação
  * mais user-friendly com o cliente do serviço SGV.
  */
 #include "NavControl.h"
@@ -14,14 +14,14 @@
 /**
  * \brief Estrutura que permite a visualização dinâmica de um dicionário.
  * 
- * Através desta estrutura é possivél atacar um sub-problema do sistema I/O a ser implementado.
+ * Através desta estrutura é possível atacar um sub-problema do sistema I/O a ser implementado.
  */
 typedef struct nav_control
 {
-    int nPerPage,        /**< Numero de elementos por página a serem apresentados. */
-        page,            /**< Indice da página corresponte do dicionário, começa em 1. */
-        init,            /**< Indice do primeiro elemento do dicionário a ser apresentado na página corrente. */
-        end,             /**< Indice do ultimo elemento do dicionário a ser apresentado na página corrente. */
+    int nPerPage,        /**< Número de elementos por página a serem apresentados. */
+        page,            /**< Índice da página corresponte do dicionário, começa em 1. */
+        init,            /**< Índice do primeiro elemento do dicionário a ser apresentado na página corrente. */
+        end,             /**< Índice do último elemento do dicionário a ser apresentado na página corrente. */
         size;            /**< Número total de elementos no dicionário. */
     TAD_List dictionary; /**< Dicionário corrente. */
     gpointer user_data;  /**< Informação útil sobre o dicionário. */
@@ -31,7 +31,7 @@ typedef struct nav_control
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 NavControl NavControl_make();
 void NavControl_destroy(NavControl nc);
 void NavControl_change_dict(NavControl nc, TAD_List tl, gpointer user_data, f_print fp_elem, f_print fp_user);
@@ -42,7 +42,7 @@ int NavControl_get_init(NavControl nc);
 int NavControl_get_end(NavControl nc);
 int NavControl_get_page(NavControl nc);
 
-/* Metodos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 

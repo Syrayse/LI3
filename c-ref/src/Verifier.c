@@ -4,9 +4,9 @@
  * 
  * Neste módulo encontram-se definidas todas as necessárias funções de serviços de validação.
  * 
- * Sendo o principal deles, a classe `Verifier`, que corresponde a um agregado de metódos encadeados de tal
- * forma que permit em a criação de uma _stream_ de metódos que são aplicados sucessivamente à medida que se pretende
- * validar um código de transação e criar a respetiva`Transaction`. Permitindo assim uma fluidez computacional ao ser utilizada a função `strtok`.
+ * Sendo o principal deles, a classe `Verifier`, que corresponde a um agregado de métodos encadeados, de tal
+ * forma, que permitem a criação de uma _stream_ de métodos que são aplicados sucessivamente, à medida que se pretende
+ * validar um código de transação e criar a respetiva `Transaction`. Isto permite, assim, uma fluidez computacional ao ser utilizada a função `strtok`.
  * 
  * Para além disso, permite também que o cliente faça validação semântica dos seus produtos
  * e cliente, criando também as suas respetivas instâncias.
@@ -26,21 +26,21 @@
 typedef int (*scompare)(char *, Transaction);
 
 /**
- * \brief Classe `Verifier` contendo todas as variavéis de instâncias necessárias
+ * \brief Classe `Verifier` contendo todas as variáveis de instâncias necessárias
  * ao seu bom funcionamento.
  * 
  * Internamente a classe `Verifier`, que tem como objetivo final validar unicamente
- * registos de transação e formar a `Transaction` correspondente, é formada unicamente
+ * registos de transação e formar a `Transaction` correspondente, é formada apenas
  * por um _array_ de tantas funções como argumentos num registos de transações. Sendo que
- * este número de argumento se encontra descrito por `N_TRANS_ARGS`.
+ * este número de argumentos se encontra descrito por `N_TRANS_ARGS`.
  * 
  * Cada posição _n_ neste _array_ deve conter uma função, tal que esta seja capaz
- * de validar e adicionar a uma `Transaction` o n-ésimo parametro da ordem estabelecida para
+ * de validar e adicionar a uma `Transaction` o n-ésimo parâmetro da ordem estabelecida para
  * registos de transação, que segue a seguinte formatação:
  * 
  *  [PRODUTO] [PREÇO] [UNIDADES VENDIDAS] [PROMOÇÃO] [CLIENTE] [MÊS] [FILIAL]
  * 
- * Logo, por exemplo, o indice 2 do array na classe `Verifier`, deverá corresponder univocamente
+ * Logo, por exemplo, o índice 2 do array na classe `Verifier`, deverá corresponder univocamente
  * a um função capaz de validar e atribuir a uma `Transaction` o número de unidades que foram
  * transacionadas naquele registo.
  * 
@@ -54,14 +54,14 @@ typedef struct verifier
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 Verifier Verifier_make();
 void Verifier_destroy(Verifier v);
 Client verify_client(char *client);
 Product verify_product(char *product);
 Transaction verify_sale(Verifier v, char *trans_code);
 
-/* Metodos privados */
+/* Métodos privados */
 static int is_valid_client(char *client);
 static int is_valid_product(char *product);
 static int _set_trans_valid_product(char *product, Transaction t);

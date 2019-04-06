@@ -2,8 +2,8 @@
  * @file Adition.c
  * \brief Ficheiro de código necessário a todos metódos da classe `Adition`.
  * 
- * Em módulo acima na hierarquia esta classe é utilizada de forma a armazenar todos
- * os clientes que estão associados a um dado produto, representando assim a relação
+ * Em módulos acima na hierarquia esta classe é utilizada de forma a armazenar todos
+ * os clientes que estão associados a um dado produto, representando, assim, a relação
  * de um produto com todos os clientes que o compraram.
  * 
  * Para cada cliente presente no conjunto da instância é guardada a forma como este
@@ -28,14 +28,14 @@ typedef struct adition
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 gpointer adition_make();
 void adition_destroy(gpointer e);
 void adition_update(gpointer e, gpointer user_data);
 TAD_List adition_dump_by_promo_fil(Adition ad, int filial, int promo);
 int adition_size(Adition ad);
 
-/* Metodos privados */
+/* Métodos privados */
 static void foreach_add(gpointer key, gpointer value, gpointer user_data);
 
 /* ------------------------------------------------------------------------------ */

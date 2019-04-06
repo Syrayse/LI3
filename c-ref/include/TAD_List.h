@@ -1,8 +1,8 @@
 /**
  * @file TAD_List.h
- * \brief Define o mõdulo de armazenamento e apresentação de tipos abstratos de dados.
+ * \brief Define o módulo de armazenamento e apresentação de tipos abstratos de dados.
  * 
- * Isto é tornado possivél através de uma classe que armazena e permite transversar
+ * Isto é tornado possível através de uma classe que armazena e permite transversar
  * tipos abstratos de dados.
  */
 #ifndef _TAD_LIST_H_
@@ -28,7 +28,7 @@ TAD_List list_make(GFreeFunc f, unsigned int size);
 /**
  * \brief Destrói uma instância da classe `TAD_List`.
  * 
- * @param tl Instância que se pretender destruir.
+ * @param tl Instância que se pretende destruir.
  */
 void list_destroy(TAD_List tl);
 
@@ -37,15 +37,15 @@ void list_destroy(TAD_List tl);
  * 
  * @param tl Instância que se pretende verificar.
  * 
- * @returns Tmananho da `TAD_List`.
+ * @returns Tamanho da `TAD_List`.
  */
 unsigned int list_size(TAD_List tl);
 
 /**
- * \brief Obter um elemento da `TAD_List` segundo um indice.
+ * \brief Obtém um elemento da `TAD_List` segundo um índice.
  * 
  * @param tl Instância que se pretende utilizar.
- * @param index Indice do elemento.
+ * @param index Índice do elemento.
  * 
  * @returns Elemento na posição `index`, ou NULL caso este não exista.
  */
@@ -57,7 +57,7 @@ gpointer list_get_index(TAD_List tl, unsigned int index);
  * @param tl Instância na qual se pretende adicionar.
  * @param v Elemento que se pretende adicionar.
  * 
- * @returns 1 se for possivél adicionar, 0 caso contrário.
+ * @returns 1 se for possível adicionar, 0 caso contrário.
  */
 int list_add(TAD_List tl, gpointer v);
 

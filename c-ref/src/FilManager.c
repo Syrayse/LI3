@@ -2,9 +2,9 @@
  * @file FilManager.c
  * \brief Ficheiro que contém toda a condificação associada à classe `FilManager`.
  * 
- * Este classe tem como objetivo representar todas as relações existentes entre clientes
- * e os produtos que comprou, ou, produtos e os clientes que o compraram. Esta classe efetua o tratamento
- * de todas as filiais de uma só vez. Sendo que para um dado produto ou cliente está presente
+ * Esta classe tem como objetivo representar todas as relações existentes entre clientes
+ * e os produtos que este comprou, ou, produtos e os clientes que o compraram. Esta classe efetua o tratamento
+ * de todas as filiais de uma só vez. Sendo que, para um dado produto ou cliente está presente
  * toda a informação útil necessária para representar as diferentes ligações para todas as filiais.
  */
 #include "FilManager.h"
@@ -23,18 +23,18 @@
  * 
  * Esta classe possui dois `Set`'s, um dos _sets_ tem como objetivo representar todos os clientes que efetuaram transações
  * e a forma como eles se ligam a todos os produtos que possam vir a ter comprado em qualquer uma das filiais.
- * O outro conjunto, tem como objetivo representar todos os produtos que foram transacionados e forma como estes se ligam
+ * O outro conjunto, tem como objetivo representar todos os produtos que foram transacionados e a forma como estes se ligam
  * a todos os clientes que os possam vir a ter transacionado em qualquer uma das filiais.
  */
 typedef struct filmanager
 {
     Set client_set,  /**< Conjunto de clientes. */
-        product_set; /**<  Conjunto de produtos. */
+        product_set; /**< Conjunto de produtos. */
 } * FilManager;
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metódos publicos */
+/* Métodos públicos */
 FilManager filmanager_make();
 void filmanager_destroy(FilManager fm);
 void filmanager_update(FilManager fm, Product product, Client client, int filial, int month, int promo, int units, double spent);
@@ -47,7 +47,7 @@ TAD_List filmanager_get_top3(FilManager fm, Client client);
 int filmanager_get_active_n_clients(FilManager fm);
 int filmanager_get_active_n_products(FilManager fm);
 
-/* Metódos privados */
+/* Métodos privados */
 static void foreach_add_overall(gpointer key, gpointer value, gpointer user_data);
 static int mystrcmp(gconstpointer v1, gconstpointer v2);
 

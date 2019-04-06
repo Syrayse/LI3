@@ -1,6 +1,6 @@
 /**
  * @file CatClients.h
- * \brief Define a interface fornecida ao utilizador que pretenda manuseado o catálogo de clientes.
+ * \brief Define a interface fornecida ao utilizador que pretenda manusear o catálogo de clientes.
  */
 
 #ifndef CAT_CLIENTS_H
@@ -21,7 +21,7 @@ typedef struct cat_clients *CatClients;
 CatClients CatClients_make();
 
 /**
- * \brief Liberta a memória associado a um catálogo de clientes.
+ * \brief Liberta a memória associada a um catálogo de clientes.
  * 
  * @param cc Catálogo de clientes a considerar.
  */
@@ -50,7 +50,7 @@ void CatClients_add_client(CatClients cc, Client client);
  * 
  * @param cc Catálogo de clientes a considerar.
  * 
- * @retursn O número de elementos inseridos no catálogo de clientes.
+ * @returns O número de elementos inseridos no catálogo de clientes.
  */
 int CatClients_size(CatClients cc);
 

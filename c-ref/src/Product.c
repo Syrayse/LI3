@@ -24,7 +24,7 @@ typedef struct product
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metódos publicos */
+/* Métodos públicos */
 Product product_make(char *product_code);
 void product_destroy(Product p);
 Product product_clone(Product p);
@@ -34,7 +34,7 @@ gboolean product_equal(gconstpointer v1, gconstpointer v2);
 void wrapproduct_destroy(gpointer v);
 int get_i(Product p);
 
-/* Metódos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 

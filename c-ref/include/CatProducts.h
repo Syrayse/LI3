@@ -1,6 +1,6 @@
 /**
  * @file CatProducts.h
- * \brief Define a interface útil para os metódos do catálogo de produtos. 
+ * \brief Define a interface útil para os métódos do catálogo de produtos. 
  */
 
 #ifndef CAT_PRODUCTS_H
@@ -47,10 +47,10 @@ int CatProducts_exists(CatProducts cp, Product product);
 void CatProducts_add_product(CatProducts cp, Product product);
 
 /**
- * \brief Função que permite transmitir ao catálogo de produtos que foi efetuada uma transaç
- * ão associada a um dado produto e filial.
+ * \brief Função que permite transmitir ao catálogo de produtos que foi efetuada uma transação
+ * associada a um dado produto e filial.
  * 
- * Esta mensagem de efetuamento de transação é necessário para o tratamento de uma das queries
+ * Esta mensagem de efetuamento de transação é necessária para o tratamento de uma das queries
  * de forma eficiente.
  * 
  * @param cp Catálogo de produtos que se pretende utilizar.

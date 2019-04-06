@@ -1,10 +1,10 @@
 /**
  * @file FilManager.h
- * \brief Interface dos metódos que podem aplicados a instâncias da classe `FilManager`.
+ * \brief Interface dos métodos que podem aplicados a instâncias da classe `FilManager`.
  * 
- * Este classe tem como objetivo representar todas as relações existentes entre clientes
- * e os produtos que comprou, ou, produtos e os clientes que o compraram. Esta classe efetua o tratamento
- * de todas as filiais de uma só vez. Sendo que para um dado produto ou cliente está presente
+ * Esta classe tem como objetivo representar todas as relações existentes entre clientes
+ * e os produtos que este comprou, ou, produtos e os clientes que o compraram. Esta classe efetua o tratamento
+ * de todas as filiais de uma só vez. Sendo que, para um dado produto ou cliente está presente
  * toda a informação útil necessária para representar as diferentes ligações para todas as filiais.
  */
 
@@ -35,11 +35,11 @@ FilManager filmanager_make();
 void filmanager_destroy(FilManager fm);
 
 /**
- * \brief Permite atualizar o valores internos de uma instància da classe `FilManager`.
+ * \brief Permite atualizar os valores internos de uma instância da classe `FilManager`.
  * 
  * Esta atualização dos valores internos é feita de forma a permitir respostas corretas às queries necessárias
- * e que são resolvidas por esta classe. Este valores utilizados na atualização corresponde as valores
- * que se obtem normalmente de uma estrutura que representa um tipo de transação.
+ * e que são resolvidas por esta classe. Estes valores utilizados na atualização correspondem aos valores
+ * que se obtêm normalmente de uma estrutura que representa um tipo de transação.
  * 
  * @param fm Instância a considerar.
  * @param product Produto transacionado.
@@ -76,7 +76,7 @@ int **filmanager_get_units_matrix(FilManager fm, Client client);
  * 
  * @param fm Instância a considerar.
  * @param product Produto que se pretende considerar.
- * @param filial Filial onde se foi comprado o produto.
+ * @param filial Filial onde foi comprado o produto.
  * @param promo Código promocional com que foi comprado o produto.
  * 
  * @returns A nova lista criada, ou NULL caso o produto não exista na instância.
