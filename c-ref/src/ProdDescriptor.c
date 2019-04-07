@@ -22,14 +22,14 @@ typedef struct proddescriptor
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metodos publicos */
+/* Métodos públicos */
 ProdDescriptor proddescrip_make(Product p, int nclients, int *vec_filial);
 void proddescrip_destroy(ProdDescriptor pd);
 int proddescrip_get_fil_units(ProdDescriptor pd, int filial);
 int proddescrip_get_n_clients(ProdDescriptor pd);
 Product proddescrip_get_product(ProdDescriptor pd);
 
-/* Metodos privados */
+/* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
 

@@ -40,7 +40,7 @@ static void menu()
 {
 	printf("     ___________________________________________________ \n");
     printf("    |                                                   |\n");
-    printf("    |             Bem vindo ao gestor de Vendas         |\n");
+    printf("    |            Bem vindo ao gestor de Vendas          |\n");
     printf("    |___________________________________________________|\n");
 
     printf("	01. Fazer leitura dos ficheiros.\n");
@@ -54,7 +54,7 @@ static void menu()
 	printf("	09. Lista de clientes que compraram um produto num determinado filial.\n");
 	printf("	10. Produtos mais comprados por um cliente num determinado mês.\n");
 	printf("	11. Lista dos N produtos mais comprados ao longo do ano.\n");
-	printf("	12. Produtos em que um cliente gastou mais dinheiro.			0. Sair.\n\n");
+	printf("	12. Produtos em que um cliente gastou mais dinheiro.		0. Sair.\n\n");
 }
 
 void getDirVendas(int *lido, char* vend)
@@ -97,7 +97,7 @@ int comunicaExt(int status)
 	if (num_commando == 1) return 1;
 	if (status == -1)
 	{
-		printf("Não existem ficheiros carregados\n");
+		printf("\tNão existem ficheiros carregados\n");
 		getchar();
 		getchar();
 		return -1;
@@ -113,17 +113,16 @@ int comunicaExt(int status)
 	}
 }
 
-
 void filiais(int i, int *fils[N_FILIAIS], double *dfils[N_FILIAIS])
 {
-	printf("\n\nVendas com promoção %d, Vendas sem promoção %d\n", fils[i - 1][1], fils[i - 1][0]);
-	printf("Total faturado com promoção %f, Total faturado sem promoção %f\n\n", dfils[i - 1][1], dfils[i - 1][0]);
+	printf("\tVendas com promoção %d, Vendas sem promoção %d\n", fils[i - 1][1], fils[i - 1][0]);
+	printf("\tTotal faturado com promoção %f, Total faturado sem promoção %f\n\n", dfils[i - 1][1], dfils[i - 1][0]);
 }
 
 void fatura(int *geral, double *dgeral)
 {
-    printf("\n\nVendas com promoção %d, Vendas sem promoção %d\n", geral[1], geral[0]);
-    printf("Total faturado com promoção %f, Total faturado sem promoção %f\n\n", dgeral[1], dgeral[0]);
+    printf("\tVendas com promoção %d, Vendas sem promoção %d\n", geral[1], geral[0]);
+    printf("\tTotal faturado com promoção %f, Total faturado sem promoção %f\n\n", dgeral[1], dgeral[0]);
 }
 
 int pedirInteiro(char* mensagem)
@@ -144,7 +143,8 @@ char pedirChar(char* mensagem)
     return a;
 }
 
-void pedirString(char* mensagem, char* buff) {
+void pedirString(char* mensagem, char* buff)
+{
     printf("%s", mensagem);
     scanf("%s", buff);
     while (fgetc(stdin) != '\n');
@@ -166,7 +166,7 @@ void NaoVende(int tam, int fil)
 
 void NaoComp(int c, int p)
 {
-	printf("%d Produtos não foram comprados, bem como %d clientes não fizeram compras\n", p, c);
+	printf("\n\t%d Produtos não foram comprados, bem como %d clientes não fizeram compras\n", p, c);
 }
 
 void pMatriz(int** matriz, char* cod)
@@ -186,13 +186,13 @@ void pMatriz(int** matriz, char* cod)
 
 void intMeses(int m1, int m2, int vendas, double fat)
 {
-	if (m1==m2) printf("No mês %d houveram %d e a faturação foi %f\n", m1, vendas, fat);
-	else printf("Entre o mês %d e o %d houveram %d e a faturação foi %f\n", m1, m2, vendas, fat);
+	if (m1 == m2) printf("\tNo mês %d houveram %d e a faturação foi %f\n", m1, vendas, fat);
+	else printf("\tEntre o mês %d e o %d houveram %d e a faturação foi %f\n", m1, m2, vendas, fat);
 }
 
 int navegador(TAD_List tl, int i, int f, int size)
 {
-	printf("\nExistem %d Produtos\n", size);
+	printf("\n\tExistem %d Produtos\n", size);
 	if (tl)
 	{
 		for (; i < f && i < size; i++)
@@ -200,4 +200,3 @@ int navegador(TAD_List tl, int i, int f, int size)
 	}
 	return (pedirInteiro("\t1. Próxima página  2.Página anterior  0.Sair  "));
 }
-

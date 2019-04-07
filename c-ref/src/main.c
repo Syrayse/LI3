@@ -158,7 +158,7 @@ void show_prodescript(ProdDescriptor pd)
 {
     char *str = product_get_code(proddescrip_get_product(pd));
 
-    printf("Produto %s, total clients %d, vendas fil1:%d | fil2:%d | fil3:%d\n",
+    printf("\tProduto %s, total clients %d, vendas fil1:%d | fil2:%d | fil3:%d\n",
            str, proddescrip_get_n_clients(pd), proddescrip_get_fil_units(pd, 1), proddescrip_get_fil_units(pd, 2), proddescrip_get_fil_units(pd, 3));
 }
 
@@ -179,7 +179,7 @@ void controla(TAD_List l) {
     int fim = TAM_PAG;
     if (!l)
     {
-        pMess("\tErro, o cliente ou o produtos não existe");
+        pMess("\tErro, o cliente ou o produto não existe");
         return;
     } 
     int s = list_size(l);
@@ -286,9 +286,9 @@ int main(int argc, char const *argv[])
 
             case 3:
             {
-                pedirString("\tIntroduza um código de produto:  ", fich);
+                pedirString("\tIntroduza um código de produto: ", fich);
                 mes = pedirInteiro("\tIntroduza um mês: ");
-                modo = pedirInteiro("\tEscolha se prefere visualizar o resultado para as 3 filiais ou o resultado global\n\t0.Global  1.2.3.Filial  ");
+                modo = pedirInteiro("\tEscolha se prefere visualizar o resultado para as 3 filiais ou o resultado global\n\t0.Global  1.2.3.Filial ");
                 if (!verify_product(fich)) pMess("\tInput inválido\n");
                 else
                 {
@@ -296,7 +296,7 @@ int main(int argc, char const *argv[])
                     {
                         if (get_product_global_stats(ac, fich, mes, geral, dgeral))
                         {
-                            pMess("\n\tResultado global: \n");
+                            pMess("\n\tResultado global: ");
                             fatura(geral, dgeral);
                         }
                         else pMess("\tErro, o cliente não existe\n");
@@ -306,7 +306,7 @@ int main(int argc, char const *argv[])
                     {
                         if (get_product_per_filial_stats(ac, fich, mes, fils, dfils))
                             {
-                                pMess("\n\tResultado global: \n");
+                                pMess("\n\tResultado por filial: ");
                                 filiais(modo, fils, dfils);
                             }
                         else pMess("\tErro, o cliente não existe\n");
@@ -318,7 +318,7 @@ int main(int argc, char const *argv[])
 
             case 4:
             {
-                modo = pedirInteiro("\tPretende visualizar a lista global ou de uma filial?\n\t0. Global  1.2.3. Filial  ");
+                modo = pedirInteiro("\tPretende visualizar a lista global ou de uma filial?\n\t0. Global  1.2.3. Filial ");
                 if (modo < 4 && modo > -1)
                 {
                     l = get_not_bought_products(cp, modo);
@@ -356,8 +356,8 @@ int main(int argc, char const *argv[])
 
             case 8:
             {
-                mes = pedirInteiro("\tIntroduza o primeiro mês:  ");
-                i = pedirInteiro("\tIntroduza o segundo mês:  ");
+                mes = pedirInteiro("\tIntroduza o primeiro mês: ");
+                i = pedirInteiro("\tIntroduza o segundo mês: ");
                 if (mes <= i && 0 < mes && mes < 13 && 0 < i && i < 13)
                     intMeses(mes, i, get_interval_trans(ac, mes, i), get_interval_rev(ac, mes, i));
                 else pMess("\tInput inválido");
@@ -366,9 +366,9 @@ int main(int argc, char const *argv[])
 
             case 9:
             {
-                pedirString("\tIntroduza o código de produto:  ", fich);
-                i = pedirInteiro("\tIntroduza uma filial:  ");
-                mes = pedirInteiro("\tEscolha se quer resultados para promoção ou sem promoção\n\t0.Sem promoção  1.Com promoção  ");
+                pedirString("\tIntroduza o código de produto: ", fich);
+                i = pedirInteiro("\tIntroduza uma filial: ");
+                mes = pedirInteiro("\tEscolha se quer resultados para promoção ou sem promoção\n\t0.Sem promoção  1.Com promoção ");
                 if ((mes != 0 && mes != 1) || i > 3 || i < 1 || !(verify_product(fich))) pMess("\tInput inválido");
                 else controla(get_product_buyers(fm, fich, i, mes));
             }
@@ -376,8 +376,8 @@ int main(int argc, char const *argv[])
 
             case 10:
             {
-                mes = pedirInteiro("\tIntroduza um mês:  ");
-                pedirString("\tIntroduza o código de cliente:  ", fich);
+                mes = pedirInteiro("\tIntroduza um mês: ");
+                pedirString("\tIntroduza o código de cliente: ", fich);
                 if (!(verify_client(fich)) || mes < 1 || mes > 12) pMess("\tInput inválido");
                 else controla(get_clients_most_bought(fm, fich, mes));
             }
@@ -385,7 +385,7 @@ int main(int argc, char const *argv[])
 
             case 11:
             {
-                i = pedirInteiro("\tIntroduza o número de elementos:  ");
+                i = pedirInteiro("\tIntroduza o número de elementos: ");
                 if (i > 0)
                     show_n_proddescrips(get_topN_most_sold(ac, fm, i));
                 else pMess("\tInsira um número positivo");
@@ -394,7 +394,7 @@ int main(int argc, char const *argv[])
 
             case 12:
             {
-                pedirString("\tIntroduza o código de cliente:  ", fich);
+                pedirString("\tIntroduza o código de cliente: ", fich);
                 if (verify_client(fich)) controla(get_clients_top3(fm, fich));
                 else pMess("\tInput inválido");
             }

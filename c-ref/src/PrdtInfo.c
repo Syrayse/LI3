@@ -34,7 +34,7 @@ int prdtinfo_month_units(PrdtInfo pi, int month);
  * \brief Estrutura da classe `PrdtInfo`
  * 
  * Implicitamente, pela hierarquia composta no serviço SVG, uma instância da classe `PrdtInfo`
- * é representativa de toda a informação útil entre um dado cliente um produto especifico.
+ * é representativa de toda a informação útil entre um dado cliente um produto específico.
  */
 typedef struct prdtinfo
 {
