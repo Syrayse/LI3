@@ -10,11 +10,12 @@
 #include "Transaction.h"
 #include "Verifier.h"
 #include "Queries.h"
+#include "ProdDescriptor.h"
 #include "util.h"
 #include <glib.h>
 #include <time.h>
 #include <stdio.h>
-#include <TAD_List.h>
+#include "TAD_List.h"
 #include <stdlib.h>
 
 #define cpu_time(start, end) (((double)(end - start)) / CLOCKS_PER_SEC)
@@ -166,6 +167,24 @@ void show10_elements(TAD_List tl)
     }
 }
 
+void show_prodescript(ProdDescriptor pd)
+{
+    char *str = product_get_code(proddescrip_get_product(pd));
+
+    printf("Produto %s, total clients %d, vendas fil1:%d | fil2:%d | fil3:%d\n",
+           str, proddescrip_get_n_clients(pd), proddescrip_get_fil_units(pd, 1), proddescrip_get_fil_units(pd, 2), proddescrip_get_fil_units(pd, 3));
+}
+
+void show_n_proddescrips(TAD_List tl)
+{
+    int i, s = list_size(tl);
+
+    for (i = 0; i < s; i++)
+    {
+        show_prodescript((ProdDescriptor)list_get_index(tl, i));
+    }
+}
+
 int main()
 {
     int valid1, valid2, valid3, total1, total2, total3, i, j, **r;
@@ -272,6 +291,12 @@ int main()
     puts("Query 10:");
     puts("\tFor client Z5000 and month 1");
     show10_elements(get_clients_most_bought(fm, "Z5000", 1));
+    c_t(start);
+
+    start = clock();
+    puts("Query 11:");
+    puts("\tTop 10");
+    show_n_proddescrips(get_topN_most_sold(ac, fm, 10));
     c_t(start);
 
     start = clock();

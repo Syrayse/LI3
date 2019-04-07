@@ -30,6 +30,7 @@ unsigned int list_size(TAD_List tl);
 gpointer list_get_index(TAD_List tl, unsigned int index);
 int list_add(TAD_List tl, gpointer v);
 void list_sort(TAD_List tl, GCompareFunc fc);
+TAD_List list_map(TAD_List tl, FMap fm, gpointer user_data, GFreeFunc ffree);
 
 /* Metodos privados */
 
@@ -96,4 +97,21 @@ int list_add(TAD_List tl, gpointer v)
 void list_sort(TAD_List tl, GCompareFunc fc)
 {
     qsort(tl->array, tl->used, sizeof(gpointer), fc);
+}
+
+TAD_List list_map(TAD_List tl, FMap fm, gpointer user_data, GFreeFunc ffree)
+{
+    if (!fm)
+        return NULL;
+
+    int i, sz = tl->used;
+
+    TAD_List new = list_make(ffree, sz);
+
+    for (i = 0; i < sz; i++)
+    {
+        list_add(new, (*fm)(tl->array[i], user_data));
+    }
+
+    return new;
 }

@@ -10,6 +10,8 @@
 
 #include "Product.h"
 
+#include "TAD_List.h"
+
 /**
  * \brief Tipo opaco representativo de uma instância da classe `Accounting`.
  */
@@ -94,5 +96,24 @@ int Accounting_get_global_stats(Accounting a, Product product, int month, int *t
  * @returns 1 caso o produto exista em `Accounting`, 0 caso contrário.
  */
 int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, double **spent_vec);
+
+/**
+ * \brief Cria uma lista com o top N produtos mais vendidos, por ordem descendente.
+ * 
+ * @param a Instância a considerar.
+ * @param N Precisão que se pretende.
+ * 
+ * @returns Uma lista com o top N produtos mais vendidos, por ordem descendente.
+ */
+TAD_List Accounting_get_top_N_most_bought(Accounting a, int N);
+
+/**
+ * \brief Dado um produto, preenche um vetor com as unidades vendidas daqueles produto por filial.
+ * 
+ * @param a Instância a considerar.
+ * @param p Produto que se pretende verificar.
+ * @param fil_vector Array onde serão armazenados os valores de unidades vendidas.
+ */
+void Accounting_get_fil_vec_units(Accounting a, Product p, int *fil_vector);
 
 #endif

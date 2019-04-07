@@ -16,6 +16,10 @@
 typedef struct tad_list *TAD_List;
 
 /**
+ * \brief Simplifica a escrita de uma função com o objetivo de mapear um valor de acordo com informação externa.
+ */
+typedef gpointer (*FMap)(gpointer, gpointer);
+/**
  * \brief Permite criar uma instância da classe `TAD_List`.
  * 
  * @param f Função de destruição dos elementos da lista.
@@ -68,5 +72,17 @@ int list_add(TAD_List tl, gpointer v);
  * @param fc Função de ordenação pela qual se deve ordenar.
  */
 void list_sort(TAD_List tl, GCompareFunc fc);
+
+/**
+ * \brief Cria uma nova lista, aplicando a todos os elementos da lista passada como argumento, uma função de mapping, não alterando esta lista.
+ * 
+ * @param tl Lista que se pretende utilizar como base.
+ * @param fm Função de mapeamento utilizada.
+ * @param user_data Informação exeterna necessária ao mapeamento.
+ * @param ffree Nova função de destruição.
+ * 
+ * @returns Uma nova lista resultatemento do mapeamento sucessivos dos elementos da lista inicial. 
+ */
+TAD_List list_map(TAD_List tl, FMap fm, gpointer user_data, GFreeFunc ffree);
 
 #endif

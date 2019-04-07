@@ -4,6 +4,8 @@
  */
 
 #include "Queries.h"
+#include "ProdDescriptor.h"
+#include "util.h"
 
 /* ------------------------------------------------------------------------------ */
 
@@ -24,6 +26,8 @@ TAD_List get_topN_most_sold(Accounting ac, FilManager fm, int N);               
 TAD_List get_clients_top3(FilManager fm, char *client_code);                                                        /* Q12 */
 
 /* Métodos privados */
+static gpointer map_to_proddescriptor(gpointer v, gpointer user_data);
+static void myproddescrip_destroy(gpointer v);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -119,7 +123,17 @@ TAD_List get_clients_most_bought(FilManager fm, char *client_code, int month)
 
 TAD_List get_topN_most_sold(Accounting ac, FilManager fm, int N)
 {
-    return NULL;
+    gpointer tmp[2];
+
+    TAD_List new, init_tl = Accounting_get_top_N_most_bought(ac, N);
+
+    tmp[0] = ac;
+    tmp[1] = fm;
+    new = list_map(init_tl, map_to_proddescriptor, tmp, myproddescrip_destroy);
+
+    list_destroy(init_tl);
+
+    return new;
 }
 
 TAD_List get_clients_top3(FilManager fm, char *client_code)
@@ -131,4 +145,20 @@ TAD_List get_clients_top3(FilManager fm, char *client_code)
     client_destroy(c);
 
     return l;
+}
+
+static gpointer map_to_proddescriptor(gpointer v, gpointer user_data)
+{
+    gpointer *arr = (gpointer *)user_data;
+    Accounting ac = (Accounting)arr[0];
+    FilManager fm = (FilManager)arr[1];
+    Product p = (Product)v;
+    int u_vec[N_FILIAIS];
+    Accounting_get_fil_vec_units(ac, p, u_vec);
+    return proddescrip_make(p, filmanager_get_n_of_clients(fm, p), u_vec);
+}
+
+static void myproddescrip_destroy(gpointer v)
+{
+    proddescrip_destroy((ProdDescriptor)v);
 }

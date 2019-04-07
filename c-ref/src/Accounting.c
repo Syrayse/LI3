@@ -8,6 +8,9 @@
 #include "Accounting.h"
 #include "statinfo.h"
 #include "Product.h"
+#include "TAD_List.h"
+#include "Currier.h"
+#include "kheap.h"
 #include "util.h"
 #include "set.h"
 #include <glib.h>
@@ -34,11 +37,16 @@ int Accounting_n_trans_range(Accounting a, int init, int end);
 double Accounting_n_cash_range(Accounting a, int init, int end);
 int Accounting_get_global_stats(Accounting a, Product product, int month, int *trans_vec, double *spent_vec);
 int Accounting_get_per_filial_stats(Accounting a, Product product, int month, int **trans_vec, double **spent_vec);
+TAD_List Accounting_get_top_N_most_bought(Accounting a, int N);
+void Accounting_get_fil_vec_units(Accounting a, Product p, int *fil_vector);
 
 /* Métodos privados */
 static gpointer wrapstatinfo_make();
 static void wrapstatinfo_destroy(gpointer v);
 static void wrapstatinfo_update(gpointer v1, gpointer v2);
+static void foreach_add_to_heap(gpointer key, gpointer value, gpointer user_data);
+static int compare_curr_quants(gconstpointer a, gconstpointer b);
+static void mycurrier_destroy(gpointer a);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -173,6 +181,41 @@ int Accounting_get_per_filial_stats(Accounting a, Product product, int month, in
     return r;
 }
 
+TAD_List Accounting_get_top_N_most_bought(Accounting a, int N)
+{
+    int i, m;
+
+    TAD_List tl;
+    Currier tmp;
+    KHeap kh = kheap_make(compare_curr_quants, mycurrier_destroy);
+
+    for (i = 0; i < N_LETTER; i++)
+    {
+        set_foreach(a->products[i], foreach_add_to_heap, kh);
+    }
+
+    m = min(N, kheap_size(kh));
+    tl = list_make(NULL, m);
+
+    for (i = 0; i < m; i++)
+    {
+        tmp = (Currier)kheap_extract_root(kh);
+        list_add(tl, product_clone((Product)uncurry_by_key(tmp)));
+    }
+
+    return tl;
+}
+
+void Accounting_get_fil_vec_units(Accounting a, Product p, int *fil_vector)
+{
+    gpointer v;
+
+    if ((v = set_lookup(a->products[get_i(p)], p)))
+    {
+        get_t_units_forall_fil((StatInfo)v, fil_vector);
+    }
+}
+
 static gpointer wrapstatinfo_make()
 {
     return statinfo_make();
@@ -186,4 +229,22 @@ static void wrapstatinfo_destroy(gpointer v)
 static void wrapstatinfo_update(gpointer v1, gpointer v2)
 {
     statinfo_update((StatInfo)v1, v2);
+}
+
+static void foreach_add_to_heap(gpointer key, gpointer value, gpointer user_data)
+{
+    kheap_add((KHeap)user_data, currier_make(key, value, NULL));
+}
+
+static int compare_curr_quants(gconstpointer a, gconstpointer b)
+{
+    Currier ca = (Currier)a;
+    Currier cb = (Currier)b;
+
+    return (get_t_units((StatInfo)uncurry_by_value(ca)) - get_t_units((StatInfo)uncurry_by_value(cb)));
+}
+
+static void mycurrier_destroy(gpointer a)
+{
+    currier_destroy((Currier)a);
 }

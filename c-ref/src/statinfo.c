@@ -21,6 +21,7 @@ void statinfo_destroy(StatInfo si);
 void statinfo_update(StatInfo si, gpointer user_data);
 int get_t_units(StatInfo si);
 int get_t_units_fil(StatInfo si, int filial);
+void get_t_units_forall_fil(StatInfo si, int *fil_vector);
 int get_t_vendas(StatInfo si);
 int get_t_month_fil_vendas(StatInfo si, int month, int filial);
 int get_t_month_fil_vendas_promo(StatInfo si, int month, int filial);
@@ -126,6 +127,16 @@ int get_t_units(StatInfo si)
 int get_t_units_fil(StatInfo si, int filial)
 {
     return si->nQuantFilial[filial - 1];
+}
+
+void get_t_units_forall_fil(StatInfo si, int *fil_vector)
+{
+    int i;
+
+    for (i = 0; i < N_FILIAIS; i++)
+    {
+        fil_vector[i] = si->nQuantFilial[i];
+    }
 }
 
 int get_t_vendas(StatInfo si)

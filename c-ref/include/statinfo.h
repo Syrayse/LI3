@@ -65,6 +65,17 @@ int get_t_units(StatInfo si);
 int get_t_units_fil(StatInfo si, int filial);
 
 /**
+ * \brief Calcula para todas as filiais o número de unidades vendidas.
+ * 
+ * Calcula para todas as filiais o número de unidades vendidas e colocar no Array `fil_vector`
+ * o número de unidades respectivo a cada filial.
+ * 
+ * @param si Instância a considerar.
+ * @param fil_vector Array onde serão colocadas as unidades vendidas para cada filial.
+ */
+void get_t_units_forall_fil(StatInfo si, int *fil_vector);
+
+/**
  * \brief Calcula o número total de transações.
  * 
  * @param si Instância a ser considerada.
