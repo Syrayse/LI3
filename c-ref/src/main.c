@@ -10,17 +10,19 @@
 #include "Transaction.h"
 #include "Verifier.h"
 #include "Queries.h"
-#include "ProdDescriptor.h"
 #include "util.h"
 #include <glib.h>
 #include <time.h>
 #include <stdio.h>
-#include "TAD_List.h"
 #include <stdlib.h>
+#include "menu.h"
+#include "ProdDescriptor.h"
+#include "TAD_List.h"
 
 #define cpu_time(start, end) (((double)(end - start)) / CLOCKS_PER_SEC)
 #define show_cpu_time(start, end) (printf("\tCPU Time:%f\n", cpu_time(start, end)))
 #define c_t(start) (show_cpu_time(start, clock()))
+#define TAM_PAG 24
 
 CatClients build_catclients(char *filename, int *valids, int *total)
 {
@@ -151,21 +153,6 @@ Accounting build_transactions(char *filename, int *valids, int *total, CatProduc
     return ac;
 }
 
-void show10_elements(TAD_List tl)
-{
-    int i, s;
-    if (tl)
-    {
-        s = list_size(tl);
-
-        for (i = 0; i < 10 && i < s; i++)
-        {
-            printf("%s ", (char *)list_get_index(tl, i));
-        }
-
-        putchar('\n');
-    }
-}
 
 void show_prodescript(ProdDescriptor pd)
 {
@@ -185,9 +172,54 @@ void show_n_proddescrips(TAD_List tl)
     }
 }
 
-int main()
+void controla(TAD_List l) {
+    int status = -1;
+
+    int inicio = 0;
+    int fim = TAM_PAG;
+    if (!l)
+    {
+        pMess("\tErro, o cliente ou o produtos não existe");
+        return;
+    } 
+    int s = list_size(l);
+    while (1)
+    {
+        status = navegador(l, inicio, fim, s);
+        if (status == 1)
+        {
+            if (fim > s)
+            {
+                inicio = 0;
+                fim = TAM_PAG;
+            }
+            else
+            {
+                inicio += TAM_PAG;
+                fim += TAM_PAG;
+            }
+        }
+        else if (status == 2)
+        {
+            if (inicio < TAM_PAG)
+            {
+                fim = (s / TAM_PAG + 1) * TAM_PAG;
+                inicio = fim - TAM_PAG;
+            }
+            else
+            {
+                inicio -= TAM_PAG;
+                fim -= TAM_PAG;
+            }
+        }
+        else break;
+    }
+}
+    
+
+int main(int argc, char const *argv[])
 {
-    int valid1, valid2, valid3, total1, total2, total3, i, j, **r;
+    int valid, total, **r, i;
     int *fils[N_FILIAIS], geral[2];
     double *dfils[N_FILIAIS], dgeral[2];
 
@@ -196,127 +228,190 @@ int main()
         fils[i] = g_malloc(sizeof(int) * 2);
         dfils[i] = g_malloc(sizeof(double) * 2);
     }
-
-    clock_t defstart, start, qstart;
+    
     TAD_List l;
 
-    defstart = start = clock();
-
+    int mes;
+    char letra;
+    char fich[1024];
+    int lido;
+   
     FilManager fm;
-    CatProducts cp = build_catproducts("tests/Produtos.txt", &valid1, &total1);
-    CatClients cc = build_catclients("tests/Clientes.txt", &valid2, &total2);
-    Accounting ac = build_transactions("tests/Vendas_1M.txt", &valid3, &total3, cp, cc, &fm);
+    Accounting ac;
+    CatClients cc;
+    CatProducts cp;
 
-    printf("Just for building:\n");
-    c_t(start);
-
-    qstart = start = clock();
-    puts("Query 2:");
-    show10_elements(get_sorted_products(cp, 'A'));
-    c_t(start);
-
-    start = clock();
-    puts("Query 3:");
-    get_product_global_stats(ac, "AF1184", 6, geral, dgeral);
-    get_product_per_filial_stats(ac, "AF1184", 6, fils, dfils);
-    puts("For product AF1184");
-    printf("\n\tMonth 6\n");
-    for (i = 1; i <= N_FILIAIS; i++)
+    int status = -1;
+    while (status)
     {
-        printf("\tFor filial %d:\n", i);
-        printf("\t\tSales, Promo %d, No Promo %d\n", fils[i - 1][1], fils[i - 1][0]);
-        printf("\t\tRevenue, Promo %f, No Promo %f\n", dfils[i - 1][1], dfils[i - 1][0]);
-    }
-
-    printf("\tIn all:\n");
-    printf("\t\tSales, Promo %d, No Promo %d\n", geral[1], geral[0]);
-    printf("\t\tRevenue, Promo %f, No Promo %f\n", dgeral[1], dgeral[0]);
-    c_t(start);
-
-    start = clock();
-    puts("Query 4:");
-    for (i = 0; i < 4; i++)
-    {
-        l = get_not_bought_products(cp, i);
-        printf("size %d,fil%d ->", list_size(l), i);
-        show10_elements(l);
-    }
-    c_t(start);
-
-    start = clock();
-    puts("Query 5:");
-    show10_elements(get_overall_clients(fm));
-    c_t(start);
-
-    puts("Query 6:");
-    start = clock();
-    printf("\tIsto tem de dar 0 -> %d!\n", get_n_not_bought_clients(cc, fm));
-    printf("\tIsto tem de dar 928 -> %d!\n", get_n_not_bought_products(cp));
-    c_t(start);
-
-    start = clock();
-    puts("Query 7:");
-    puts("For client Z5000:");
-    r = get_matrix(fm, "Z5000");
-    puts("\t\t|1|\t|2|\t|3|");
-    for (i = 0; i < N_MONTHS; i++)
-    {
-        printf("\tmes%d\t", i + 1);
-
-        for (j = 0; j < N_FILIAIS; j++)
+        status = comunicaExt(status);
+    
+        if (status == 1)
         {
-            printf("%d\t", r[j][i]);
+
+            getDirProd(&lido, fich);
+            if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o')) strcpy(fich, "tests/Produtos.txt");
+            cp = build_catproducts(fich, &valid, &total);
+            pLinhas("produtos", fich, valid, total);
+
+            getDirCli(&lido, fich);
+            if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o')) strcpy(fich, "tests/Clientes.txt");
+            cc = build_catclients(fich, &valid, &total);
+            pLinhas("clientes", fich, valid, total);
+
+            getDirVendas(&lido, fich);
+            if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o')) strcpy(fich, "tests/Vendas_1M.txt");
+            ac = build_transactions(fich, &valid, &total, cp, cc, &fm);
+            pLinhas("Vendas", fich, valid, total);
+
+            pMess("\tFicheiros carregados");
+
+        }
+        int modo;
+
+        switch(status)
+        {
+            case 2:
+            {
+                letra = pedirChar("\tIndique a letra para a qual deseja ver a lista");
+                if (letra <= 'z' && letra >= 'a') letra -= 32;
+                if (letra <= 'Z' && letra >= 'A')
+                {
+                    l = get_sorted_products(cp, letra);
+                    controla(l);    
+                } 
+                else pMess("\tInput inválido\n");
+            }
+            break;
+
+            case 3:
+            {
+                pedirString("\tIntroduza um código de produto:  ", fich);
+                mes = pedirInteiro("\tIntroduza um mês: ");
+                modo = pedirInteiro("\tEscolha se prefere visualizar o resultado para as 3 filiais ou o resultado global\n\t0.Global  1.2.3.Filial  ");
+                if (!verify_product(fich)) pMess("\tInput inválido\n");
+                else
+                {
+                    if (mes >= 1 && mes <=12 && modo == 0)
+                    {
+                        if (get_product_global_stats(ac, fich, mes, geral, dgeral))
+                        {
+                            pMess("\n\tResultado global: \n");
+                            fatura(geral, dgeral);
+                        }
+                        else pMess("\tErro, o cliente não existe\n");
+                    }
+
+                    else if (mes >= 1 && mes <=12)
+                    {
+                        if (get_product_per_filial_stats(ac, fich, mes, fils, dfils))
+                            {
+                                pMess("\n\tResultado global: \n");
+                                filiais(modo, fils, dfils);
+                            }
+                        else pMess("\tErro, o cliente não existe\n");
+                    }
+                    else pMess("\tInput inválido\n");
+                }
+            }
+            break;
+
+            case 4:
+            {
+                modo = pedirInteiro("\tPretende visualizar a lista global ou de uma filial?\n\t0. Global  1.2.3. Filial  ");
+                if (modo < 4 && modo > -1)
+                {
+                    l = get_not_bought_products(cp, modo);
+                    NaoVende(list_size(l), modo);
+                    controla(l);
+                }
+                else pMess("\tInput inválido");
+            }
+            break;
+
+            case 5:
+            {
+                controla(get_overall_clients(fm));
+            }
+            break;
+
+            case 6:
+            {
+                NaoComp(get_n_not_bought_clients(cc, fm), get_n_not_bought_products(cp));
+            }
+            break;
+
+            case 7:
+            {
+                pedirString("\tIntroduza um código de Cliente: ", fich);
+                if (strlen(fich) != 5 || !(verify_client(fich))) pMess("\tInput inválido");
+                else
+                    {
+                        r = get_matrix(fm, fich);
+                        if (r == NULL) pMess("\tErro, o cliente não existe");
+                        else pMatriz(r, fich);
+                    }
+            }
+            break;
+
+            case 8:
+            {
+                mes = pedirInteiro("\tIntroduza o primeiro mês:  ");
+                i = pedirInteiro("\tIntroduza o segundo mês:  ");
+                if (mes <= i && 0 < mes && mes < 13 && 0 < i && i < 13)
+                    intMeses(mes, i, get_interval_trans(ac, mes, i), get_interval_rev(ac, mes, i));
+                else pMess("\tInput inválido");
+            }
+            break;
+
+            case 9:
+            {
+                pedirString("\tIntroduza o código de produto:  ", fich);
+                i = pedirInteiro("\tIntroduza uma filial:  ");
+                mes = pedirInteiro("\tEscolha se quer resultados para promoção ou sem promoção\n\t0.Sem promoção  1.Com promoção  ");
+                if ((mes != 0 && mes != 1) || i > 3 || i < 1 || !(verify_product(fich))) pMess("\tInput inválido");
+                else controla(get_product_buyers(fm, fich, i, mes));
+            }
+            break;
+
+            case 10:
+            {
+                mes = pedirInteiro("\tIntroduza um mês:  ");
+                pedirString("\tIntroduza o código de cliente:  ", fich);
+                if (!(verify_client(fich)) || mes < 1 || mes > 12) pMess("\tInput inválido");
+                else controla(get_clients_most_bought(fm, fich, mes));
+            }
+            break;
+
+            case 11:
+            {
+                i = pedirInteiro("\tIntroduza o número de elementos:  ");
+                if (i > 0)
+                    show_n_proddescrips(get_topN_most_sold(ac, fm, i));
+                else pMess("\tInsira um número positivo");
+            }
+            break;
+
+            case 12:
+            {
+                pedirString("\tIntroduza o código de cliente:  ", fich);
+                if (verify_client(fich)) controla(get_clients_top3(fm, fich));
+                else pMess("\tInput inválido");
+            }
+            break;
+
+            default:
+            break;
+            
+            if (status == 0)
+            {
+                CatProducts_destroy(cp);
+                CatClients_destroy(cc);
+                filmanager_destroy(fm);
+                Accounting_destroy(ac);                
+            }
         }
 
-        putchar('\n');
     }
-    c_t(start);
-
-    start = clock();
-    puts("Query 8:");
-    printf("In the range [1,3], %d transactions were registred\n", get_interval_trans(ac, 1, 3));
-    printf("In the range [1,3], the cashflow was %f\n", get_interval_rev(ac, 1, 3));
-    c_t(start);
-
-    start = clock();
-    puts("Query 9:");
-    puts("\tFor product AF1184, filial 2:");
-    puts("\tWithout promotion:");
-    show10_elements(get_product_buyers(fm, "AF1184", 2, 0));
-    puts("\tWith promotion:");
-    show10_elements(get_product_buyers(fm, "AF1184", 2, 1));
-    c_t(start);
-
-    start = clock();
-    puts("Query 10:");
-    puts("\tFor client Z5000 and month 1");
-    show10_elements(get_clients_most_bought(fm, "Z5000", 1));
-    c_t(start);
-
-    start = clock();
-    puts("Query 11:");
-    puts("\tTop 10");
-    show_n_proddescrips(get_topN_most_sold(ac, fm, 10));
-    c_t(start);
-
-    start = clock();
-    puts("Query 12:");
-    puts("\tFor client Z5000");
-    show10_elements(get_clients_top3(fm, "Z5000"));
-    c_t(start);
-
-    puts("Just for the queries:");
-    c_t(qstart);
-
-    start = clock();
-    CatProducts_destroy(cp);
-    CatClients_destroy(cc);
-    filmanager_destroy(fm);
-    Accounting_destroy(ac);
-    puts("Just for freeing:");
-    c_t(start);
-
-    puts("total:");
-    c_t(defstart);
     return 0;
 }
