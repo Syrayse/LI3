@@ -8,6 +8,7 @@
 
 #include "TAD_List.h"
 
+void menu();
 void getDirVendas(int *i, char *vend);
 void getDirCli(int *i, char *cli);
 void getDirProd(int *i, char *prod);

@@ -108,9 +108,10 @@ void menu_run(Menu m)
 
     do
     {
-        system("clear");
+        if (system("clear"))
+            return;
 
-        show_menu();
+        menu();
 
         status = comunicaExt(status);
 

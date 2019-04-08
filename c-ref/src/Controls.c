@@ -6,6 +6,7 @@
 /* ------------------------------------------------------------------------------ */
 
 /* Métodos públicos */
+void menu();
 void getDirVendas(int *i, char *vend);
 void getDirProd(int *i, char *prod);
 void getDirCli(int *i, char *cli);
@@ -25,11 +26,10 @@ void pedirString(char *mensagem, char *buff);
 int navegador(TAD_List tl, int i, int f, int size);
 
 /* Métodos privados */
-static void menu();
 
 /* ------------------------------------------------------------------------------ */
 
-static void menu()
+void menu()
 {
 	printf("     ___________________________________________________ \n");
 	printf("    |                                                   |\n");
@@ -85,7 +85,10 @@ int comunicaExt(int status)
 	int num_commando;
 	menu();
 	printf("\tIntroduza o número do comando desejado: ");
-	scanf("%s", buffer);
+
+	if (scanf("%s", buffer) < 0)
+		return -1;
+
 	num_commando = atoi(buffer);
 
 	if (num_commando == 0)
@@ -129,9 +132,9 @@ int pedirInteiro(char *mensagem)
 {
 	int a;
 	printf("%s", mensagem);
-	scanf("%d", &a);
-	while (fgetc(stdin) != '\n')
-		;
+	if (scanf(" %d", &a) >= 0)
+		while (fgetc(stdin) != '\n')
+			;
 	return a;
 }
 
@@ -139,18 +142,18 @@ char pedirChar(char *mensagem)
 {
 	char a;
 	printf("%s:\n", mensagem);
-	scanf(" %c", &a);
-	while (fgetc(stdin) != '\n')
-		;
+	if (scanf(" %c", &a) >= 0)
+		while (fgetc(stdin) != '\n')
+			;
 	return a;
 }
 
 void pedirString(char *mensagem, char *buff)
 {
 	printf("%s", mensagem);
-	scanf("%s", buff);
-	while (fgetc(stdin) != '\n')
-		;
+	if (scanf("%s", buff) >= 0)
+		while (fgetc(stdin) != '\n')
+			;
 }
 
 void pMess(char *message)
