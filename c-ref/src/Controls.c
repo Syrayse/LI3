@@ -29,8 +29,8 @@ int pedirInteiro(char *mensagem);
 char pedirChar(char *mensagem);
 void pedirString(char *mensagem, char *buff);
 int navegador(TAD_List tl, int i, int f, int size, f_print fp_elem);
-void printReg(char* info);
-void printTop(ProdDescriptor pd);
+void printReg(gpointer e);
+void printTop(gpointer e);
 
 /* Métodos privados */
 
@@ -218,12 +218,14 @@ int navegador(TAD_List tl, int i, int f, int size, f_print fp_elem)
 	return (pedirInteiro("\t1. Próxima página  2.Página anterior  0.Sair  "));
 }
 
-void printReg(char* info)
+void printReg(gpointer e)
 {
-    printf("%s\n", info);
+	char *info = (char *)e;
+	printf("%s\n", info);
 }
 
-void printTop(ProdDescriptor pd)
+void printTop(gpointer e)
 {
-    printf("Produto %s - Clientes %d - Filiais: 1. %d 2. %d 3. %d\n", product_get_code(proddescrip_get_product(pd)), proddescrip_get_n_clients(pd), proddescrip_get_fil_units(pd, 1), proddescrip_get_fil_units(pd, 2), proddescrip_get_fil_units(pd, 3));
+	ProdDescriptor pd = (ProdDescriptor)e;
+	printf("Produto %s - Clientes %d - Filiais: 1. %d 2. %d 3. %d\n", product_get_code(proddescrip_get_product(pd)), proddescrip_get_n_clients(pd), proddescrip_get_fil_units(pd, 1), proddescrip_get_fil_units(pd, 2), proddescrip_get_fil_units(pd, 3));
 }
