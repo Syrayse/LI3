@@ -5,6 +5,7 @@
 #include "CatProducts.h"
 #include "Accounting.h"
 #include "FilManager.h"
+#include "util.h"
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
@@ -23,19 +24,19 @@ typedef void (*MenuAction)(SGV);
 
 typedef struct menuxpto
 {
-    int menuID;
     SGV main_sgv;
-    MenuAction func_vec[N_QUERIES + 1];
+    MenuAction func_vec[N_QUERIES];
 } * MenuXPTO;
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metódos publicos */
+/* Metódos públicos */
 MenuXPTO menu_make();
 void menu_run(MenuXPTO m);
 void menu_destroy(MenuXPTO m);
 
 /* Metódos privados */
+static void menu();
 static SGV build_sgv();
 static void free_sgv(SGV s);
 static void menu_query1(SGV s);
@@ -57,8 +58,6 @@ MenuXPTO menu_make()
 {
     MenuXPTO m = g_malloc(sizeof(struct menuxpto));
 
-    m->menuID = -1;
-
     m->main_sgv = build_sgv();
 
     m->func_vec[0] = free_sgv;
@@ -73,15 +72,71 @@ MenuXPTO menu_make()
     m->func_vec[9] = menu_query9;
     m->func_vec[10] = menu_query10;
     m->func_vec[11] = menu_query11;
-    m->func_vec[12S] = menu_query12;
+    m->func_vec[12] = menu_query12;
 
     return m;
 }
 
 void menu_run(MenuXPTO m)
 {
+    int userMenu;
+
+    do
+    {
+        system("clear");
+
+        menu();
+
+    }
+
+    while (scanf("%d", &userMenu) >= 0)
+    {
+        system("clear");
+
+        menu();
+
+        if (is_between(userMenu, 1, N_QUERIES))
+        {
+        }
+    }
 }
 
 void menu_destroy(MenuXPTO m)
 {
+    if (m)
+    {
+        free_sgv(m->main_sgv);
+        g_free(m);
+    }
+}
+
+static void menu()
+{
+    printf("     ___________________________________________________ \n");
+    printf("    |                                                   |\n");
+    printf("    |            Bem vindo ao gestor de Vendas          |\n");
+    printf("    |___________________________________________________|\n");
+
+    printf("	01. Fazer leitura dos ficheiros.\n");
+    printf("	02. Apresentar Catálogo de Produtos.\n");
+    printf("	03. Informações sobre as vendas de um produto num determinado mês.\n");
+    printf("	04. Produtos não comprados.\n");
+    printf("	05. Lista de clientes que realizaram compras em todas as filiais.\n");
+    printf("	06. Clientes e produtos inativos.\n");
+    printf("	07. Informações sobre as compras de um determinado cliente, por mês.\n");
+    printf("	08. Resultados das vendas num intervalo de meses.\n");
+    printf("	09. Lista de clientes que compraram um produto num determinado filial.\n");
+    printf("	10. Produtos mais comprados por um cliente num determinado mês.\n");
+    printf("	11. Lista dos N produtos mais comprados ao longo do ano.\n");
+    printf("	12. Produtos em que um cliente gastou mais dinheiro.		0. Sair.\n\n");
+}
+
+int main()
+
+{
+    menuXPTO = build;
+
+    menu_run;
+
+    destroy(menu);
 }

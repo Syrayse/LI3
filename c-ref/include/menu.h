@@ -1,6 +1,6 @@
 /**
  * @file menu.h
- * \brief Interface dos metódos utilizǘeis para trabalhar com o menu do SGV. 
+ * \brief Interface dos metódos utilizáveis para trabalhar com o menu do SGV. 
  */
 
 #ifndef __MENU__H__
