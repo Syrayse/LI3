@@ -5,7 +5,7 @@
 
 /* ------------------------------------------------------------------------------ */
 
-/* Metódos publicos */
+/* Métodos públicos */
 void getDirVendas(int *i, char *vend);
 void getDirProd(int *i, char *prod);
 void getDirCli(int *i, char *cli);
@@ -24,7 +24,7 @@ char pedirChar(char *mensagem);
 void pedirString(char *mensagem, char *buff);
 int navegador(TAD_List tl, int i, int f, int size);
 
-/* Metodos privados */
+/* Métodos privados */
 static void menu();
 
 /* ------------------------------------------------------------------------------ */

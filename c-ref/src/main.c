@@ -2,6 +2,7 @@
  * @file main.c
  * \brief Ficheiro contém o código que se pretende correr.
  */
+
 #include "menuXPTO.h"
 
 int main()
