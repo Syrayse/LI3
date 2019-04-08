@@ -188,6 +188,7 @@ void NaoVende(int tam, int fil)
 void NaoComp(int c, int p)
 {
 	printf("\n\t%d Produtos não foram comprados, bem como %d clientes não fizeram compras\n", p, c);
+	getchar();
 }
 
 void pMatriz(int **matriz)
