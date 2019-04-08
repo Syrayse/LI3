@@ -22,7 +22,7 @@ void NaoVende(int i, int j);
 void NaoComp(int i, int j);
 void pMatriz(int **mat);
 void intMeses(int m1, int m2, int vendas, double fat);
-void filiais(int i, int **fils, double **dfils)
+void filiais(int i, int **fils, double **dfils);
 int pedirInteiro(char *mensagem);
 char pedirChar(char *mensagem);
 void pedirString(char *mensagem, char *buff);
