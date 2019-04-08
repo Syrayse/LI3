@@ -122,9 +122,8 @@ void menu_run(Menu m)
                 ;
             (*m->func_vec[status - 1])(m->main_sgv);
             show_cpu_time(m->main_sgv->elapsed);
+            pMess("");
         }
-
-        pMess("");
 
     } while (status != 0);
 }
