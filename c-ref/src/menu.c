@@ -123,6 +123,9 @@ void menu_run(Menu m)
         }
 
         show_cpu_time(m->main_sgv->elapsed);
+
+        pMess("");
+
     } while (status != 0);
 }
 
@@ -219,6 +222,8 @@ static void menu_query1(SGV s)
     clock_t start, end;
     s->elapsed = 0;
     total = valid = 0;
+
+    s->elapsed = 0;
 
     getDirProd(&lido, fich);
 
@@ -418,7 +423,9 @@ static void menu_query8(SGV s)
 
 static void menu_query9(SGV s)
 {
+    clock_t start, end;
     char prod[1024];
+    s->elapsed = 0;
     pedirString("\tIntroduza o código de produto: ", prod);
     int fil = pedirInteiro("\tIntroduza uma filial: ");
     int promo = pedirInteiro("\tEscolha se quer resultados para promoção ou sem promoção\n\t0.Sem promoção  1.Com promoção ");
@@ -428,16 +435,19 @@ static void menu_query9(SGV s)
         pMess("\tInput inválido");
     else
     {
-        s->start = clock();
+        start = clock();
         l = get_product_buyers(s->fm, prod, fil, promo);
-        s->end = clock();
+        end = clock();
+        s->elapsed += end - start;
         controla(l, printReg);
     }
 }
 
 static void menu_query10(SGV s)
 {
+    clock_t start, end;
     char cli[1024];
+    s->elapsed = 0;
     int mes = pedirInteiro("\tIntroduza um mês: ");
     pedirString("\tIntroduza o código de cliente: ", cli);
     TAD_List l;
@@ -446,22 +456,26 @@ static void menu_query10(SGV s)
         pMess("\tInput inválido");
     else
     {
-        s->start = clock();
+        start = clock();
         l = get_clients_most_bought(s->fm, cli, mes);
-        s->end = clock();
+        end = clock();
+        s->elapsed += end - start;
         controla(l, printReg);
     }
 }
 
 static void menu_query11(SGV s)
 {
+    clock_t start, end;
+    s->elapsed = 0;
     int N = pedirInteiro("\tIntroduza o número de elementos: ");
     TAD_List l;
     if (N > 0)
     {
-        s->start = clock();
+        start = clock();
         l = get_topN_most_sold(s->ac, s->fm, N);
-        s->end = clock();
+        end = clock();
+        s->elapsed += end - start;
         controla(l, printTop);
     }
     else
@@ -470,15 +484,18 @@ static void menu_query11(SGV s)
 
 static void menu_query12(SGV s)
 {
+    clock_t start, end;
+    s->elapsed = 0;
     char cli[1024];
     pedirString("\tIntroduza o código de cliente: ", cli);
     TAD_List l;
 
     if (verify_client(cli))
     {
-        s->start = clock();
+        start = clock();
         l = get_clients_top3(s->fm, cli);
-        s->end = clock();
+        end = clock();
+        s->elapsed += end - start;
         controla(l, printReg);
     }
     else

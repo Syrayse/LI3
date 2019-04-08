@@ -97,7 +97,6 @@ int comunicaExt(int status)
 {
 	char buffer[1024];
 	int num_commando;
-	menu();
 	printf("\tIntroduza o número do comando desejado: ");
 
 	if (scanf("%s", buffer) < 0)
