@@ -17,7 +17,6 @@ void NaoVende(int i, int j);
 void NaoComp(int i, int j);
 void pMatriz(int **mat, char *cod);
 void intMeses(int m1, int m2, int vendas, double fat);
-void welcomeScreen();
 void filiais(int i, int *fils[], double *dfils[]);
 void geral(int *geral, double *dgeral);
 int pedirInteiro(char *mensagem);
@@ -175,7 +174,7 @@ void NaoComp(int c, int p)
 	printf("\n\t%d Produtos não foram comprados, bem como %d clientes não fizeram compras\n", p, c);
 }
 
-void pMatriz(int **matriz, char *cod)
+void pMatriz(int **matriz)
 {
 	int i, j;
 	printf("              _________________________________________ \n");

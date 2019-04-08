@@ -3,15 +3,15 @@
  * \brief Ficheiro contém o código que se pretende correr.
  */
 
-#include "Menu.h"
+#include "menu.h"
 
 int main()
 {
-    MenuXPTO mx = menu_make();
+    Menu m = menu_make();
 
-    menu_run(mx);
+    menu_run(m);
 
-    menu_destroy(mx);
+    menu_destroy(m);
 
     return 0;
 }
