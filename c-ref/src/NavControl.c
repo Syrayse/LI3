@@ -78,25 +78,12 @@ void NavControl_destroy(NavControl nc)
 {
     if (nc)
     {
-        if (nc->dictionary)
-        {
-            list_destroy(nc->dictionary);
-        }
-
         g_free(nc);
     }
 }
 
 void NavControl_change_dict(NavControl nc, TAD_List dict, gpointer user_data, f_print fp_elem, f_print fp_user)
 {
-    if (!dict)
-        return;
-
-    if (nc->dictionary)
-    {
-        list_destroy(nc->dictionary);
-    }
-
     nc->dictionary = dict;
 
     nc->user_data = user_data;
