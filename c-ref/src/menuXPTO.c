@@ -60,19 +60,18 @@ MenuXPTO menu_make()
 
     m->main_sgv = build_sgv();
 
-    m->func_vec[0] = free_sgv;
-    m->func_vec[1] = menu_query1;
-    m->func_vec[2] = menu_query2;
-    m->func_vec[3] = menu_query3;
-    m->func_vec[4] = menu_query4;
-    m->func_vec[5] = menu_query5;
-    m->func_vec[6] = menu_query6;
-    m->func_vec[7] = menu_query7;
-    m->func_vec[8] = menu_query8;
-    m->func_vec[9] = menu_query9;
-    m->func_vec[10] = menu_query10;
-    m->func_vec[11] = menu_query11;
-    m->func_vec[12] = menu_query12;
+    m->func_vec[0] = menu_query1;
+    m->func_vec[1] = menu_query2;
+    m->func_vec[2] = menu_query3;
+    m->func_vec[3] = menu_query4;
+    m->func_vec[4] = menu_query5;
+    m->func_vec[5] = menu_query6;
+    m->func_vec[6] = menu_query7;
+    m->func_vec[7] = menu_query8;
+    m->func_vec[8] = menu_query9;
+    m->func_vec[9] = menu_query10;
+    m->func_vec[10] = menu_query11;
+    m->func_vec[11] = menu_query12;
 
     return m;
 }
