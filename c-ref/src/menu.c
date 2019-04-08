@@ -1,207 +1,490 @@
-#include "menu.h"
+/**
+ * @file Menu.c
+ * \brief Ficheiro que contém o código do menu a apresentar ao utilizador.
+ */
+
+#include "Menu.h"
+#include "commondef.h"
+#include "NavControl.h"
+#include "CatClients.h"
+#include "CatProducts.h"
+#include "Accounting.h"
+#include "FilManager.h"
 #include "TAD_List.h"
+#include "Queries.h"
+#include "util.h"
+#include "Verifier.h"
+#include "Controls.h"
+#include <time.h>
+#include <glib.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 /* ------------------------------------------------------------------------------ */
 
-/* Métodos públicos */
-void getDirVendas(int *i, char *vend);
-void getDirProd(int *i, char *prod);
-void getDirCli(int *i, char *cli);
-void pLinhas(char *tipo, char *dir, int val, int tot);
-int comunicaExt(int status);
-void pMess(char *message);
-void NaoVende(int i, int j);
-void NaoComp(int i, int j);
-void pMatriz(int **mat, char *cod);
-void intMeses(int m1, int m2, int vendas, double fat);
-void welcomeScreen();
-void filiais(int i, int *fils[], double *dfils[]);
-void geral(int *geral, double *dgeral);
-int pedirInteiro(char *mensagem);
-char pedirChar(char *mensagem);
-void pedirString(char *mensagem, char *buff);
-int navegador(TAD_List tl, int i, int f, int size);
+/**
+ * \brief Estrutura que armazena todas tipos necessários ao SGV.
+ */
+typedef struct sgv
+{
+    int is_freed;   /**< Indica se o sgv já foi libertado da memória ou não. */
+    double start,   /**< Indica o tempo em que começou a última query. */
+        end,        /**< Indica o tempo em que acabou a última query. */
+        elapsed;    /**< Indica o tempo que demorou a última query. */
+    CatClients cc;  /**< Catálogo de clientes necessário ao SGV. */
+    CatProducts cp; /**< Catálogo de produtos necessário ao SGV. */
+    Accounting ac;  /**< Contabilidade necessária ao SGV.*/
+    FilManager fm;  /**< Gestor de filiais necessário ao SGV.*/
+    NavControl nc;  /**< Controlador de apresentação de conteúdo em listas. */
+} * SGV;
 
-/* Métodos privados */
-static void menu();
+/**
+ * \brief Simplifica a escrita de uma função que vai servir para ações separadas por menu.
+ */
+typedef void (*MenuAction)(SGV);
+
+/**
+ * \brief Estrutura que armazena todo o menu necessário para gerir o SGV na integra.
+ */
+typedef struct menu
+{
+    SGV main_sgv;                   /**< Estrutura principal que armazena todas as unidades necessárias pelo SGV. */
+    MenuAction func_vec[N_QUERIES]; /**< Estrutura que armazena as funções de interação com cada menu. */
+} * Menu;
 
 /* ------------------------------------------------------------------------------ */
 
-static void menu()
-{
-	printf("     ___________________________________________________ \n");
-	printf("    |                                                   |\n");
-	printf("    |            Bem vindo ao gestor de Vendas          |\n");
-	printf("    |___________________________________________________|\n");
+/* Métodos públicos */
+Menu menu_make();
+void menu_run(Menu m);
+void menu_destroy(Menu m);
 
-	printf("	01. Fazer leitura dos ficheiros.\n");
-	printf("	02. Apresentar Catálogo de Produtos.\n");
-	printf("	03. Informações sobre as vendas de um produto num determinado mês.\n");
-	printf("	04. Produtos não comprados.\n");
-	printf("	05. Lista de clientes que realizaram compras em todas as filiais.\n");
-	printf("	06. Clientes e produtos inativos.\n");
-	printf("	07. Informações sobre as compras de um determinado cliente, por mês.\n");
-	printf("	08. Resultados das vendas num intervalo de meses.\n");
-	printf("	09. Lista de clientes que compraram um produto num determinado filial.\n");
-	printf("	10. Produtos mais comprados por um cliente num determinado mês.\n");
-	printf("	11. Lista dos N produtos mais comprados ao longo do ano.\n");
-	printf("	12. Produtos em que um cliente gastou mais dinheiro.		0. Sair.\n\n");
+/* Métodos privados */
+static SGV build_sgv();
+static void free_sgv(SGV s);
+static void menu_query1(SGV s);
+static void menu_query2(SGV s);
+static void menu_query3(SGV s);
+static void menu_query4(SGV s);
+static void menu_query5(SGV s);
+static void menu_query6(SGV s);
+static void menu_query7(SGV s);
+static void menu_query8(SGV s);
+static void menu_query9(SGV s);
+static void menu_query10(SGV s);
+static void menu_query11(SGV s);
+static void menu_query12(SGV s);
+static CatClients build_catclients(char *filename, int *valids, int *total);
+static CatProducts build_catproducts(char *filename, int *valids, int *total);
+static Accounting build_transactions(char *filename, int *valids, int *total, CatProducts cp, CatClients cc, FilManager *fm);
+
+/* ------------------------------------------------------------------------------ */
+
+Menu menu_make()
+{
+    Menu m = g_malloc(sizeof(struct menu));
+
+    m->main_sgv = build_sgv();
+
+    m->func_vec[0] = menu_query1;
+    m->func_vec[1] = menu_query2;
+    m->func_vec[2] = menu_query3;
+    m->func_vec[3] = menu_query4;
+    m->func_vec[4] = menu_query5;
+    m->func_vec[5] = menu_query6;
+    m->func_vec[6] = menu_query7;
+    m->func_vec[7] = menu_query8;
+    m->func_vec[8] = menu_query9;
+    m->func_vec[9] = menu_query10;
+    m->func_vec[10] = menu_query11;
+    m->func_vec[11] = menu_query12;
+
+    return m;
 }
 
-void getDirVendas(int *lido, char *vend)
+void menu_run(Menu m)
 {
-	printf("\tAgora das vendas\t\t\t\t O. Assume por omissão\n");
-	*lido = scanf("%s", vend);
-	while (fgetc(stdin) != '\n')
-		;
+    int status = -1;
+
+    do
+    {
+        system("clear");
+
+        show_menu();
+
+        status = comunicaExt(status);
+
+        if (is_between(status, 1, N_QUERIES))
+        {
+            (*m->func_vec[status - 1])(m->main_sgv);
+        }
+
+        show_cpu_time(m->main_sgv->elapsed);
+    } while (status != 0);
 }
 
-void getDirCli(int *lido, char *cli)
+void menu_destroy(Menu m)
 {
-	printf("\tAgora dos clientes\t\t\t\t O. Assume por omissão\n");
-	*lido = scanf("%s", cli);
-	while (fgetc(stdin) != '\n')
-		;
+    if (m)
+    {
+        free_sgv(m->main_sgv);
+        g_free(m);
+    }
 }
 
-void getDirProd(int *lido, char *prod)
+static SGV build_sgv()
 {
-	printf("\tColoque a diretoria do ficheiro de produtos\t O. Assume por omissão\n");
-	*lido = scanf("%s", prod);
-	while (fgetc(stdin) != '\n')
-		;
+    SGV sgv = g_malloc(sizeof(struct sgv));
+
+    sgv->is_freed = 0,
+
+    sgv->cc = CatClients_make();
+
+    sgv->cp = CatProducts_make();
+
+    sgv->ac = Accounting_make();
+
+    sgv->fm = filmanager_make();
+
+    sgv->nc = NavControl_make();
+
+    return sgv;
 }
 
-void pLinhas(char *tipo, char *dir, int val, int tot)
+static void free_sgv(SGV s)
 {
-	printf("\tO ficheiro de %s lido foi %s, com %d linhas válidas num total de %d.\n\n", tipo, dir, val, tot);
+    if (s)
+    {
+        CatClients_destroy(s->cc);
+        CatProducts_destroy(s->cp);
+        Accounting_destroy(s->ac);
+        filmanager_destroy(s->fm);
+        NavControl_destroy(s->nc);
+    }
 }
 
-int comunicaExt(int status)
+static void menu_query1(SGV s)
 {
-	char buffer[1024];
-	int num_commando;
-	menu();
-	printf("\tIntroduza o número do comando desejado: ");
-	scanf("%s", buffer);
-	num_commando = atoi(buffer);
+    int lido, total, valid;
+    char fich[1024];
+    clock_t start, end;
+    s->elapsed = 0;
 
-	if (num_commando == 0)
-		return 0;
+    getDirProd(&lido, fich);
 
-	if (num_commando == 1)
-		return 1;
-	if (status == -1)
-	{
-		printf("\tNão existem ficheiros carregados\n");
-		getchar();
-		getchar();
-		return -1;
-	}
+    if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
+        strcpy(fich, "tests/Produtos.txt");
+    start = clock();
+    free_sgv(s);
+    s->cp = build_catproducts(fich, &valid, &total);
+    end = clock();
+    s->elapsed += end - start;
 
-	if (num_commando < 13 && num_commando > 1)
-		return num_commando;
+    pLinhas("produtos", fich, valid, total);
 
-	else
-	{
-		printf("Este comando não é válido!\n");
-		getchar();
-		getchar();
-		return -2;
-	}
+    getDirCli(&lido, fich);
+    if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
+        strcpy(fich, "tests/Clientes.txt");
+    start = clock();
+    s->cc = build_catclients(fich, &valid, &total);
+    end = clock();
+    s->elapsed += end - start;
+    pLinhas("clientes", fich, valid, total);
+
+    getDirVendas(&lido, fich);
+    if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
+        strcpy(fich, "tests/Vendas_1M.txt");
+    start = clock();
+    s->ac = build_transactions(fich, &valid, &total, s->cp, s->cc, &s->fm);
+    end = clock();
+    s->elapsed += end - start;
+    pLinhas("Vendas", fich, valid, total);
+
+    pMess("\tFicheiros carregados");
 }
 
-void filiais(int i, int **fils, double **dfils)
+static void menu_query2(SGV s)
 {
-	printf("\tVendas com promoção %d, Vendas sem promoção %d\n", fils[i - 1][1], fils[i - 1][0]);
-	printf("\tTotal faturado com promoção %f, Total faturado sem promoção %f\n\n", dfils[i - 1][1], dfils[i - 1][0]);
+    char letra = pedirChar("\tIndique a letra para a qual deseja ver a lista");
+    TAD_List l;
+
+    if (is_between(letra, 'a', 'z'))
+        letra -= 32;
+
+    if (is_between(letra, 'A', 'Z'))
+    {
+        s->start = clock();
+
+        l = get_sorted_products(s->cp, letra);
+
+        s->end = clock();
+
+        controla(l);
+    }
+    else
+        pMess("\tInput inválido\n");
 }
 
-void fatura(int *geral, double *dgeral)
+static void menu_query3(SGV s)
 {
-	printf("\tVendas com promoção %d, Vendas sem promoção %d\n", geral[1], geral[0]);
-	printf("\tTotal faturado com promoção %f, Total faturado sem promoção %f\n\n", dgeral[1], dgeral[0]);
+    double *dfils[N_FILIAIS], dgeral[2];
+    char fich[1024];
+    int n, mes, modo, *fils[N_FILIAIS], geral[2];
+
+    pedirString("\tIntroduza um código de produto: ", fich);
+    mes = pedirInteiro("\tIntroduza um mês: ");
+    modo = pedirInteiro("\tEscolha se prefere visualizar o resultado para as 3 filiais ou o resultado global\n\t0.Global  1.2.3.Filial ");
+    if (!verify_product(fich))
+        pMess("\tInput inválido\n");
+    else
+    {
+        if (is_between(mes, 1, N_MONTHS) && modo == 0)
+        {
+            s->start = clock();
+            n = get_product_global_stats(s->ac, fich, mes, geral, dgeral);
+            s->end = clock();
+
+            if (n)
+            {
+                pMess("\n\tResultado global: ");
+                fatura(geral, dgeral);
+            }
+            else
+                pMess("\tErro, o cliente não existe\n");
+        }
+        else if (is_between(mes, 1, N_MONTHS))
+        {
+            s->start = clock();
+            n = get_product_per_filial_stats(s->ac, fich, mes, fils, dfils);
+            s->end = clock();
+
+            if (n)
+            {
+                pMess("\n\tResultado por filial: ");
+                filiais(modo, fils, dfils);
+            }
+            else
+                pMess("\tErro, o cliente não existe\n");
+        }
+        else
+            pMess("\tInput inválido\n");
+    }
 }
 
-int pedirInteiro(char *mensagem)
+static void menu_query4(SGV s)
 {
-	int a;
-	printf("%s", mensagem);
-	scanf("%d", &a);
-	while (fgetc(stdin) != '\n')
-		;
-	return a;
+    TAD_List l;
+    int modo = pedirInteiro("\tPretende visualizar a lista global ou de uma filial?\n\t0. Global  1.2.3. Filial ");
+
+    if (is_between(modo, 0, 3))
+    {
+        s->start = clock();
+        l = get_not_bought_products(s->cp, modo);
+        s->end = clock();
+        NaoVende(list_size(l), modo);
+        controla(l);
+    }
+    else
+        pMess("\tInput inválido");
 }
 
-char pedirChar(char *mensagem)
+static void menu_query5(SGV s)
 {
-	char a;
-	printf("%s:\n", mensagem);
-	scanf(" %c", &a);
-	while (fgetc(stdin) != '\n')
-		;
-	return a;
+    TAD_List l;
+    s->start = clock();
+    l = (get_overall_clients(s->fm));
+    s->end = clock();
+    controla(l, printReg);
 }
 
-void pedirString(char *mensagem, char *buff)
+static void menu_query6(SGV s)
 {
-	printf("%s", mensagem);
-	scanf("%s", buff);
-	while (fgetc(stdin) != '\n')
-		;
+    int c, p;
+    s->start = clock();
+    c = (get_n_not_bought_clients(s->cc, s->fm));
+    p = (get_n_not_bought_products(s->cp));
+    s->end = clock();
+    NaoComp(c, p);
 }
 
-void pMess(char *message)
+static void menu_query7(SGV s)
 {
-	printf("%s\n", message);
-	getchar();
+    char cli[1024];
+    int **r;
+    pedirString("\tIntroduza um código de Cliente: ", cli);
+    if (strlen(cli) != 5 || !(verify_client(cli)))
+        pMess("\tInput inválido");
+    else
+    {
+        s->start = clock();
+        r = get_matrix(s->fm, cli);
+        s->end = clock();
+        if (r == NULL)
+            pMess("\tErro, o cliente não existe");
+        else
+            pMatriz(r, cli);
+    }
 }
 
-void NaoVende(int tam, int fil)
+static void menu_query8(SGV s)
 {
-	if (fil < 4 && fil > 0)
-		printf("\tNúmero: %d, Filial %d\n", tam, fil);
-	if (fil == 0)
-		printf("\tNúmero: %d, Resultado Global\n", tam);
+    int mes1, mes2, t;
+    double r;
+    mes1 = pedirInteiro("\tIntroduza o primeiro mês: ");
+    mes2 = pedirInteiro("\tIntroduza o segundo mês: ");
+    if (mes1 <= mes2 && 0 < mes1 && mes1 < 13 && 0 < mes2 && mes2 < 13)
+    {
+        s->start = clock();
+        t = get_interval_trans(s->ac, mes1, mes2);
+        r = get_interval_rev(s->ac, mes1, mes2);
+        s->end = clock();
+        intMeses(mes1, mes2, t, r);
+    }
+    else
+        pMess("\tInput inválido");
 }
 
-void NaoComp(int c, int p)
+static void menu_query9(SGV s)
 {
-	printf("\n\t%d Produtos não foram comprados, bem como %d clientes não fizeram compras\n", p, c);
 }
 
-void pMatriz(int **matriz, char *cod)
+static void menu_query10(SGV s)
 {
-	int i, j;
-	printf("              _________________________________________ \n");
-	printf("_____________|      1      |      2      |      3      |\n");
-	for (i = 0; i < 12; i++)
-	{
-		printf(" %10d  |", i + 1);
-		for (j = 0; j < 3; j++)
-			printf(" %10d  |", matriz[j][i]);
-		printf("\n");
-	}
-	printf("________________________________________________________ \n");
 }
 
-void intMeses(int m1, int m2, int vendas, double fat)
+static void menu_query11(SGV s)
 {
-	if (m1 == m2)
-		printf("\tNo mês %d houveram %d e a faturação foi %f\n", m1, vendas, fat);
-	else
-		printf("\tEntre o mês %d e o %d houveram %d e a faturação foi %f\n", m1, m2, vendas, fat);
 }
 
-int navegador(TAD_List tl, int i, int f, int size)
+static void menu_query12(SGV s)
 {
-	printf("\n\tExistem %d Produtos\n", size);
-	if (tl)
-	{
-		for (; i < f && i < size; i++)
-			printf("%d:\t%s\n", i + 1, (char *)list_get_index(tl, i));
-	}
-	return (pedirInteiro("\t1. Próxima página  2.Página anterior  0.Sair  "));
+}
+
+static CatClients build_catclients(char *filename, int *valids, int *total)
+{
+    FILE *fp = fopen(filename, "r");
+
+    if (!fp)
+        return NULL;
+
+    char buffer[1024];
+    CatClients cc = CatClients_make();
+    Client tmp;
+    int v, t;
+    v = t = 0;
+
+    while (fgets(buffer, 1024, fp))
+    {
+        tmp = verify_client(buffer);
+
+        if (tmp)
+        {
+            v++;
+            CatClients_add_client(cc, tmp);
+        }
+
+        t++;
+    }
+
+    *valids = v;
+    *total = t;
+
+    fclose(fp);
+
+    return cc;
+}
+
+static CatProducts build_catproducts(char *filename, int *valids, int *total)
+{
+    FILE *fp = fopen(filename, "r");
+
+    if (!fp)
+        return NULL;
+
+    char buffer[1024];
+    CatProducts cp = CatProducts_make();
+    Product tmp;
+    int v, t;
+    v = t = 0;
+
+    while (fgets(buffer, 1024, fp))
+    {
+        tmp = verify_product(buffer);
+
+        if (tmp)
+        {
+            v++;
+            CatProducts_add_product(cp, tmp);
+        }
+
+        t++;
+    }
+
+    *valids = v;
+    *total = t;
+
+    fclose(fp);
+
+    return cp;
+}
+
+static Accounting build_transactions(char *filename, int *valids, int *total, CatProducts cp, CatClients cc, FilManager *fm)
+{
+    FILE *fp = fopen(filename, "r");
+
+    if (!fp || !cp)
+        return NULL;
+
+    char buffer[1024];
+    int valid, tot, filial, month, promo, units;
+    double cost;
+    Accounting ac = Accounting_make();
+    FilManager new_fm = filmanager_make();
+    Verifier vf = Verifier_make();
+    Transaction tmp;
+    Client c;
+    Product p;
+    valid = tot = 0;
+
+    while (fgets(buffer, 1024, fp))
+    {
+        tmp = verify_sale(vf, buffer);
+
+        if (tmp)
+        {
+            c = trans_get_client(tmp);
+            p = trans_get_product(tmp);
+
+            if (CatClients_exists(cc, c) && CatProducts_exists(cp, p))
+            {
+                valid++;
+                filial = trans_get_filial(tmp);
+                month = trans_get_month(tmp);
+                promo = trans_get_promo(tmp);
+                units = trans_get_units(tmp);
+                cost = trans_get_price(tmp);
+
+                /* Update do catálogo de produtos. */
+                CatProduct_report_trans(cp, p, filial);
+
+                /* Update da contabilidade. */
+                Accounting_update(ac, p, month, filial, units, promo, cost);
+
+                /* Update do gestor de filiais. */
+                filmanager_update(new_fm, p, c, filial, month, promo, units, cost);
+            }
+
+            trans_destroy(tmp);
+        }
+
+        tot++;
+    }
+
+    *valids = valid;
+    *total = tot;
+    *fm = new_fm;
+
+    Verifier_destroy(vf);
+
+    return ac;
 }

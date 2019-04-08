@@ -3,7 +3,7 @@
  * \brief Ficheiro contém o código que se pretende correr.
  */
 
-#include "menuXPTO.h"
+#include "Menu.h"
 
 int main()
 {

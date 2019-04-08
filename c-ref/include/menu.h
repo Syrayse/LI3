@@ -1,31 +1,35 @@
 /**
- * @file menu.h
- * \brief Interface dos metódos utilizáveis para trabalhar com o menu do SGV. 
+ * @file Menu.h
+ * \brief Interface de todos os métodos que podem ser usados para interagir com instâncias da classe `Menu`.
  */
 
-#ifndef __MENU__H__
-#define __MENU__H__
+#ifndef __MENU__
+#define __MENU__
 
-#include "TAD_List.h"
+/**
+ * \brief Tipo opaco representativo da classe `Menu`.
+ */
+typedef struct menu * Menu;
 
-void getDirVendas(int *i, char *vend);
-void getDirCli(int *i, char *cli);
-void getDirProd(int *i, char *prod);
-void pLinhas(char *tipo, char *dir, int val, int tot);
-int comunicaExt(int status);
-void pMess(char *message);
-void NaoVende(int i, int j);
-void NaoComp(int i, int j);
-void pMatriz(int **mat, char *cod);
-void intMeses(int m1, int m2, int vendas, double fat);
+/**
+ * \brief Cria uma instância da classe `Menu` que permite interação com o menu.
+ * 
+ * @returns Uma nova instância.
+ */
+Menu menu_make();
 
-void welcomeScreen();
-void filiais(int i, int *fils[], double *dfils[]);
-void fatura(int *geral, double *dgeral);
-int pedirInteiro(char *mensagem);
-char pedirChar(char *mensagem);
-void pedirString(char *mensagem, char *buff);
+/**
+ * \brief Executa a instância `Menu`, esta corre até ser terminada internamente.
+ * 
+ * @param m Instância da classe que pretende correr.
+ */
+void menu_run(Menu m);
 
-int navegador(TAD_List tl, int i, int f, int size);
+/**
+ * \brief Destrói uma instância da classe `Menu`.
+ * 
+ * @param m Instância que se pretende destruir.
+ */
+void menu_destroy(Menu m);
 
 #endif
