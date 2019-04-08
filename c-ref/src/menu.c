@@ -120,9 +120,8 @@ void menu_run(Menu m)
         if (is_between(status, 1, N_QUERIES))
         {
             (*m->func_vec[status - 1])(m->main_sgv);
+            show_cpu_time(m->main_sgv->elapsed);
         }
-
-        show_cpu_time(m->main_sgv->elapsed);
 
         pMess("");
 
