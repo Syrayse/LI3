@@ -133,6 +133,8 @@ void menu_destroy(Menu m)
     if (m)
     {
         free_sgv(m->main_sgv);
+        NavControl_destroy(m->main_sgv->nc);
+        g_free(m->main_sgv);
         g_free(m);
     }
 }
@@ -164,7 +166,10 @@ static void free_sgv(SGV s)
         CatProducts_destroy(s->cp);
         Accounting_destroy(s->ac);
         filmanager_destroy(s->fm);
-        NavControl_destroy(s->nc);
+        s->cc = NULL;
+        s->cp = NULL;
+        s->ac = NULL;
+        s->fm = NULL;
     }
 }
 
@@ -221,40 +226,45 @@ static void menu_query1(SGV s)
     clock_t start, end;
     s->elapsed = 0;
     total = valid = 0;
-
     s->elapsed = 0;
 
-    getDirProd(&lido, fich);
-
-    if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
-        strcpy(fich, "tests/Produtos.txt");
-    start = clock();
     free_sgv(s);
-    s->cp = build_catproducts(fich, &valid, &total);
-    end = clock();
-    s->elapsed += end - start;
 
-    pLinhas("produtos", fich, valid, total);
+    do
+    {
+        getDirProd(&lido, fich);
+        if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
+            strcpy(fich, "tests/Produtos.txt");
+        start = clock();
+        s->cp = build_catproducts(fich, &valid, &total);
+        end = clock();
+        s->elapsed += end - start;
+        pLinhas("produtos", fich, valid, total);
+    } while (!s->cp);
 
-    getDirCli(&lido, fich);
-    if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
-        strcpy(fich, "tests/Clientes.txt");
-    start = clock();
-    s->cc = build_catclients(fich, &valid, &total);
-    end = clock();
-    s->elapsed += end - start;
-    pLinhas("clientes", fich, valid, total);
+    do
+    {
+        getDirCli(&lido, fich);
+        if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
+            strcpy(fich, "tests/Clientes.txt");
+        start = clock();
+        s->cc = build_catclients(fich, &valid, &total);
+        end = clock();
+        s->elapsed += end - start;
+        pLinhas("clientes", fich, valid, total);
+    } while (!s->cc);
 
-    getDirVendas(&lido, fich);
-    if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
-        strcpy(fich, "tests/Vendas_1M.txt");
-    start = clock();
-    s->ac = build_transactions(fich, &valid, &total, s->cp, s->cc, &s->fm);
-    end = clock();
-    s->elapsed += end - start;
-    pLinhas("Vendas", fich, valid, total);
-
-    pMess("\tFicheiros carregados");
+    do
+    {
+        getDirVendas(&lido, fich);
+        if (lido == 1 && (fich[0] == 'O' || fich[0] == 'o'))
+            strcpy(fich, "tests/Vendas_1M.txt");
+        start = clock();
+        s->ac = build_transactions(fich, &valid, &total, s->cp, s->cc, &s->fm);
+        end = clock();
+        s->elapsed += end - start;
+        pLinhas("Vendas", fich, valid, total);
+    } while (!s->ac);
 }
 
 static void menu_query2(SGV s)
