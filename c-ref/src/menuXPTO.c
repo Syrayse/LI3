@@ -6,6 +6,10 @@
 #include "Accounting.h"
 #include "FilManager.h"
 #include "util.h"
+#include "menu.h"
+#include "Queries.h"
+#include "Verifier.h"
+#include <stdio.h>
 #include <time.h>
 #include <glib.h>
 
@@ -171,18 +175,58 @@ static void menu_query4(SGV s)
 
 static void menu_query5(SGV s)
 {
+	TAD_List l;
+	s->start = clock();
+	l = (get_overall_clients(s->fm));
+	s->end = clock();
+	controla(l, printReg);
 }
 
 static void menu_query6(SGV s)
 {
+	int c, p;
+	s->start = clock();
+	c = (get_n_not_bought_clients(s->cc, s->fm));
+	p = (get_n_not_bought_products(s->cp));
+	s->end = clock();                                                       
+	NaoComp(c, p);
 }
 
 static void menu_query7(SGV s)
 {
+	char cli[1024];
+	int **r;
+	pedirString("\tIntroduza um código de Cliente: ", cli);
+	if (strlen(cli) != 5 || !(verify_client(cli)))
+	    pMess("\tInput inválido");
+	else
+	{
+		s->start = clock(); 
+	    r = get_matrix(s->fm, cli);
+	    s->end = clock();
+	    if (r == NULL)
+	        pMess("\tErro, o cliente não existe");
+	    else
+	        pMatriz(r, cli);
+	}
 }
 
 static void menu_query8(SGV s)
 {
+	int mes1, mes2, t;
+	double r;
+	mes1 = pedirInteiro("\tIntroduza o primeiro mês: ");
+	mes2 = pedirInteiro("\tIntroduza o segundo mês: ");
+	if (mes1 <= mes2 && 0 < mes1 && mes1 < 13 && 0 < mes2 && mes2 < 13)
+	{
+		s->start = clock(); 
+		t = get_interval_trans(s->ac, mes1, mes2);
+		r = get_interval_rev(s->ac, mes1, mes2);
+		s->end = clock();
+	    intMeses(mes1, mes2, t, r);
+	}
+	else
+	    pMess("\tInput inválido");
 }
 
 static void menu_query9(SGV s)
