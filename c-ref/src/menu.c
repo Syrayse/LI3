@@ -421,12 +421,13 @@ static void menu_query9(SGV s)
     pedirString("\tIntroduza o código de produto: ", prod);
     int fil = pedirInteiro("\tIntroduza uma filial: ");
     int promo = pedirInteiro("\tEscolha se quer resultados para promoção ou sem promoção\n\t0.Sem promoção  1.Com promoção ");
+    TAD_List l;
 
     if ((promo != 0 && promo != 1) || fil> 3 || fil< 1 || !(verify_product(prod)))
         pMess("\tInput inválido");
     else
     {
-        s->s-start = clock();
+        s->start = clock();
         l = get_product_buyers(s->fm, prod, fil, promo);
         s->end = clock();
         controla(l, printReg);
@@ -444,7 +445,7 @@ static void menu_query10(SGV s)
         pMess("\tInput inválido");
     else
     {
-        s->s-start = clock();
+        s->start = clock();
         l = get_clients_most_bought(s->fm, cli, mes);
         s->end = clock();
         controla(l, printReg);
@@ -455,9 +456,9 @@ static void menu_query11(SGV s)
 {
     int N = pedirInteiro("\tIntroduza o número de elementos: ");
     TAD_List l;
-    if (i > 0)
+    if (N > 0)
     {
-        s-start = clock();
+        s->start = clock();
         l = get_topN_most_sold(s->ac, s->fm, N);
         s->end = clock();
         controla(l, printTop);
@@ -474,7 +475,7 @@ static void menu_query12(SGV s)
 
     if (verify_client(cli))
     {
-        s-start = clock();
+        s->start = clock();
         l = get_clients_top3(s->fm, cli);
         s->end = clock();
         controla(l, printReg);
