@@ -233,5 +233,5 @@ void printReg(gpointer e)
 void printTop(gpointer e)
 {
 	ProdDescriptor pd = (ProdDescriptor)e;
-	printf("\tProduto %s - Clientes %d - Filiais: 1. %d 2. %d 3. %d\n", product_get_code(proddescrip_get_product(pd)), proddescrip_get_n_clients(pd), proddescrip_get_fil_units(pd, 1), proddescrip_get_fil_units(pd, 2), proddescrip_get_fil_units(pd, 3));
+	printf("\tProduto %s - Clientes %d - Filiais: 1. %5d 2. %5d 3. %5d\n", product_get_code(proddescrip_get_product(pd)), proddescrip_get_n_clients(pd), proddescrip_get_fil_units(pd, 1), proddescrip_get_fil_units(pd, 2), proddescrip_get_fil_units(pd, 3));
 }

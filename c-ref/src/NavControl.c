@@ -9,6 +9,7 @@
 #include "TAD_List.h"
 #include "stdio.h"
 #include <glib.h>
+#include "util.h"
 
 /* ------------------------------------------------------------------------------ */
 
@@ -44,6 +45,7 @@ int NavControl_get_end(NavControl nc);
 int NavControl_get_page(NavControl nc);
 
 /* Métodos privados */
+static void show_footer(NavControl nc);
 
 /* ------------------------------------------------------------------------------ */
 
@@ -52,10 +54,7 @@ int NavControl_get_page(NavControl nc);
  */
 #define N_PER_PAGE 25
 
-/**
- * \brief Máximo entre dois números.
- */
-#define max(a, b) ((a) > (b) ? (a) : (b))
+#define SEPARATOR "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n"
 
 /* ------------------------------------------------------------------------------ */
 
@@ -98,7 +97,7 @@ void NavControl_change_dict(NavControl nc, TAD_List dict, gpointer user_data, f_
 
     nc->init = 0;
 
-    nc->end = nc->nPerPage;
+    nc->end = N_PER_PAGE;
 }
 
 int NavControl_next_page(NavControl nc)
@@ -115,7 +114,7 @@ int NavControl_next_page(NavControl nc)
 
             nc->init = 0;
 
-            nc->end = nc->nPerPage;
+            nc->end = N_PER_PAGE;
         }
 
         else
@@ -124,7 +123,7 @@ int NavControl_next_page(NavControl nc)
 
             nc->init = nc->end;
 
-            nc->end += nc->nPerPage;
+            nc->end += N_PER_PAGE;
         }
     }
 
@@ -139,13 +138,13 @@ int NavControl_previous_page(NavControl nc)
     {
         r = 1;
 
-        if (nc->init < nc->nPerPage)
+        if (nc->init < N_PER_PAGE)
         {
-            nc->page = (nc->size / nc->nPerPage + 1);
+            nc->page = ((nc->size / N_PER_PAGE) + 1);
 
-            nc->end = nc->page * nc->nPerPage;
+            nc->end = nc->page * N_PER_PAGE;
 
-            nc->init = nc->end - nc->nPerPage;
+            nc->init = nc->end - N_PER_PAGE;
         }
 
         else
@@ -154,7 +153,7 @@ int NavControl_previous_page(NavControl nc)
 
             nc->end = nc->init;
 
-            nc->init -= nc->nPerPage;
+            nc->init -= N_PER_PAGE;
         }
     }
 
@@ -168,11 +167,13 @@ void NavControl_show(NavControl nc)
 
     int i;
 
-    for (i = nc->init; i < nc->end; i++)
+    for (i = nc->init; i < nc->end && i < nc->size; i++)
     {
-        printf("%d: ", i);
+        printf("\t%5d: ", i+1);
         (*nc->fp_elem)(list_get_index(nc->dictionary, i));
     }
+
+    show_footer(nc);
 }
 
 int NavControl_get_init(NavControl nc)
@@ -188,4 +189,13 @@ int NavControl_get_end(NavControl nc)
 int NavControl_get_page(NavControl nc)
 {
     return nc->page;
+}
+
+static void show_footer(NavControl nc)
+{
+    printf(SEPARATOR);
+
+    printf("\tResultados de %5d até %5d de um total de %d\tPágina %d\n", nc->init + 1, min(nc->end, nc->size), nc->size, nc->page);
+
+    printf(SEPARATOR);
 }

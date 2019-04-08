@@ -63,7 +63,7 @@ void menu_destroy(Menu m);
 /* Métodos privados */
 static SGV build_sgv();
 static void free_sgv(SGV s);
-static void controla(TAD_List l, f_print fp_elem);
+static void controla(TAD_List l, f_print fp_elem, NavControl nc);
 static void menu_query1(SGV s);
 static void menu_query2(SGV s);
 static void menu_query3(SGV s);
@@ -169,46 +169,31 @@ static void free_sgv(SGV s)
     }
 }
 
-static void controla(TAD_List l, f_print fp_elem)
+static void controla(TAD_List l, f_print fp_elem, NavControl nc)
 {
     int status = -1;
 
-    int inicio = 0;
-    int fim = 25;
+    NavControl_change_dict(nc, l, NULL, fp_elem, NULL);
+
     if (!l)
     {
         pMess("\tErro, o cliente ou o produto não existe");
         return;
     }
-    int s = list_size(l);
+
     while (1)
     {
-        status = navegador(l, inicio, fim, s, fp_elem);
+        if (system("clear"));
+        NavControl_show(nc);
+        status = pedirInteiro("\t1. Próxima página  2.Página anterior  0.Sair  ");
+        
         if (status == 1)
         {
-            if (fim > s)
-            {
-                inicio = 0;
-                fim = 25;
-            }
-            else
-            {
-                inicio += 25;
-                fim += 25;
-            }
+            NavControl_next_page(nc);   
         }
         else if (status == 2)
         {
-            if (inicio < 25)
-            {
-                fim = (s / 25 + 1) * 25;
-                inicio = fim - 25;
-            }
-            else
-            {
-                inicio -= 25;
-                fim -= 25;
-            }
+            NavControl_previous_page(nc);
         }
         else
             break;
@@ -278,7 +263,7 @@ static void menu_query2(SGV s)
 
         s->elapsed += end - start;
 
-        controla(l, printReg);
+        controla(l, printReg, s->nc);
 
         list_destroy(l);
     }
@@ -348,7 +333,7 @@ static void menu_query4(SGV s)
         end = clock();
         s->elapsed += end - start;
         NaoVende(list_size(l), modo);
-        controla(l, printReg);
+        controla(l, printReg, s->nc);
         list_destroy(l);
     }
     else
@@ -363,7 +348,7 @@ static void menu_query5(SGV s)
     TAD_List l = (get_overall_clients(s->fm));
     end = clock();
     s->elapsed += end - start;
-    controla(l, printReg);
+    controla(l, printReg, s->nc);
     list_destroy(l);
 }
 
@@ -441,7 +426,7 @@ static void menu_query9(SGV s)
         l = get_product_buyers(s->fm, prod, fil, promo);
         end = clock();
         s->elapsed += end - start;
-        controla(l, printReg);
+        controla(l, printReg, s->nc);
         list_destroy(l);
     }
 }
@@ -463,7 +448,7 @@ static void menu_query10(SGV s)
         l = get_clients_most_bought(s->fm, cli, mes);
         end = clock();
         s->elapsed += end - start;
-        controla(l, printReg);
+        controla(l, printReg, s->nc);
         list_destroy(l);
     }
 }
@@ -480,7 +465,7 @@ static void menu_query11(SGV s)
         l = get_topN_most_sold(s->ac, s->fm, N);
         end = clock();
         s->elapsed += end - start;
-        controla(l, printTop);
+        controla(l, printTop, s->nc);
         list_destroy(l);
     }
     else
@@ -501,7 +486,7 @@ static void menu_query12(SGV s)
         l = get_clients_top3(s->fm, cli);
         end = clock();
         s->elapsed += end - start;
-        controla(l, printReg);
+        controla(l, printReg, s->nc);
         list_destroy(l);
     }
     else
