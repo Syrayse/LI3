@@ -114,7 +114,6 @@ void NavControl_change_dict(NavControl nc, TAD_List dict, gpointer user_data, f_
     nc->end = max(nc->size, nc->nPerPage);
 }
 
-
 int NavControl_next_page(NavControl nc)
 {
     int r = 0;
@@ -122,7 +121,7 @@ int NavControl_next_page(NavControl nc)
     if (nc && nc->dictionary)
     {
         r = 1;
-        
+
         if (nc->end > nc->size)
         {
             nc->page = 1;
@@ -135,9 +134,9 @@ int NavControl_next_page(NavControl nc)
         else
         {
             nc->page++;
-                
+
             nc->init = nc->end;
-    
+
             nc->end += nc->nPerPage;
         }
     }
@@ -165,9 +164,9 @@ int NavControl_previous_page(NavControl nc)
         else
         {
             nc->page--;
-            
+
             nc->end = nc->init;
-            
+
             nc->init -= nc->nPerPage;
         }
     }
@@ -186,7 +185,6 @@ void NavControl_show(NavControl nc)
     {
         printf("%d: ", i);
         (*nc->fp_elem)(list_get_index(nc->dictionary, i));
-        putchar('\n');
     }
 }
 
