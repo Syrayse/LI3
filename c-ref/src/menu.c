@@ -15,6 +15,7 @@
 #include "util.h"
 #include "Verifier.h"
 #include "Controls.h"
+#include "ProdDescriptor.h"
 #include <time.h>
 #include <glib.h>
 #include <stdlib.h>
@@ -369,18 +370,70 @@ static void menu_query8(SGV s)
 
 static void menu_query9(SGV s)
 {
+    char prod[1024];
+    pedirString("\tIntroduza o código de produto: ", prod);
+    int fil = pedirInteiro("\tIntroduza uma filial: ");
+    int promo = pedirInteiro("\tEscolha se quer resultados para promoção ou sem promoção\n\t0.Sem promoção  1.Com promoção ");
+
+    if ((promo != 0 && promo != 1) || fil> 3 || fil< 1 || !(verify_product(prod)))
+        pMess("\tInput inválido");
+    else
+    {
+        s->s-start = clock();
+        l = get_product_buyers(s->fm, prod, fil, promo);
+        s->end = clock();
+        controla(l, printReg);
+    }
 }
 
 static void menu_query10(SGV s)
 {
+    char cli[1024];
+    int mes = pedirInteiro("\tIntroduza um mês: ");
+    pedirString("\tIntroduza o código de cliente: ", cli);
+    TAD_List l;
+
+    if (!(verify_client(cli)) || mes < 1 || mes > 12)
+        pMess("\tInput inválido");
+    else
+    {
+        s->s-start = clock();
+        l = get_clients_most_bought(s->fm, cli, mes);
+        s->end = clock();
+        controla(l, printReg);
+    }
 }
 
 static void menu_query11(SGV s)
 {
+    int N = pedirInteiro("\tIntroduza o número de elementos: ");
+    TAD_List l;
+    if (i > 0)
+    {
+        s-start = clock();
+        l = get_topN_most_sold(s->ac, s->fm, N);
+        s->end = clock();
+        controla(l, printTop);
+    }
+    else
+        pMess("\tInsira um número positivo");
 }
 
 static void menu_query12(SGV s)
 {
+    char cli[1024];
+    pedirString("\tIntroduza o código de cliente: ", cli);
+    TAD_List l;
+
+    if (verify_client(cli))
+    {
+        s-start = clock();
+        l = get_clients_top3(s->fm, cli);
+        s->end = clock();
+        controla(l, printReg);
+    }
+    else
+        pMess("\tInput inválido");
 }
 
 static CatClients build_catclients(char *filename, int *valids, int *total)
