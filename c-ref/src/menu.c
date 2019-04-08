@@ -3,7 +3,7 @@
  * \brief Ficheiro que contém o código do menu a apresentar ao utilizador.
  */
 
-#include "Menu.h"
+#include "menu.h"
 #include "commondef.h"
 #include "NavControl.h"
 #include "CatClients.h"

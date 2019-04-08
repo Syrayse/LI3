@@ -1,5 +1,5 @@
 /**
- * @file Menu.h
+ * @file menu.h
  * \brief Interface de todos os métodos que podem ser usados para interagir com instâncias da classe `Menu`.
  */
 
