@@ -310,7 +310,6 @@ static void menu_query3(SGV s)
 
             if (n)
             {
-                pMess("\n\tResultado global: ");
                 fatura(geral, dgeral);
             }
             else
@@ -325,7 +324,6 @@ static void menu_query3(SGV s)
 
             if (n)
             {
-                pMess("\n\tResultado por filial: ");
                 filiais(modo, fils, dfils);
             }
             else
