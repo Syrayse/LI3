@@ -218,6 +218,7 @@ static void menu_query1(SGV s)
     char fich[1024];
     clock_t start, end;
     s->elapsed = 0;
+    total = valid = 0;
 
     getDirProd(&lido, fich);
 
@@ -423,7 +424,7 @@ static void menu_query9(SGV s)
     int promo = pedirInteiro("\tEscolha se quer resultados para promoção ou sem promoção\n\t0.Sem promoção  1.Com promoção ");
     TAD_List l;
 
-    if ((promo != 0 && promo != 1) || fil> 3 || fil< 1 || !(verify_product(prod)))
+    if ((promo != 0 && promo != 1) || fil > 3 || fil < 1 || !(verify_product(prod)))
         pMess("\tInput inválido");
     else
     {

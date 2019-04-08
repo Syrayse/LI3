@@ -7,12 +7,14 @@
 #include "TAD_List.h"
 #include "ProdDescriptor.h"
 #include "NavControl.h"
+#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 /* ------------------------------------------------------------------------------ */
 
 /* Métodos públicos */
+void show_cpu_time(clock_t time);
 void menu();
 void getDirVendas(int *i, char *vend);
 void getDirProd(int *i, char *prod);
@@ -35,6 +37,11 @@ void printTop(gpointer e);
 /* Métodos privados */
 
 /* ------------------------------------------------------------------------------ */
+
+void show_cpu_time(clock_t time)
+{
+	printf("CPU time: %lf\n", ((double)(time)) / CLOCKS_PER_SEC);
+}
 
 void menu()
 {

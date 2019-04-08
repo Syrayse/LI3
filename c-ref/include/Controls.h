@@ -10,6 +10,13 @@
 #include "NavControl.h"
 
 /**
+ * \brief Imprime o tempo de CPU realizado.
+ * 
+ * @param time Tempo a imprimir.
+ */
+void show_cpu_time(clock_t time);
+
+/**
  * \brief Imprime o menu atual.
  */
 void menu();
