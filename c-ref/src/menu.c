@@ -187,13 +187,14 @@ static void controla(TAD_List l, f_print fp_elem, NavControl nc)
 
     while (1)
     {
-        if (system("clear"));
+        if (system("clear"))
+            ;
         NavControl_show(nc);
         status = pedirInteiro("\t1. Próxima página  2.Página anterior  0.Sair  ");
-        
+
         if (status == 1)
         {
-            NavControl_next_page(nc);   
+            NavControl_next_page(nc);
         }
         else if (status == 2)
         {
@@ -283,19 +284,20 @@ static void menu_query2(SGV s)
 static void menu_query3(SGV s)
 {
     clock_t start, end;
-    double *dfils[N_FILIAIS], dgeral[2];
+    double **dfils, dgeral[2];
     char fich[1024];
-    int n, mes, modo, *fils[N_FILIAIS], geral[2];
+    int i, n, mes, modo, **fils, geral[2];
     s->elapsed = 0;
 
     pedirString("\tIntroduza um código de produto: ", fich);
     mes = pedirInteiro("\tIntroduza um mês: ");
     modo = pedirInteiro("\tEscolha se prefere visualizar o resultado para as 3 filiais ou o resultado global\n\t0.Global  1.2.3.Filial ");
-    if (!verify_product(fich))
+
+    if (!verify_product(fich) || !is_between(mes, 1, N_MONTHS) || !is_between(modo, 0, 3))
         pMess("\tInput inválido\n");
     else
     {
-        if (is_between(mes, 1, N_MONTHS) && modo == 0)
+        if (modo == 0)
         {
             start = clock();
             n = get_product_global_stats(s->ac, fich, mes, geral, dgeral);
@@ -307,10 +309,18 @@ static void menu_query3(SGV s)
                 fatura(geral, dgeral);
             }
             else
-                pMess("\tErro, o cliente não existe\n");
+                pMess("\tErro, o produto não deu entrada na Contabilidade.\n");
         }
-        else if (is_between(mes, 1, N_MONTHS))
+        else
         {
+            fils = g_malloc(sizeof(double *) * N_FILIAIS);
+            dfils = g_malloc(sizeof(double *) * N_FILIAIS);
+            for (i = 0; i < N_FILIAIS; i++)
+            {
+                dfils[i] = g_malloc(sizeof(double) * 2);
+                fils[i] = g_malloc(sizeof(int) * 2);
+            }
+
             start = clock();
             n = get_product_per_filial_stats(s->ac, fich, mes, fils, dfils);
             end = clock();
@@ -321,10 +331,8 @@ static void menu_query3(SGV s)
                 filiais(modo, fils, dfils);
             }
             else
-                pMess("\tErro, o cliente não existe\n");
+                pMess("\tErro, o produto não deu entrada na Contabilidade.\n");
         }
-        else
-            pMess("\tInput inválido\n");
     }
 }
 
@@ -367,8 +375,8 @@ static void menu_query6(SGV s)
     s->elapsed = 0;
     int c, p;
     start = clock();
-    c = (get_n_not_bought_clients(s->cc, s->fm));
-    p = (get_n_not_bought_products(s->cp));
+    c = get_n_not_bought_clients(s->cc, s->fm);
+    p = get_n_not_bought_products(s->cp);
     end = clock();
     s->elapsed += end - start;
     NaoComp(c, p);
@@ -381,7 +389,7 @@ static void menu_query7(SGV s)
     int **r;
     s->elapsed = 0;
     pedirString("\tIntroduza um código de Cliente: ", cli);
-    if (strlen(cli) != 5 || !(verify_client(cli)))
+    if (!(verify_client(cli)))
         pMess("\tInput inválido");
     else
     {
@@ -390,7 +398,7 @@ static void menu_query7(SGV s)
         end = clock();
         s->elapsed += end - start;
         if (r == NULL)
-            pMess("\tErro, o cliente não existe");
+            pMess("\tErro, o cliente não existe no gestor de filiais");
         else
             pMatriz(r);
     }
@@ -404,7 +412,7 @@ static void menu_query8(SGV s)
     s->elapsed = 0;
     mes1 = pedirInteiro("\tIntroduza o primeiro mês: ");
     mes2 = pedirInteiro("\tIntroduza o segundo mês: ");
-    if (mes1 <= mes2 && 0 < mes1 && mes1 < 13 && 0 < mes2 && mes2 < 13)
+    if (mes1 <= mes2 && is_between(mes1, 1, N_MONTHS) && is_between(mes2, 1, N_MONTHS))
     {
         start = clock();
         t = get_interval_trans(s->ac, mes1, mes2);
@@ -427,7 +435,7 @@ static void menu_query9(SGV s)
     int promo = pedirInteiro("\tEscolha se quer resultados para promoção ou sem promoção\n\t0.Sem promoção  1.Com promoção ");
     TAD_List l;
 
-    if ((promo != 0 && promo != 1) || fil > 3 || fil < 1 || !(verify_product(prod)))
+    if (!is_between(promo, 0, 1) || !is_between(fil, 1, N_FILIAIS) || !verify_product(prod))
         pMess("\tInput inválido");
     else
     {
@@ -449,7 +457,7 @@ static void menu_query10(SGV s)
     pedirString("\tIntroduza o código de cliente: ", cli);
     TAD_List l;
 
-    if (!(verify_client(cli)) || mes < 1 || mes > 12)
+    if (!(verify_client(cli)) || !is_between(mes, 1, N_MONTHS))
         pMess("\tInput inválido");
     else
     {

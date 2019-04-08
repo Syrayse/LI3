@@ -86,6 +86,9 @@ void NavControl_destroy(NavControl nc)
 
 void NavControl_change_dict(NavControl nc, TAD_List dict, gpointer user_data, f_print fp_elem, f_print fp_user)
 {
+    if (!dict)
+        return;
+
     nc->dictionary = dict;
 
     nc->user_data = user_data;
@@ -165,14 +168,14 @@ int NavControl_previous_page(NavControl nc)
 
 void NavControl_show(NavControl nc)
 {
-    if (!nc->fp_elem)
+    if (!nc->fp_elem || !nc->dictionary)
         return;
 
     int i;
 
     for (i = nc->init; i < nc->end && i < nc->size; i++)
     {
-        printf("\t%5d: ", i+1);
+        printf("\t%5d: ", i + 1);
         (*nc->fp_elem)(list_get_index(nc->dictionary, i));
     }
 
