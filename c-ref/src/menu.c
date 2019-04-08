@@ -111,14 +111,15 @@ void menu_run(Menu m)
     do
     {
         if (system("clear"))
-            return;
-
+            ;
         menu();
 
         status = comunicaExt(status);
 
         if (is_between(status, 1, N_QUERIES))
         {
+            if (system("clear"))
+                ;
             (*m->func_vec[status - 1])(m->main_sgv);
             show_cpu_time(m->main_sgv->elapsed);
         }
