@@ -6,6 +6,7 @@
 #include "Accounting.h"
 #include "FilManager.h"
 #include "util.h"
+#include <time.h>
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
@@ -13,6 +14,7 @@
 typedef struct sgv
 {
     int is_freed;
+    double start, end, elapsed;
     CatClients cc;
     CatProducts cp;
     Accounting ac;
@@ -132,10 +134,23 @@ static void menu()
 
 static SGV build_sgv()
 {
+    SGV sgv = g_malloc(sizeof(struct sgv));
+
+    sgv->is_freed = 0,
+
+    return sgv;
 }
 
 static void free_sgv(SGV s)
 {
+    if (s)
+    {
+        CatClients_destroy(s->cc);
+        CatProducts_destroy(s->cp);
+        Accounting_destroy(s->ac);
+        filmanager_destroy(s->fm);
+        NavControl_destroy(s->nc);
+    }
 }
 
 static void menu_query1(SGV s)
