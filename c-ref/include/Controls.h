@@ -99,7 +99,7 @@ char pedirChar(char *mensagem);
 
 /**
  * \brief Imprime uma string, com um dado tamanho.
-*/
+ */
 void pedirString(char *mensagem, char *buff);
 
 /**
@@ -110,16 +110,17 @@ void pedirString(char *mensagem, char *buff);
 int navegador(TAD_List tl, int i, int f, int size, f_print fp_elem);
 
 /**
- * \brief Imprime um elemento do tipo string.
+ * \brief Imprime um elemento do tipo String.
  * 
  * @param e String a imprimir.
  */
 void printReg(gpointer e);
 
 /**
- * \brief Imprime um elemento do tipo ProdDescriptor
+ * \brief Imprime um elemento do tipo ProdDescriptor.
  * 
  * @param e ProdDescriptor a imprimir.
  */
 void printTop(gpointer e);
+
 #endif
