@@ -7,7 +7,6 @@
 #define __CONTROLS__
 
 #include "TAD_List.h"
-#include "ProdDescriptor.h"
 #include "NavControl.h"
 
 /**
@@ -103,10 +102,17 @@ void pedirString(char *mensagem, char *buff);
  */
 int navegador(TAD_List tl, int i, int f, int size, f_print fp_elem);
 
+/**
+ * \brief Imprime um elemento do tipo string.
+ * 
+ * @param e String a imprimir.
+ */
+void printReg(gpointer e);
 
-void printReg(char* info);
-
-
-void printTop(ProdDescriptor pd);
-
+/**
+ * \brief Imprime um elemento do tipo ProdDescriptor
+ * 
+ * @param e ProdDescriptor a imprimir.
+ */
+void printTop(gpointer e);
 #endif
