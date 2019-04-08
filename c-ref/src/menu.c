@@ -1,5 +1,5 @@
 /**
- * @file Menu.c
+ * @file menu.c
  * \brief Ficheiro que contém o código do menu a apresentar ao utilizador.
  */
 
@@ -322,7 +322,7 @@ static void menu_query7(SGV s)
         if (r == NULL)
             pMess("\tErro, o cliente não existe");
         else
-            pMatriz(r, cli);
+            pMatriz(r);
     }
 }
 
