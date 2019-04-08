@@ -7,6 +7,8 @@
 #define __CONTROLS__
 
 #include "TAD_List.h"
+#include "ProdDescriptor.h"
+#include "NavControl.h"
 
 /**
  * \brief Imprime o menu atual.
@@ -99,6 +101,12 @@ void pedirString(char *mensagem, char *buff);
  * 
  * @returns Número que permite avançar ou retroceder na página, ou sair.
  */
-int navegador(TAD_List tl, int i, int f, int size);
+int navegador(TAD_List tl, int i, int f, int size, f_print fp_elem);
+
+
+void printReg(char* info);
+
+
+void printTop(ProdDescriptor pd);
 
 #endif

@@ -5,6 +5,8 @@
 
 #include "Controls.h"
 #include "TAD_List.h"
+#include "ProdDescriptor.h"
+#include "NavControl.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -26,7 +28,9 @@ void filiais(int i, int **fils, double **dfils);
 int pedirInteiro(char *mensagem);
 char pedirChar(char *mensagem);
 void pedirString(char *mensagem, char *buff);
-int navegador(TAD_List tl, int i, int f, int size);
+int navegador(TAD_List tl, int i, int f, int size, f_print fp_elem);
+void printReg(char* info);
+void printTop(ProdDescriptor pd);
 
 /* Métodos privados */
 
@@ -121,12 +125,14 @@ int comunicaExt(int status)
 
 void filiais(int i, int **fils, double **dfils)
 {
+	printf("\n\tResultado por filial:\n");
 	printf("\tVendas com promoção %d, Vendas sem promoção %d\n", fils[i - 1][1], fils[i - 1][0]);
 	printf("\tTotal faturado com promoção %f, Total faturado sem promoção %f\n\n", dfils[i - 1][1], dfils[i - 1][0]);
 }
 
 void fatura(int *geral, double *dgeral)
 {
+	printf("\n\tResultado global:\n");
 	printf("\tVendas com promoção %d, Vendas sem promoção %d\n", geral[1], geral[0]);
 	printf("\tTotal faturado com promoção %f, Total faturado sem promoção %f\n\n", dgeral[1], dgeral[0]);
 }
@@ -201,13 +207,23 @@ void intMeses(int m1, int m2, int vendas, double fat)
 		printf("\tEntre o mês %d e o %d houveram %d e a faturação foi %f\n", m1, m2, vendas, fat);
 }
 
-int navegador(TAD_List tl, int i, int f, int size)
+int navegador(TAD_List tl, int i, int f, int size, f_print fp_elem)
 {
 	printf("\n\tExistem %d Produtos\n", size);
 	if (tl)
 	{
 		for (; i < f && i < size; i++)
-			printf("%d:\t%s\n", i + 1, (char *)list_get_index(tl, i));
+			fp_elem((char *)list_get_index(tl, i));
 	}
 	return (pedirInteiro("\t1. Próxima página  2.Página anterior  0.Sair  "));
+}
+
+void printReg(char* info)
+{
+    printf("%s\n", info);
+}
+
+void printTop(ProdDescriptor pd)
+{
+    printf("Produto %s - Clientes %d - Filiais: 1. %d 2. %d 3. %d\n", product_get_code(proddescrip_get_product(pd)), proddescrip_get_n_clients(pd), proddescrip_get_fil_units(pd, 1), proddescrip_get_fil_units(pd, 2), proddescrip_get_fil_units(pd, 3));
 }

@@ -63,6 +63,7 @@ void menu_destroy(Menu m);
 /* Métodos privados */
 static SGV build_sgv();
 static void free_sgv(SGV s);
+static void controla(TAD_List l, f_print fp_elem);
 static void menu_query1(SGV s);
 static void menu_query2(SGV s);
 static void menu_query3(SGV s);
@@ -165,6 +166,52 @@ static void free_sgv(SGV s)
     }
 }
 
+static void controla(TAD_List l, f_print fp_elem)
+{
+    int status = -1;
+
+    int inicio = 0;
+    int fim = 25;
+    if (!l)
+    {
+        pMess("\tErro, o cliente ou o produto não existe");
+        return;
+    }
+    int s = list_size(l);
+    while (1)
+    {
+        status = navegador(l, inicio, fim, s, fp_elem);
+        if (status == 1)
+        {
+            if (fim > s)
+            {
+                inicio = 0;
+                fim = 25;
+            }
+            else
+            {
+                inicio += 25;
+                fim += 25;
+            }
+        }
+        else if (status == 2)
+        {
+            if (inicio < 25)
+            {
+                fim = (s / 25 + 1) * 25;
+                inicio = fim - 25;
+            }
+            else
+            {
+                inicio -= 25;
+                fim -= 25;
+            }
+        }
+        else
+            break;
+    }
+}
+
 static void menu_query1(SGV s)
 {
     int lido, total, valid;
@@ -225,7 +272,7 @@ static void menu_query2(SGV s)
 
         s->elapsed += end - start;
 
-        controla(l);
+        controla(l, printReg);
     }
     else
         pMess("\tInput inválido\n");
@@ -295,7 +342,7 @@ static void menu_query4(SGV s)
         end = clock();
         s->elapsed += end - start;
         NaoVende(list_size(l), modo);
-        controla(l);
+        controla(l, printReg);
     }
     else
         pMess("\tInput inválido");
@@ -306,7 +353,7 @@ static void menu_query5(SGV s)
     clock_t start, end;
     s->elapsed = 0;
     start = clock();
-    TAD_List l = get_overall_clients(s->fm);
+    TAD_List l = (get_overall_clients(s->fm));
     end = clock();
     s->elapsed += end - start;
     controla(l, printReg);
