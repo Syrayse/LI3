@@ -54,6 +54,9 @@ static void show_footer(NavControl nc);
  */
 #define N_PER_PAGE 25
 
+/**
+ * \brief Delimitador de rodapé.
+ */
 #define SEPARATOR "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n"
 
 /* ------------------------------------------------------------------------------ */
