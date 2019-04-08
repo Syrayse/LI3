@@ -48,7 +48,7 @@ void menu()
 	printf("     ___________________________________________________ \n");
 	printf("    |                                                   |\n");
 	printf("    |            Bem vindo ao gestor de Vendas          |\n");
-	printf("    |___________________________________________________|\n");
+	printf("    |___________________________________________________|\n\n");
 
 	printf("	01. Fazer leitura dos ficheiros.\n");
 	printf("	02. Apresentar Catálogo de Produtos.\n");

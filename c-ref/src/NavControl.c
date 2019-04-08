@@ -98,7 +98,7 @@ void NavControl_change_dict(NavControl nc, TAD_List dict, gpointer user_data, f_
 
     nc->init = 0;
 
-    nc->end = max(nc->size, nc->nPerPage);
+    nc->end = nc->nPerPage;
 }
 
 int NavControl_next_page(NavControl nc)
