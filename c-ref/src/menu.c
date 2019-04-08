@@ -206,19 +206,23 @@ static void menu_query1(SGV s)
 
 static void menu_query2(SGV s)
 {
+    clock_t start, end;
     char letra = pedirChar("\tIndique a letra para a qual deseja ver a lista");
     TAD_List l;
+    s->elapsed = 0;
 
     if (is_between(letra, 'a', 'z'))
         letra -= 32;
 
     if (is_between(letra, 'A', 'Z'))
     {
-        s->start = clock();
+        start = clock();
 
         l = get_sorted_products(s->cp, letra);
 
-        s->end = clock();
+        end = clock();
+
+        s->elapsed += end - start;
 
         controla(l);
     }
@@ -228,9 +232,11 @@ static void menu_query2(SGV s)
 
 static void menu_query3(SGV s)
 {
+    clock_t start, end;
     double *dfils[N_FILIAIS], dgeral[2];
     char fich[1024];
     int n, mes, modo, *fils[N_FILIAIS], geral[2];
+    s->elapsed = 0;
 
     pedirString("\tIntroduza um código de produto: ", fich);
     mes = pedirInteiro("\tIntroduza um mês: ");
@@ -241,9 +247,10 @@ static void menu_query3(SGV s)
     {
         if (is_between(mes, 1, N_MONTHS) && modo == 0)
         {
-            s->start = clock();
+            start = clock();
             n = get_product_global_stats(s->ac, fich, mes, geral, dgeral);
-            s->end = clock();
+            end = clock();
+            s->elapsed += end - start;
 
             if (n)
             {
@@ -255,9 +262,10 @@ static void menu_query3(SGV s)
         }
         else if (is_between(mes, 1, N_MONTHS))
         {
-            s->start = clock();
+            start = clock();
             n = get_product_per_filial_stats(s->ac, fich, mes, fils, dfils);
-            s->end = clock();
+            end = clock();
+            s->elapsed += end - start;
 
             if (n)
             {
@@ -274,14 +282,17 @@ static void menu_query3(SGV s)
 
 static void menu_query4(SGV s)
 {
+    clock_t start, end;
     TAD_List l;
     int modo = pedirInteiro("\tPretende visualizar a lista global ou de uma filial?\n\t0. Global  1.2.3. Filial ");
+    s->elapsed = 0;
 
     if (is_between(modo, 0, 3))
     {
-        s->start = clock();
+        start = clock();
         l = get_not_bought_products(s->cp, modo);
-        s->end = clock();
+        end = clock();
+        s->elapsed += end - start;
         NaoVende(list_size(l), modo);
         controla(l);
     }
@@ -291,35 +302,43 @@ static void menu_query4(SGV s)
 
 static void menu_query5(SGV s)
 {
-    TAD_List l;
-    s->start = clock();
-    l = (get_overall_clients(s->fm));
-    s->end = clock();
+    clock_t start, end;
+    s->elapsed = 0;
+    start = clock();
+    TAD_List l = get_overall_clients(s->fm);
+    end = clock();
+    s->elapsed += end - start;
     controla(l, printReg);
 }
 
 static void menu_query6(SGV s)
 {
+    clock_t start, end;
+    s->elapsed = 0;
     int c, p;
-    s->start = clock();
+    start = clock();
     c = (get_n_not_bought_clients(s->cc, s->fm));
     p = (get_n_not_bought_products(s->cp));
-    s->end = clock();
+    end = clock();
+    s->elapsed += end - start;
     NaoComp(c, p);
 }
 
 static void menu_query7(SGV s)
 {
+    clock_t start, end;
     char cli[1024];
     int **r;
+    s->elapsed = 0;
     pedirString("\tIntroduza um código de Cliente: ", cli);
     if (strlen(cli) != 5 || !(verify_client(cli)))
         pMess("\tInput inválido");
     else
     {
-        s->start = clock();
+        start = clock();
         r = get_matrix(s->fm, cli);
-        s->end = clock();
+        end = clock();
+        s->elapsed += end - start;
         if (r == NULL)
             pMess("\tErro, o cliente não existe");
         else
@@ -329,16 +348,19 @@ static void menu_query7(SGV s)
 
 static void menu_query8(SGV s)
 {
+    clock_t start, end;
     int mes1, mes2, t;
     double r;
+    s->elapsed = 0;
     mes1 = pedirInteiro("\tIntroduza o primeiro mês: ");
     mes2 = pedirInteiro("\tIntroduza o segundo mês: ");
     if (mes1 <= mes2 && 0 < mes1 && mes1 < 13 && 0 < mes2 && mes2 < 13)
     {
-        s->start = clock();
+        start = clock();
         t = get_interval_trans(s->ac, mes1, mes2);
         r = get_interval_rev(s->ac, mes1, mes2);
-        s->end = clock();
+        end = clock();
+        s->elapsed += end - start;
         intMeses(mes1, mes2, t, r);
     }
     else
