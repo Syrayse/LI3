@@ -5,7 +5,7 @@
 
 #include "ProdDescriptor.h"
 #include "Product.h"
-#include "util.h"
+#include "commondef.h"
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */

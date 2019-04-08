@@ -10,7 +10,7 @@
  */
 
 #include "statinfo.h"
-#include "util.h"
+#include "commondef.h"
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */

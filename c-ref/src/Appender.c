@@ -15,7 +15,9 @@
 #include "kheap.h"
 #include "Product.h"
 #include "TAD_List.h"
+#include "commondef.h"
 #include "util.h"
+#include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
 

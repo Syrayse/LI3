@@ -7,6 +7,7 @@
  */
 #include "NavControl.h"
 #include "TAD_List.h"
+#include "stdio.h"
 #include <glib.h>
 
 /* ------------------------------------------------------------------------------ */
@@ -168,7 +169,9 @@ void NavControl_show(NavControl nc)
 
     for (i = nc->init; i < nc->end; i++)
     {
+        printf("%d: ", i);
         (*nc->fp_elem)(list_get_index(nc->dictionary, i));
+        putchar('\n');
     }
 }
 

@@ -15,6 +15,7 @@
 #include "Client.h"
 #include "Product.h"
 #include "Transaction.h"
+#include "commondef.h"
 #include "util.h"
 #include <glib.h>
 

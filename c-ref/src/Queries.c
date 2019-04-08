@@ -5,7 +5,7 @@
 
 #include "Queries.h"
 #include "ProdDescriptor.h"
-#include "util.h"
+#include "commondef.h"
 
 /* ------------------------------------------------------------------------------ */
 

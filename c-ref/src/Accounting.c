@@ -11,6 +11,7 @@
 #include "TAD_List.h"
 #include "Currier.h"
 #include "kheap.h"
+#include "commondef.h"
 #include "util.h"
 #include "set.h"
 #include <glib.h>
