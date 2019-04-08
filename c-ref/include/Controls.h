@@ -68,7 +68,7 @@ void intMeses(int m1, int m2, int vendas, double fat);
 /**
  * \brief Informações sobre as vendas de um produto, num determinado mês, por filial.
 */
-void filiais(int i, int *fils[], double *dfils[]);
+void filiais(int i, int **fils, double **dfils);
 
 /**
  * \brief Informações sobre as vendas de um produto, num determinado mês, globalmente.
