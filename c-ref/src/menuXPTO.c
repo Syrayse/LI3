@@ -130,12 +130,58 @@ static void menu()
     printf("	12. Produtos em que um cliente gastou mais dinheiro.		0. Sair.\n\n");
 }
 
-int main()
-
+static SGV build_sgv()
 {
-    menuXPTO = build;
+}
 
-    menu_run;
+static void free_sgv(SGV s)
+{
+}
 
-    destroy(menu);
+static void menu_query1(SGV s)
+{
+}
+
+static void menu_query2(SGV s)
+{
+}
+
+static void menu_query3(SGV s)
+{
+}
+
+static void menu_query4(SGV s)
+{
+}
+
+static void menu_query5(SGV s)
+{
+}
+
+static void menu_query6(SGV s)
+{
+}
+
+static void menu_query7(SGV s)
+{
+}
+
+static void menu_query8(SGV s)
+{
+}
+
+static void menu_query9(SGV s)
+{
+}
+
+static void menu_query10(SGV s)
+{
+}
+
+static void menu_query11(SGV s)
+{
+}
+
+static void menu_query12(SGV s)
+{
 }
