@@ -1,3 +1,8 @@
+/**
+ * @file Controls.c
+ * \brief Ficheiro de código com todas as funções necessárias para interagir com o menu.
+ */
+
 #include "Controls.h"
 #include "TAD_List.h"
 #include <stdlib.h>
@@ -15,7 +20,7 @@ int comunicaExt(int status);
 void pMess(char *message);
 void NaoVende(int i, int j);
 void NaoComp(int i, int j);
-void pMatriz(int **mat, char *cod);
+void pMatriz(int **mat);
 void intMeses(int m1, int m2, int vendas, double fat);
 void filiais(int i, int *fils[], double *dfils[]);
 void geral(int *geral, double *dgeral);

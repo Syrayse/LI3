@@ -9,6 +9,11 @@
 #include "TAD_List.h"
 
 /**
+ * \brief Imprime o menu atual.
+ */
+void menu();
+
+/**
  * \brief Obtém a diretoria do ficheiro das vendas.
 */
 void getDirVendas(int *lido, char *vend);
