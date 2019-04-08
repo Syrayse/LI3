@@ -40,7 +40,7 @@ void printTop(gpointer e);
 
 void show_cpu_time(clock_t time)
 {
-	printf("CPU time: %lf\n", ((double)(time)) / CLOCKS_PER_SEC);
+	printf("\tCPU time: %lf\n", ((double)(time)) / CLOCKS_PER_SEC);
 }
 
 void menu()

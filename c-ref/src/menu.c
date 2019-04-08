@@ -279,6 +279,8 @@ static void menu_query2(SGV s)
         s->elapsed += end - start;
 
         controla(l, printReg);
+
+        list_destroy(l);
     }
     else
         pMess("\tInput inválido\n");
@@ -349,6 +351,7 @@ static void menu_query4(SGV s)
         s->elapsed += end - start;
         NaoVende(list_size(l), modo);
         controla(l, printReg);
+        list_destroy(l);
     }
     else
         pMess("\tInput inválido");
@@ -363,6 +366,7 @@ static void menu_query5(SGV s)
     end = clock();
     s->elapsed += end - start;
     controla(l, printReg);
+    list_destroy(l);
 }
 
 static void menu_query6(SGV s)
@@ -440,6 +444,7 @@ static void menu_query9(SGV s)
         end = clock();
         s->elapsed += end - start;
         controla(l, printReg);
+        list_destroy(l);
     }
 }
 
@@ -461,6 +466,7 @@ static void menu_query10(SGV s)
         end = clock();
         s->elapsed += end - start;
         controla(l, printReg);
+        list_destroy(l);
     }
 }
 
@@ -477,6 +483,7 @@ static void menu_query11(SGV s)
         end = clock();
         s->elapsed += end - start;
         controla(l, printTop);
+        list_destroy(l);
     }
     else
         pMess("\tInsira um número positivo");
@@ -497,6 +504,7 @@ static void menu_query12(SGV s)
         end = clock();
         s->elapsed += end - start;
         controla(l, printReg);
+        list_destroy(l);
     }
     else
         pMess("\tInput inválido");
