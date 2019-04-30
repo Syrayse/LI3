@@ -1,48 +1,34 @@
-import java.util.Objects;
+import java.io.Serializable;
 
-public class Cliente {
+public class Cliente implements ICliente, Comparable<Cliente>, Serializable {
 
-    private String clientCode;
+    private String codigo;
 
-    public Cliente(String clientCode) {
-        this.clientCode = clientCode;
+    public Cliente() {
+        codigo = "";
     }
 
-    public Cliente(Cliente cliente) {
-        this.clientCode = cliente.getClientCode();
+    public Cliente(String codigo) {
+        this.codigo = codigo;
     }
 
-    public String getClientCode() {
-        return this.clientCode;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setClientCode(String clientCode) {
-        this.clientCode = clientCode;
+    public int compareTo(Cliente c) {
+        return this.codigo.compareTo(c.getCodigo());
     }
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Cliente{");
-        sb.append("clientCode='").append(this.clientCode).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cliente cliente = (Cliente) o;
-        return this.clientCode.equals(cliente.clientCode);
+        return codigo.equals(cliente.getCodigo());
     }
 
-    @Override
     public int hashCode() {
-        return this.clientCode.hashCode();
+        return codigo.hashCode();
     }
 
-    @Override
-    public Cliente clone() {
-        return new Cliente(this);
-    }
 }

@@ -1,46 +1,33 @@
-public class Produto {
+import java.io.Serializable;
 
-    private String productCode;
+public class Produto implements IProduto, Comparable<Produto>, Serializable {
 
-    public Produto(String productCode) {
-        this.productCode = productCode;
+    private String codigo;
+
+    public Produto() {
+        codigo = "";
     }
 
-    public Produto(Produto produto) {
-        this.productCode = produto.getProductCode();
+    public Produto(String codigo) {
+        this.codigo = codigo;
     }
 
-    public String getProductCode() {
-        return this.productCode;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
+    public int compareTo(Produto p) {
+        return this.codigo.compareTo(p.getCodigo());
     }
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Produto{");
-        sb.append("productCode='").append(this.productCode).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Produto produto = (Produto) o;
-        return this.productCode.equals(produto.getProductCode());
+        return codigo.equals(produto.getCodigo());
     }
 
-    @Override
     public int hashCode() {
-        return this.productCode.hashCode();
-    }
-
-    @Override
-    public Produto clone() {
-        return new Produto(this);
+        return codigo.hashCode();
     }
 }
