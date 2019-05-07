@@ -1,3 +1,5 @@
+package GestVendas.Models.Catalogs;
+
 import java.util.Set;
 
 public interface ICatClientes {

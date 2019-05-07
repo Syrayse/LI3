@@ -1,3 +1,5 @@
+package GestVendas.Models.BaseModels;
+
 import java.io.Serializable;
 
 public class Produto implements IProduto, Comparable<Produto>, Serializable {

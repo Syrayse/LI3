@@ -1,0 +1,4 @@
+N_FILIAIS: 3
+PROD_PATH: ./files/Produtos.txt
+CLNT_PATH: ./files/Clientes.txt
+VENDAS_PATH: ./files/Vendas_1M.txt

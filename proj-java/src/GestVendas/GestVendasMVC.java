@@ -1,4 +1,6 @@
 // Versao 1 do professor Mário Martins
+package GestVendas;
+
 import static java.lang.System.out;
 
 public class GestVendasMVC {

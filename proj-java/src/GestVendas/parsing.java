@@ -1,3 +1,5 @@
+package GestVendas;
+
 public class parsing {
     public static void main(String[] args) {
         String phrase = "the music made   it   hard      to        concentrate";

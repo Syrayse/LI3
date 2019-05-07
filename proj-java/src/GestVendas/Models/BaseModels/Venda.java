@@ -1,3 +1,5 @@
+package GestVendas.Models.BaseModels;
+
 import java.io.Serializable;
 
 public class Venda implements IVenda, Serializable {

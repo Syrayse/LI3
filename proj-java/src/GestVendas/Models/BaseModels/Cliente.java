@@ -1,3 +1,5 @@
+package GestVendas.Models.BaseModels;
+
 import java.io.Serializable;
 
 public class Cliente implements ICliente, Comparable<Cliente>, Serializable {

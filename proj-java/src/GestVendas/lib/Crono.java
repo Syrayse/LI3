@@ -16,7 +16,10 @@
  * @author FMM 
  * @version (a version number or a date)
  */
+package GestVendas.lib;
+
 import static java.lang.System.nanoTime;
+
 public class Crono {
 
   private static long inicio = 0L;
