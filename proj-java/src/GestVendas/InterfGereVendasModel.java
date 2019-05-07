@@ -14,10 +14,10 @@ public interface InterfGereVendasModel {
     Pair<Integer,Integer> getVendasInfo(int mes, int filial);
 
     // Q3
-    InfoMensalCliente GetInfoMensalCliente(String clientCode);
+    InfoMensal getInfoMensalCliente(String clientCode);
 
     // Q4
-    InfoMensalProd getInfoMensalProd(String prodCode);
+    InfoMensal getInfoMensalProd(String prodCode);
 
     // Q5
     TreeSet<Pair<String,Integer>> getTopProdutosMaisComprados(String clientCode);
