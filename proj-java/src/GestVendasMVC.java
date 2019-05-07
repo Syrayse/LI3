@@ -1,0 +1,42 @@
+// Versao 1 do professor Mário Martins
+import static java.lang.System.out;
+
+public class GestVendasMVC {
+
+    public static InterfGereVendasModel createData() {
+        // ...
+        return null;
+    }
+
+    public static void main (String[] args) {
+        // O modelo (estruturas de dados)
+        /*
+		este deve conte ro caTALOGO DE PRODUTOS CLIENTES, faturacao e tratamento por filiais.
+		a createData deve inicializar todas estas.
+
+        */
+        InterfGereVendasModel model = createData();
+
+        if(model == null) {
+            out.println("Error... ");
+            System.exit(-1);
+        }
+
+        // O "menu"
+        InterfGereVendasView view = new GereVendasView();
+
+        // O controlador
+        InterfGereVendasController control = new GereVendasController();
+
+        // é preciso atribuir ao controlador modelos e views, para 
+        /*
+		O controlador internamente deve conter os models e views com que vai trabalhar.
+		Deve ser como está abaixo para que nao seja tao rigido e para se poder alterar a qualquer momento
+        */
+        control.setModel(model);
+        control.setView(view);
+        control.startController();
+        System.exit(0);
+    }
+
+}
