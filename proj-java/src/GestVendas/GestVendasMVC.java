@@ -35,8 +35,8 @@ public class GestVendasMVC {
 		O controlador internamente deve conter os models e views com que vai trabalhar.
 		Deve ser como está abaixo para que nao seja tao rigido e para se poder alterar a qualquer momento
         */
-        control.setModel(model);
-        control.setView(view);
+        control.set(model);
+        control.set(view);
         control.startController();
         System.exit(0);
     }

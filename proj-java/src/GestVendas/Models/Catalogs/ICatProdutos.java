@@ -1,5 +1,7 @@
 package GestVendas.Models.Catalogs;
 
+import GestVendas.Models.BaseModels.IProduto;
+
 import java.util.Set;
 
 public interface ICatProdutos {

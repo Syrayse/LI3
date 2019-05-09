@@ -14,7 +14,7 @@
  * @author F. M�rio Martins
  * @version 1.0 (6/2006)
  */
-package GestVendas.Views
+package GestVendas.Views;
 
 import static java.lang.System.out;
 import static java.lang.System.in;

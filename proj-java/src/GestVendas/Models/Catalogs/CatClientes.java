@@ -1,11 +1,16 @@
 package GestVendas.Models.Catalogs;
 
+import GestVendas.Models.BaseModels.ICliente;
+
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class CatClientes implements ICatClientes, Serializable {
 
-    private Map<String,ICliente> clientes;
+    private Map<String, ICliente> clientes;
 
     public CatClientes() {
         clientes = new HashMap<>();
@@ -16,7 +21,7 @@ public class CatClientes implements ICatClientes, Serializable {
     }
 
     public ICatClientes insereCliente(ICliente c) {
-        clientes.add(c);
+        clientes.put(c.getCodigo(),c);
         return this;
     }
 
@@ -28,7 +33,7 @@ public class CatClientes implements ICatClientes, Serializable {
         return clientes.containsKey(clientCode);
     }
 
-    public Set<String> getClientes() {
+    public Set<String> getCodigoClientes() {
         return new HashSet<String>(clientes.keySet());
     }
 

@@ -1,5 +1,11 @@
 package GestVendas;
 
+import java.util.TreeSet;
+
+import GestVendas.Models.AuxModels.InterfInfoMensal;
+import GestVendas.Models.AuxModels.InterfStatInfo;
+import GestVendas.lib.Par;
+
 public interface InterfGereVendasModel {
 
     InterfGereVendasModel setCatProdutos(String file);
@@ -10,32 +16,32 @@ public interface InterfGereVendasModel {
     TreeSet<String> getProdutosNaoVendidos();
 
     // Q2
-    Pair<Integer,Integer> getVendasInfo(int mes);
-    Pair<Integer,Integer> getVendasInfo(int mes, int filial);
+    Par<Integer,Integer> getVendasInfo(int mes);
+    Par<Integer,Integer> getVendasInfo(int mes, int filial);
 
     // Q3
-    InfoMensal getInfoMensalCliente(String clientCode);
+    InterfInfoMensal getInfoMensalCliente(String clientCode);
 
     // Q4
-    InfoMensal getInfoMensalProd(String prodCode);
+    InterfInfoMensal getInfoMensalProd(String prodCode);
 
     // Q5
-    TreeSet<Pair<String,Integer>> getTopProdutosMaisComprados(String clientCode);
+    TreeSet<Par<String,Integer>> getTopProdutosMaisComprados(String clientCode);
 
     // Q6
-    TreeSet<Pair<String,Integer>> getTopNProdutosMaisVendidos(int N);
+    TreeSet<Par<String,Integer>> getTopNProdutosMaisVendidos(int N);
 
     // Q7
     TreeSet<String> getTop3Compradores();
 
     // Q8
-    TreeSet<Pair<String,Integer>> getTopNVersatileClientes(int N);
+    TreeSet<Par<String,Integer>> getTopNVersatileClientes(int N);
 
     // Q9
-    TreeSet<Pair<String,Double>> getMelhoresClientes(String prodCode);
+    TreeSet<Par<String,Double>> getMelhoresClientes(String prodCode);
 
     // Q10
-    StatInfo getFaturacaoTotal(String prodCode);
+    InterfStatInfo getFaturacaoTotal(String prodCode);
 
 
     int getNFiliais();

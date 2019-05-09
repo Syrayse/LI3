@@ -1,11 +1,16 @@
 package GestVendas.Models.Catalogs;
 
+import GestVendas.Models.BaseModels.IProduto;
+
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class CatProdutos implements ICatProdutos, Serializable {
 
-    private Map<String,IProduto> produtos;
+    private Map<String, IProduto> produtos;
 
     public CatProdutos() {
         produtos = new TreeMap<>();
@@ -16,7 +21,7 @@ public class CatProdutos implements ICatProdutos, Serializable {
     }
 
     public ICatProdutos insereProduto(IProduto p) {
-        produtos.add(p);
+        produtos.put(p.getCodigo(),p);
         return this;
     }
 
@@ -28,7 +33,7 @@ public class CatProdutos implements ICatProdutos, Serializable {
         return produtos.containsKey(prodCode);
     }
 
-    public Set<String> getprodutos() {
+    public Set<String> getCodigoProdutos() {
         return new TreeSet<String>(produtos.keySet());
     }
 
