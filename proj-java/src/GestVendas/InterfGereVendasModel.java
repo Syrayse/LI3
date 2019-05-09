@@ -23,22 +23,21 @@ public interface InterfGereVendasModel {
     TreeSet<Pair<String,Integer>> getTopProdutosMaisComprados(String clientCode);
 
     // Q6
-    TreeSet<Pair<IProduto,Integer>> getTopNProdutosMaisVendidos(int N);
+    TreeSet<Pair<String,Integer>> getTopNProdutosMaisVendidos(int N);
 
     // Q7
-    TreeSet<ICliente> getTop3Compradores();
+    TreeSet<String> getTop3Compradores();
 
     // Q8
-    TreeSet<Pair<ICliente,Integer>> getTopNVersatileClientes(int N);
+    TreeSet<Pair<String,Integer>> getTopNVersatileClientes(int N);
 
     // Q9
-    TreeSet<Pair<ICliente,Double>> getMelhoresClientes(String prodCode);
+    TreeSet<Pair<String,Double>> getMelhoresClientes(String prodCode);
 
     // Q10
     StatInfo getFaturacaoTotal(String prodCode);
 
 
     int getNFiliais();
-    InterfGereVendasModel setNFiliais(int nFiliais);
 
 }
