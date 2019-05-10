@@ -4,7 +4,6 @@ import GestVendas.Models.BaseModels.IProduto;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -33,8 +32,8 @@ public class CatProdutos implements ICatProdutos, Serializable {
         return produtos.containsKey(prodCode);
     }
 
-    public Set<String> getCodigoProdutos() {
-        return new TreeSet<String>(produtos.keySet());
+    public TreeSet<String> getCodigoProdutos() {
+        return new TreeSet<>(produtos.keySet());
     }
 
 }

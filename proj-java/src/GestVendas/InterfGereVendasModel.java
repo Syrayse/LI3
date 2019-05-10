@@ -1,10 +1,10 @@
 package GestVendas;
 
-import java.util.TreeSet;
-
 import GestVendas.Models.AuxModels.InterfInfoMensal;
 import GestVendas.Models.AuxModels.InterfStatInfo;
 import GestVendas.lib.Par;
+
+import java.util.TreeSet;
 
 public interface InterfGereVendasModel {
 
@@ -13,11 +13,12 @@ public interface InterfGereVendasModel {
     InterfGereVendasModel setFaturacaoFilial(String file);
     
     // Q1
-    TreeSet<String> getProdutosNaoVendidos();
+    TreeSet<String> getProdutosNaoVendidos(); // X
 
     // Q2
     Par<Integer,Integer> getVendasInfo(int mes);
-    Par<Integer,Integer> getVendasInfo(int mes, int filial);
+
+    Par<Integer, Integer> getVendasInfo(int mes, int filial); // X
 
     // Q3
     InterfInfoMensal getInfoMensalCliente(String clientCode);
@@ -29,7 +30,7 @@ public interface InterfGereVendasModel {
     TreeSet<Par<String,Integer>> getTopProdutosMaisComprados(String clientCode);
 
     // Q6
-    TreeSet<Par<String,Integer>> getTopNProdutosMaisVendidos(int N);
+    TreeSet<Par<String, Integer>> getTopNProdutosMaisDistintos(int N);
 
     // Q7
     TreeSet<String> getTop3Compradores();
