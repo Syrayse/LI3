@@ -22,15 +22,19 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     private IFaturacao faturacao;
     private List<IFilial> filiais;
 
-    public InterfGereVendasModel setCatProdutos(String file) {
+    public InterfGereVendasModel createData() {
         return null;
     }
 
-    public InterfGereVendasModel setCatClientes(String file) {
+    private InterfGereVendasModel setCatProdutos(String file) {
         return null;
     }
 
-    public InterfGereVendasModel setFaturacaoFilial(String file) {
+    private InterfGereVendasModel setCatClientes(String file) {
+        return null;
+    }
+
+    private InterfGereVendasModel setFaturacaoFilial(String file) {
         return null;
     }
 

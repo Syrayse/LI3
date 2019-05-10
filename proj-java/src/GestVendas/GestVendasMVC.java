@@ -5,11 +5,6 @@ import static java.lang.System.out;
 
 public class GestVendasMVC {
 
-    public static InterfGereVendasModel createData() {
-        // ...
-        return null;
-    }
-
     public static void main (String[] args) {
         // O modelo (estruturas de dados)
         /*
@@ -17,9 +12,9 @@ public class GestVendasMVC {
 		a createData deve inicializar todas estas.
 
         */
-        InterfGereVendasModel model = createData();
+        InterfGereVendasModel model = new GereVendasModel();
 
-        if(model == null) {
+        if (model.createData() == null) {
             out.println("Error... ");
             System.exit(-1);
         }

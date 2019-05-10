@@ -8,15 +8,12 @@ import java.util.TreeSet;
 
 public interface InterfGereVendasModel {
 
-    InterfGereVendasModel setCatProdutos(String file);
-    InterfGereVendasModel setCatClientes(String file);
-    InterfGereVendasModel setFaturacaoFilial(String file);
-    
+    InterfGereVendasModel createData();
     // Q1
     TreeSet<String> getProdutosNaoVendidos(); // X
 
     // Q2
-    Par<Integer,Integer> getVendasInfo(int mes);
+    Par<Integer, Integer> getVendasInfo(int mes); // X
 
     Par<Integer, Integer> getVendasInfo(int mes, int filial); // X
 
