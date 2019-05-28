@@ -1,5 +1,6 @@
 package GestVendas;
 
+import GestVendas.Exceptions.FilialInvalidException;
 import GestVendas.Models.AuxModels.InterfInfoMensal;
 import GestVendas.Models.AuxModels.InterfStatInfo;
 import GestVendas.Models.Catalogs.ICatClientes;
@@ -9,7 +10,7 @@ import GestVendas.Models.IFilial;
 import GestVendas.lib.Common;
 import GestVendas.lib.Par;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,30 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
         return null;
     }
 
+    public InterfGereVendasModel carregaEstado(String fich) throws IOException, ClassNotFoundException {
+        InterfGereVendasModel tmp = null;
+
+        FileInputStream fileIn = new FileInputStream(fich);
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+
+        tmp = (GereVendasModel) in.readObject();
+
+        in.close();
+        fileIn.close();
+
+        return tmp;
+    }
+
+    public void guardaEstado(String fich) throws IOException {
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fich));
+
+        out.writeObject(this);
+
+        out.flush();
+
+        out.close();
+    }
+
     // INTERROGACOES BELOW
 
     // Q1
@@ -60,9 +85,9 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
         return new Par<>(faturacao.getNumVendas(mes), clientSet.size());
     }
 
-    public Par<Integer,Integer> getVendasInfo(int mes, int filial) {
+    public Par<Integer, Integer> getVendasInfo(int mes, int filial) throws FilialInvalidException {
         if (!Common.intervaloInclusivo(filial, 1, filiais.size()))
-            return null;
+            throw new FilialInvalidException("A filial " + filial + " é inválida");
         IFilial f = filiais.get(filial - 1);
         return new Par<>(f.getNumVendas(mes), f.getNumClientes(mes));
     }
