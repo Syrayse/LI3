@@ -6,6 +6,14 @@ public interface InterfGereVendasView {
 
     void mainMenu();
 
+    void dynMenu();
+
+    void estMenu();
+
+    String getDiretoria(int i, String vendas);
+
+    int lerInt(String s);
+
     void imprime(String txt);
 
     void imprimeLinha(String line);

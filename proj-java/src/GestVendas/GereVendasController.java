@@ -1,7 +1,6 @@
 package GestVendas;
 
 import GestVendas.Views.Input;
-import GestVendas.lib.NavControl;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -30,8 +29,9 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         while (in) {
             view.clearScreen();
             view.mainMenu();
-            view.imprime("Insira a opçao que deseja: ");
-            i = Input.lerInt();
+            i = view.lerInt("Insira a opçao que deseja: ");
+            //view.imprime("Insira a opçao que deseja: ");
+            //i = Input.lerInt();
 
             switch (i) {
                 case 0:
@@ -62,8 +62,9 @@ public class GereVendasController implements InterfGereVendasController, Seriali
     }
 
     private void carregaFicheiroBin() {
-        view.imprimeLinha("Insira o nome do ficheiro do qual pretende carregar o modelo:");
-        String modelBin = Input.lerString();
+        String modelBin = view.getDiretoria(1, "guardar");
+        //view.imprimeLinha("Insira o nome do ficheiro do qual pretende carregar o modelo:");
+        //String modelBin = Input.lerString();
 
         try {
             model = model.carregaEstado(modelBin);
@@ -74,14 +75,43 @@ public class GereVendasController implements InterfGereVendasController, Seriali
     }
 
     private void guardaFicheiroBin() {
-        view.imprime("Indique o nome do ficheiro onde pretende guardar o modelo atual:");
-        String modelBin = Input.lerString();
+        String modelBin = view.getDiretoria(1, "guardar");
+        //view.imprime("Indique o nome do ficheiro onde pretende guardar o modelo atual:");
+        //String modelBin = Input.lerString();
 
         try {
             model.guardaEstado(modelBin);
             view.imprimeLinha("Informação guardada com sucesso!");
         } catch (IOException ioe) {
             view.imprimeLinha(ioe.getMessage());
+        }
+    }
+
+    private void carregaFicheiroTxt() {
+        String tmp;
+        try {
+            tmp = view.getDiretoria(0, "clientes");
+            //Carregar estrutura Clientes
+            view.imprimeLinha("Ficheiro carregado com sucesso!");
+        } catch (Exception ioe) {
+            view.imprimeLinha(ioe.getMessage());
+            return ;
+        }
+        try {
+            tmp = view.getDiretoria(0, "produtos");
+            //Carregar estrutura Produtos
+            view.imprimeLinha("Ficheiro carregado com sucesso!");
+        } catch (Exception ioe) {
+            view.imprimeLinha(ioe.getMessage());
+            return ;
+        }
+        try {
+            tmp = view.getDiretoria(0, "vendas");
+            //Carregar estrutura Vendas
+            view.imprimeLinha("Ficheiro carregado com sucesso!");
+        } catch (Exception ioe) {
+            view.imprimeLinha(ioe.getMessage());
+            return ;
         }
     }
 
@@ -99,9 +129,11 @@ public class GereVendasController implements InterfGereVendasController, Seriali
 
         while (in) {
             view.clearScreen();
-            view.mainMenu();
-            view.imprime("Insira a opçao que deseja: ");
-            i = Input.lerInt();
+            view.estMenu();
+            //view.mainMenu();
+            i = view.lerInt("Insira a opçao que deseja: ");
+            //view.imprime("Insira a opçao que deseja: ");
+            //i = Input.lerInt();
 
             switch (i) {
                 case 0:
@@ -128,9 +160,11 @@ public class GereVendasController implements InterfGereVendasController, Seriali
 
         while (in) {
             view.clearScreen();
-            view.mainMenu();
-            view.imprime("Insira a opçao que deseja: ");
-            i = Input.lerInt();
+            view.dynMenu();
+            //view.mainMenu();
+            i = view.lerInt("Insira a opçao que deseja: ");
+            //view.imprime("Insira a opçao que deseja: ");
+            //i = Input.lerInt();
 
             switch (i) {
                 case 0:
@@ -171,8 +205,9 @@ public class GereVendasController implements InterfGereVendasController, Seriali
             view.clearScreen();
             navigator.showPage();
             view.listOptions();
-            view.imprime("Insira a opçao que deseja: ");
-            i = Input.lerInt();
+            i = view.lerInt("Insira a opçao que deseja: ");
+            //view.imprime("Insira a opçao que deseja: ");
+            //i = Input.lerInt();
 
             switch (i) {
                 case 0:
@@ -190,5 +225,4 @@ public class GereVendasController implements InterfGereVendasController, Seriali
             }
         }
     }
-}
 }
