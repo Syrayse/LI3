@@ -2,7 +2,6 @@ package GestVendas;
 
 import GestVendas.lib.Crono;
 
-import static java.lang.System.out;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.System.out;
 
 public class TesteVendas {
 
@@ -29,7 +30,6 @@ public class TesteVendas {
 
         return linhas;
     }
-
 
     public static void main(String[] args) {
         List<String> lines;

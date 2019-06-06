@@ -4,6 +4,8 @@ import GestVendas.Exceptions.ClienteInexistenteException;
 import GestVendas.Exceptions.FilialInvalidException;
 import GestVendas.Exceptions.InvalidConfigException;
 import GestVendas.Exceptions.ProdutoInexistenteException;
+import GestVendas.Models.AuxModels.IGlobalRep;
+import GestVendas.Models.AuxModels.IMonthlyRep;
 import GestVendas.Models.AuxModels.InterfInfoMensal;
 import GestVendas.Models.AuxModels.InterfStatInfo;
 import GestVendas.Models.Catalogs.CatClientes;
@@ -172,7 +174,74 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
         out.close();
     }
 
-    // INTERROGACOES BELOW
+    // Interrogacoes Estatisticas
+
+    // Q1
+    public String ultimoFicheiroVendas() {
+        return "";
+    }
+
+    // Q2
+    public int getNumVendasErradas() {
+        return 0;
+    }
+
+    // Q3
+    public int getNumProdutos() {
+        return 0;
+    }
+
+    // Q4
+    public int getNumProdutosComprados() {
+        return 0;
+    }
+
+    // Q5
+    public int getNumProdutosNaoComprados() {
+        return 0;
+    }
+
+    // Q6
+    public int getNumClientes() {
+        return 0;
+    }
+
+    // Q7
+    public int getNumClientesCompradores() {
+        return 0;
+    }
+
+    // Q8
+    public int getNumClientesNaoCompradores() {
+        return 0;
+    }
+
+    // Q9
+    public int getNumVendasZero() {
+        return 0;
+    }
+
+    // Q10
+    public double getFaturacao() {
+        return 0.0;
+    }
+
+    // Q11
+    public IMonthlyRep getComprasPorMes() {
+        return null;
+    }
+
+    // Q12
+    public IGlobalRep getFaturacaoPorMesFil() {
+        return null;
+    }
+
+    // Q13
+    public List<IMonthlyRep> getNumDistintosClienteMonthFil() {
+        return null;
+    }
+
+    // INTERROGACOES Dinamicas
 
     // Q1
     public TreeSet<String> getProdutosNaoVendidos() {

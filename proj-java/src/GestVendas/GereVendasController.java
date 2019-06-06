@@ -3,14 +3,18 @@ package GestVendas;
 import GestVendas.Exceptions.ClienteInexistenteException;
 import GestVendas.Exceptions.FilialInvalidException;
 import GestVendas.Exceptions.ProdutoInexistenteException;
+import GestVendas.Models.AuxModels.IGlobalRep;
+import GestVendas.Models.AuxModels.IMonthlyRep;
 import GestVendas.Models.AuxModels.InterfInfoMensal;
 import GestVendas.Views.Input;
 import GestVendas.lib.Common;
+import GestVendas.lib.Crono;
 import GestVendas.lib.NavControl;
 import GestVendas.lib.Par;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 public class GereVendasController implements InterfGereVendasController, Serializable {
 
@@ -118,7 +122,9 @@ public class GereVendasController implements InterfGereVendasController, Seriali
      * 4 - Número de distintos clientes em cada mês, filial a filial.
      */
     private void consultasEstatMenu() {
-        int i;
+        String tmp;
+        int i, n;
+        double it, v;
         boolean in = true;
 
         while (in) {
@@ -132,30 +138,113 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     in = false;
                     break;
                 case 1:
+                    Crono.start();
+                    tmp = model.ultimoFicheiroVendas();
+                    it = Crono.stop();
+                    view.imprimeLinha("Último ficheiro de vendas lido: " + tmp);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 2:
+                    Crono.start();
+                    n = model.getNumVendasErradas();
+                    it = Crono.stop();
+                    view.imprimeLinha("Número de vendas erradas: " + n);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 3:
+                    Crono.start();
+                    n = model.getNumProdutos();
+                    it = Crono.stop();
+                    view.imprimeLinha("Número de produtos: " + n);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 4:
+                    Crono.start();
+                    n = model.getNumProdutosComprados();
+                    it = Crono.stop();
+                    view.imprimeLinha("Número de produtos comprados: " + n);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 5:
+                    Crono.start();
+                    n = model.getNumProdutosNaoComprados();
+                    it = Crono.stop();
+                    view.imprimeLinha("Número de produtos não comprados: " + n);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 6:
+                    Crono.start();
+                    n = model.getNumClientes();
+                    it = Crono.stop();
+                    view.imprimeLinha("Número de clientes: " + n);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 7:
+                    Crono.start();
+                    n = model.getNumClientesCompradores();
+                    it = Crono.stop();
+                    view.imprimeLinha("Número de clientes que efetuaram compras:" + n);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 8:
+                    Crono.start();
+                    n = model.getNumClientesNaoCompradores();
+                    it = Crono.stop();
+                    view.imprimeLinha("Número de clientes que não efetuaram compras:" + n);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 9:
+                    Crono.start();
+                    n = model.getNumVendasZero();
+                    it = Crono.stop();
+                    view.imprimeLinha("Número de vendas a 0.0: " + n);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 10:
+                    Crono.start();
+                    v = model.getFaturacao();
+                    it = Crono.stop();
+                    view.imprimeLinha("Faturacao Total: " + v);
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 11:
+                    Crono.start();
+                    IMonthlyRep r = model.getComprasPorMes();
+                    it = Crono.stop();
+                    view.imprime(r.toString());
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 12:
+                    Crono.start();
+                    IGlobalRep rm = model.getFaturacaoPorMesFil();
+                    it = Crono.stop();
+                    view.imprime(rm.toString());
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 case 13:
+                    Crono.start();
+                    List<IMonthlyRep> l = model.getNumDistintosClienteMonthFil();
+                    it = Crono.stop();
+
+                    for (int j = 0; i < l.size(); i++) {
+                        view.imprimeLinha("FILIAL " + (j + 1));
+                        view.imprime(l.get(j).toString());
+                    }
+
+                    view.imprimeLinha("CPU Time: " + it);
+                    Input.lerString();
                     break;
                 default:
                     view.imprimeLinha("Opçao invalida!");
