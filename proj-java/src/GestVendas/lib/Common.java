@@ -2,6 +2,8 @@ package GestVendas.lib;
 
 public final class Common {
 
+    public static final int MES_MAX = 12;
+
     private Common() {
     }
 

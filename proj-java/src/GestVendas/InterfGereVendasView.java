@@ -12,8 +12,6 @@ public interface InterfGereVendasView {
 
     String getDiretoria(int i, String vendas);
 
-    int lerInt(String s);
-
     void imprime(String txt);
 
     void imprimeLinha(String line);

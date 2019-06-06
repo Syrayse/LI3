@@ -1,6 +1,7 @@
 package GestVendas;
 
 import GestVendas.Views.Input;
+import GestVendas.lib.NavControl;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,9 +30,7 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         while (in) {
             view.clearScreen();
             view.mainMenu();
-            i = view.lerInt("Insira a opçao que deseja: ");
-            //view.imprime("Insira a opçao que deseja: ");
-            //i = Input.lerInt();
+            i = 0;
 
             switch (i) {
                 case 0:
@@ -130,10 +129,7 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         while (in) {
             view.clearScreen();
             view.estMenu();
-            //view.mainMenu();
-            i = view.lerInt("Insira a opçao que deseja: ");
-            //view.imprime("Insira a opçao que deseja: ");
-            //i = Input.lerInt();
+            i = 0;
 
             switch (i) {
                 case 0:
@@ -161,10 +157,7 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         while (in) {
             view.clearScreen();
             view.dynMenu();
-            //view.mainMenu();
-            i = view.lerInt("Insira a opçao que deseja: ");
-            //view.imprime("Insira a opçao que deseja: ");
-            //i = Input.lerInt();
+            i = 0;
 
             switch (i) {
                 case 0:
@@ -205,10 +198,7 @@ public class GereVendasController implements InterfGereVendasController, Seriali
             view.clearScreen();
             navigator.showPage();
             view.listOptions();
-            i = view.lerInt("Insira a opçao que deseja: ");
-            //view.imprime("Insira a opçao que deseja: ");
-            //i = Input.lerInt();
-
+            i = 0;
             switch (i) {
                 case 0:
                     in = false;

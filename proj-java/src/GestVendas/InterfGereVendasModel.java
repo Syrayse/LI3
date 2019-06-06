@@ -1,13 +1,13 @@
 package GestVendas;
 
 import GestVendas.Exceptions.ClienteInexistenteException;
-import GestVendas.Exceptions.FilialInvalidException;
 import GestVendas.Exceptions.ProdutoInexistenteException;
 import GestVendas.Models.AuxModels.InterfInfoMensal;
 import GestVendas.Models.AuxModels.InterfStatInfo;
 import GestVendas.lib.Par;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.TreeSet;
 
 public interface InterfGereVendasModel {
@@ -24,7 +24,7 @@ public interface InterfGereVendasModel {
     // Q2
     Par<Integer, Integer> getVendasInfo(int mes); // X
 
-    Par<Integer, Integer> getVendasInfo(int mes, int filial) throws FilialInvalidException; // X
+    Par<Integer, Integer> getVendasInfo(int mes, int filial); // X
 
     // Q3
     InterfInfoMensal getInfoMensalCliente(String clientCode) throws ClienteInexistenteException;
@@ -36,19 +36,19 @@ public interface InterfGereVendasModel {
     TreeSet<Par<String, Integer>> getTopProdutosMaisComprados(String clientCode) throws ClienteInexistenteException;
 
     // Q6
-    TreeSet<Par<String, Integer>> getTopNProdutosMaisDistintos(int N);
+    List<Par<String, Integer>> getTopNProdutosMaisDistintos(int N);
 
     // Q7
-    TreeSet<String> getTop3Compradores();
+    List<String> getTop3Compradores(int filial);
 
     // Q8
     TreeSet<Par<String,Integer>> getTopNVersatileClientes(int N);
 
     // Q9
-    TreeSet<Par<String, Double>> getMelhoresClientes(String prodCode) throws ProdutoInexistenteException;
+    List<Par<String, Double>> getMelhoresClientes(String prodCode, int N) throws ProdutoInexistenteException;
 
     // Q10
-    InterfStatInfo getFaturacaoTotal(String prodCode) throws ProdutoInexistenteException;
+    InterfStatInfo getFaturacaoTotal(String prodCode) throws ProdutoInexistenteException; // X
 
 
     int getNFiliais();

@@ -1,13 +1,13 @@
 package GestVendas.lib;
 
 import java.util.Collection;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface INavControl<E> {
 
     INavControl changeDict(Collection<E> collection);
 
-    INavControl setPrintFunction(Consumer<E> print_f);
+    INavControl setPrintFunction(Function<E, String> print_f);
 
     INavControl proximaPagina();
 

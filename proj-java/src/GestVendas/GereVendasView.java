@@ -49,26 +49,26 @@ public class GereVendasView implements InterfGereVendasView, Serializable {
     }
 
     public void dynMenu() {
-        printHeader("Menu de consultas dinâmicas");
-        imprimeLinha(" 01. Lista ordenada alfabeticamente com os códigos dos produtos que nunca foram comprados.");  
-        imprimeLinha(" 02. Número global de vendas realizadas e número total de clientes distintos num determinado mês");
+        printHeader("Menu de Consultas Dinâmicas");
+        imprimeLinha(" 1: Lista ordenada alfabeticamente com os códigos dos produtos que nunca foram comprados.");
+        imprimeLinha(" 2: Número global de vendas realizadas e número total de clientes distintos num determinado mês");
         //Filial a filial ou total
-        imprimeLinha(" 03. Número total de compras e produtos comprados e total gasto para um determinado cliente, mês a mês.");
-        imprimeLinha(" 04. Número de vendas e clientes distintos e total faturado para um determinado produto, mês a mês.");
-        imprimeLinha(" 05. Lista de produtos mais comprados para um determinado clientes.");
-        imprimeLinha(" 06. Lista dos N produtos mais vendidos.");
-        imprimeLinha(" 07. Top 3 compradores.");
+        imprimeLinha(" 3: Número total de compras e produtos comprados e total gasto para um determinado cliente, mês a mês.");
+        imprimeLinha(" 4: Número de vendas e clientes distintos e total faturado para um determinado produto, mês a mês.");
+        imprimeLinha(" 5: Lista de produtos mais comprados para um determinado clientes.");
+        imprimeLinha(" 6: Lista dos N produtos mais vendidos.");
+        imprimeLinha(" 7: Top 3 compradores.");
         //Filial a filial ou total
-        imprimeLinha(" 08. Lista dos N clientes que compraram mais produtos distintos.");
-        imprimeLinha(" 09. Lista dos N clientes que mais compraram um determinado produto");
-        imprimeLinha(" 10. Faturação para um determinado produto.");
+        imprimeLinha(" 8: Lista dos N clientes que compraram mais produtos distintos.");
+        imprimeLinha(" 9: Lista dos N clientes que mais compraram um determinado produto");
+        imprimeLinha(" 10: Faturação para um determinado produto.");
         //Filial a filial e mês - Matriz
         imprimeLinha("0: Sair");
         printFooter();
     }
 
     public void estMenu() {
-        printHeader("Menu de consultas estatisticas");
+        printHeader("Menu de Consultas Estatisticas");
         imprimeLinha("1: Informação geral do ficheiro de vendas.");
         imprimeLinha("2: Número total de compras por mês.");
         imprimeLinha("3: Faturação total por mês, para cada filial e valor total global.");
@@ -89,11 +89,6 @@ public class GereVendasView implements InterfGereVendasView, Serializable {
         return null;
     }
 
-    public int lerInt(String s){
-        this.imprime(s);
-        return Input.lerInt();
-    }
-
     public void imprime(String text) {
         out.print(text);
     }
@@ -103,7 +98,7 @@ public class GereVendasView implements InterfGereVendasView, Serializable {
     }
 
     public void printHeader(String text) {
-        printHeader(text, RED);
+        printHeader(text, "RED");
     }
 
     public void printHeader(String text, String color) {
