@@ -35,7 +35,7 @@ public class NavControl<E> implements INavControl<E> {
         this.view = view;
     }
 
-    public NavControl(String title, List<E> list, Function<E, String> print_function, InterfGereVendasView view) {
+    public NavControl(String title, Collection<E> list, Function<E, String> print_function, InterfGereVendasView view) {
         this(list, print_function, view);
         this.title = title;
     }

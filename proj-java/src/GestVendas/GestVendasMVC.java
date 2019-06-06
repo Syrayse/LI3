@@ -1,8 +1,6 @@
 // Versao 1 do professor Mário Martins
 package GestVendas;
 
-import static java.lang.System.out;
-
 public class GestVendasMVC {
 
     public static void main (String[] args) {
@@ -13,11 +11,6 @@ public class GestVendasMVC {
 
         */
         InterfGereVendasModel model = new GereVendasModel();
-
-        if (model.createData() == null) {
-            out.println("Error... ");
-            System.exit(-1);
-        }
 
         // O "menu"
         InterfGereVendasView view = new GereVendasView();
@@ -33,7 +26,6 @@ public class GestVendasMVC {
         control.set(model);
         control.set(view);
         control.startController();
-        System.exit(0);
     }
 
 }

@@ -1,16 +1,25 @@
 package GestVendas;
 
 import GestVendas.Exceptions.ClienteInexistenteException;
+import GestVendas.Exceptions.FilialInvalidException;
+import GestVendas.Exceptions.InvalidConfigException;
 import GestVendas.Exceptions.ProdutoInexistenteException;
 import GestVendas.Models.AuxModels.InterfInfoMensal;
 import GestVendas.Models.AuxModels.InterfStatInfo;
+import GestVendas.Models.Catalogs.CatClientes;
+import GestVendas.Models.Catalogs.CatProdutos;
 import GestVendas.Models.Catalogs.ICatClientes;
 import GestVendas.Models.Catalogs.ICatProdutos;
+import GestVendas.Models.Faturacao;
+import GestVendas.Models.Filial;
 import GestVendas.Models.IFaturacao;
 import GestVendas.Models.IFilial;
+import GestVendas.lib.Common;
 import GestVendas.lib.Par;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -23,20 +32,120 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     private IFilial global;
     private List<IFilial> filiais;
 
-    public InterfGereVendasModel createData() {
-        return null;
+    public GereVendasModel() {
+        clientes = null;
+        produtos = null;
+        faturacao = null;
+        global = null;
+        filiais = null;
     }
 
-    private InterfGereVendasModel setCatProdutos(String file) {
-        return null;
+    public boolean isValid() {
+        return clientes != null;
     }
 
-    private InterfGereVendasModel setCatClientes(String file) {
-        return null;
+    public InterfGereVendasModel createData(String configs) throws IOException, InvalidConfigException {
+        List<String> lines = Files.readAllLines(Paths.get(configs));
+        String[] tokens;
+
+        if (lines.size() != 4) {
+            throw new InvalidConfigException("O ficheiro de configs possui mais argumentos do que o necessário!");
+        }
+
+        tokens = lines.get(0).split("[ :]+");
+
+        if (tokens.length != 2 || !tokens[0].equals("N_FILIAIS")) {
+            throw new InvalidConfigException("Os argumentos do ficheiro configs estão mal formatados!");
+        }
+
+        int n_filiais = Integer.parseInt(tokens[1]);
+
+        for (int i = 1; i < 4; i++) {
+            tokens = lines.get(i).split("[ :]+");
+
+            if (tokens.length != 2)
+                throw new InvalidConfigException("Os argumentos do ficheiro configs estão mal formatados!");
+
+            switch (tokens[0]) {
+                case "PROD_PATH":
+                    this.setProdutos(tokens[1]);
+                    break;
+                case "CLNT_PATH":
+                    this.setClientes(tokens[1]);
+                    break;
+                case "VENDAS_PATH":
+                    this.setVendas(tokens[1], n_filiais);
+                    break;
+                default:
+                    throw new InvalidConfigException("Os argumentos do ficheiros de configs possuem o identificador errado");
+            }
+
+        }
+
+        return this;
     }
 
-    private InterfGereVendasModel setFaturacaoFilial(String file) {
-        return null;
+    public InterfGereVendasModel setProdutos(String file) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(file));
+
+        produtos = new CatProdutos();
+
+        for (String entry : lines) {
+
+            if (validateProdutoCode(entry)) {
+                // Valido
+            } else {
+                // Invalido
+            }
+
+        }
+
+        return this;
+    }
+
+    public InterfGereVendasModel setClientes(String file) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(file));
+
+        clientes = new CatClientes();
+
+        for (String entry : lines) {
+
+            if (validateClienteCode(entry)) {
+                // Valido
+            } else {
+                // Invalido
+            }
+
+        }
+
+        return this;
+    }
+
+    public InterfGereVendasModel setVendas(String file, int n_filiais) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(file));
+        String[] tokens;
+
+        faturacao = new Faturacao();
+        global = new Filial();
+        filiais = new ArrayList<>(n_filiais);
+
+        for (int i = 0; i < n_filiais; i++)
+            filiais.add(i, new Filial());
+
+        // Processamento restante
+        for (String entry : lines) {
+
+            tokens = entry.split(" ");
+
+            if (validateVendaCode(tokens)) {
+                // Valido
+            } else {
+                // Invalido
+            }
+
+        }
+
+        return this;
     }
 
     public InterfGereVendasModel carregaEstado(String fich) throws IOException, ClassNotFoundException {
@@ -79,7 +188,8 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
         return new Par<>(faturacao.getNumVendas(mes), global.getNumClientes(mes));
     }
 
-    public Par<Integer, Integer> getVendasInfo(int mes, int filial) {
+    public Par<Integer, Integer> getVendasInfo(int mes, int filial) throws FilialInvalidException {
+        safeGuardFilial(filial);
         IFilial f = filiais.get(filial - 1);
 
         return new Par<>(f.getNumVendas(mes), f.getNumClientes(mes));
@@ -113,7 +223,8 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     }
 
     // Q7
-    public List<String> getTop3Compradores(int filial) {
+    public List<String> getTop3Compradores(int filial) throws FilialInvalidException {
+        safeGuardFilial(filial);
         return filiais.get(filial - 1).getTop3Compradores();
     }
 
@@ -134,5 +245,22 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     public int getNFiliais() {
         return filiais.size();
+    }
+
+    private void safeGuardFilial(int filial) throws FilialInvalidException {
+        if (!Common.intervaloInclusivo(filial, 1, filiais.size()))
+            throw new FilialInvalidException("A filial " + filial + " não se encontra no sistema!");
+    }
+
+    private boolean validateProdutoCode(String prodCode) {
+        return false;
+    }
+
+    private boolean validateClienteCode(String clienteCode) {
+        return false;
+    }
+
+    private boolean validateVendaCode(String[] vendaTokens) {
+        return false;
     }
 }
