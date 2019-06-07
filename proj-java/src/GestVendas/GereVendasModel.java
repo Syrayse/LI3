@@ -7,7 +7,6 @@ import GestVendas.Exceptions.ProdutoInexistenteException;
 import GestVendas.Models.AuxModels.IGlobalRep;
 import GestVendas.Models.AuxModels.IMonthlyRep;
 import GestVendas.Models.AuxModels.InterfInfoMensal;
-import GestVendas.Models.AuxModels.InterfStatInfo;
 import GestVendas.Models.Catalogs.CatClientes;
 import GestVendas.Models.Catalogs.CatProdutos;
 import GestVendas.Models.Catalogs.ICatClientes;
@@ -188,32 +187,32 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     // Q3
     public int getNumProdutos() {
-        return 0;
+        return produtos.size();
     }
 
     // Q4
     public int getNumProdutosComprados() {
-        return 0;
+        return faturacao.getNumProdutos();
     }
 
     // Q5
     public int getNumProdutosNaoComprados() {
-        return 0;
+        return this.getNumProdutos() - this.getNumProdutosComprados();
     }
 
     // Q6
     public int getNumClientes() {
-        return 0;
+        return clientes.size();
     }
 
     // Q7
     public int getNumClientesCompradores() {
-        return 0;
+        return global.getNumClientes();
     }
 
     // Q8
     public int getNumClientesNaoCompradores() {
-        return 0;
+        return this.getNumClientes() - this.getNumClientesCompradores();
     }
 
     // Q9
@@ -223,7 +222,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     // Q10
     public double getFaturacao() {
-        return 0.0;
+        return faturacao.getFaturacao();
     }
 
     // Q11
@@ -308,7 +307,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     }
 
     // Q10
-    public InterfStatInfo getFaturacaoTotal(String prodCode) throws ProdutoInexistenteException {
+    public IGlobalRep getFaturacaoTotal(String prodCode) throws ProdutoInexistenteException {
         return faturacao.getInfo(prodCode, filiais.size());
     }
 

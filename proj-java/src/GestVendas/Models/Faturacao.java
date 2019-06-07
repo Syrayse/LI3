@@ -1,7 +1,7 @@
 package GestVendas.Models;
 
 import GestVendas.Exceptions.ProdutoInexistenteException;
-import GestVendas.Models.AuxModels.InterfStatInfo;
+import GestVendas.Models.AuxModels.IGlobalRep;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,16 +13,24 @@ public class Faturacao implements IFaturacao, Serializable {
         return 0;
     }
 
+    public int getNumProdutos() {
+        return 0;
+    }
+
     public Set<String> getCodigoProdutos() {
         return null;
     }
 
 
-    public InterfStatInfo getInfo(String prodCode, int n_filiais) throws ProdutoInexistenteException {
+    public IGlobalRep getInfo(String prodCode, int n_filiais) throws ProdutoInexistenteException {
         return null;
     }
 
     public List<String> getNMaisVendidos(int N) {
         return null;
+    }
+
+    public double getFaturacao() {
+        return 0.0;
     }
 }

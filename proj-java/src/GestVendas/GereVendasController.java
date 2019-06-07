@@ -15,6 +15,7 @@ import GestVendas.lib.Par;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.TreeSet;
 
 public class GereVendasController implements InterfGereVendasController, Serializable {
 
@@ -257,6 +258,7 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         int i, n, mes;
         boolean in = true;
         String tmp;
+        double time;
 
         while (in) {
             view.clearScreen();
@@ -269,9 +271,13 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     in = false;
                     break;
                 case 1:
+                    Crono.start();
+                    TreeSet<String> t1 = model.getProdutosNaoVendidos();
+                    view.imprimeLinha("CPU time: " + Crono.stop());
+                    Input.lerString();
                     this.useNavControl(new NavControl<>(
                             "Produtos Nunca Comprados",
-                            model.getProdutosNaoVendidos(),
+                            t1,
                             s -> s,
                             view
                     ));
@@ -288,14 +294,17 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     n = Input.lerInt();
                     try {
                         Par<Integer, Integer> res;
+                        Crono.start();
                         if (n == 0)
                             res = model.getVendasInfo(mes);
                         else
                             res = model.getVendasInfo(mes, n);
+                        time = Crono.stop();
                         view.imprimeLinha(String.format(
                                 "Número global de vendas = %d\nNúmero total de clientes distintos = %d",
                                 res.getKey(), res.getValue()
                         ));
+                        view.imprimeLinha("CPU Time: " + time);
                     } catch (Exception e) {
                         view.imprimeLinha(e.getMessage());
                     }
@@ -306,10 +315,13 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     view.imprimeLinha("Insira o cliente que pretende verificar:");
                     tmp = Input.lerString();
                     try {
+                        Crono.start();
                         InterfInfoMensal iim = model.getInfoMensalCliente(tmp);
+                        time = Crono.stop();
                         view.printHeader("Informação Mensal do Cliente " + tmp, "BLUE");
                         view.imprimeLinha(iim.toString());
                         view.printFooter();
+                        view.imprimeLinha("CPU Time: " + time);
                     } catch (ClienteInexistenteException cie) {
                         view.imprimeLinha(cie.getMessage());
                     }
@@ -320,10 +332,13 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     view.imprimeLinha("Insira o produto que pretende verificar:");
                     tmp = Input.lerString();
                     try {
+                        Crono.start();
                         InterfInfoMensal iim = model.getInfoMensalProd(tmp);
+                        time = Crono.stop();
                         view.printHeader("Informação Mensal do Produto " + tmp, "BLUE");
                         view.imprimeLinha(iim.toString());
                         view.printFooter();
+                        view.imprimeLinha("CPU Time: " + time);
                     } catch (ProdutoInexistenteException pie) {
                         view.imprimeLinha(pie.getMessage());
                     }
@@ -333,9 +348,13 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     view.imprimeLinha("Insira o cliente que pretende verificar:");
                     tmp = Input.lerString();
                     try {
+                        Crono.start();
+                        TreeSet<Par<String, Integer>> t2 = model.getTopProdutosMaisComprados(tmp);
+                        view.imprimeLinha("CPU Time: " + Crono.stop());
+                        Input.lerString();
                         this.useNavControl(new NavControl<>(
                                 "Produtos Mais Comprados do Cliente " + tmp,
-                                model.getTopProdutosMaisComprados(tmp),
+                                t2,
                                 p -> String.format("%s, unidades:%5d", p.getKey(), p.getValue()),
                                 view
                         ));
@@ -347,9 +366,15 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                 case 6:
                     view.imprimeLinha("Insira o nũmero máximo de elementos que pretende verificar:");
                     n = Input.lerInt();
+
+                    Crono.start();
+                    List<Par<String, Integer>> t3 = model.getTopNProdutosMaisDistintos(n);
+                    view.imprimeLinha("CPU Time: " + Crono.stop());
+                    Input.lerString();
+
                     this.useNavControl(new NavControl<>(
                             "Top " + n + " Produtos Mais Vendidos (anual)",
-                            model.getTopNProdutosMaisDistintos(n),
+                            t3,
                             s -> String.format("%s, clientes:%5d", s.getKey(), s.getValue()),
                             view
                     ));
@@ -357,10 +382,16 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                 case 7:
                     view.imprimeLinha("Indique a filial que pretende verificar: ");
                     n = Input.lerInt();
+
                     try {
+                        Crono.start();
+                        List<String> t4 = model.getTop3Compradores(n);
+                        view.imprimeLinha("CPU Time: " + Crono.stop());
+                        Input.lerString();
+
                         this.useNavControl(new NavControl<>(
                                 "Top 3 Maiores Compradores na Filial " + n,
-                                model.getTop3Compradores(n),
+                                t4,
                                 s -> s,
                                 view
                         ));
@@ -372,9 +403,15 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                 case 8:
                     view.imprimeLinha("Insira o nũmero máximo de elementos que pretende verificar:");
                     n = Input.lerInt();
+
+                    Crono.start();
+                    TreeSet<Par<String, Integer>> t5 = model.getTopNVersatileClientes(n);
+                    view.imprimeLinha("CPU Time: " + Crono.stop());
+                    Input.lerString();
+
                     this.useNavControl(new NavControl<>(
                             "Top " + n + " Clientes de Produtos Distintos",
-                            model.getTopNVersatileClientes(n),
+                            t5,
                             p -> String.format("%s, distintos:%5d", p.getKey(), p.getValue()),
                             view
                     ));
@@ -384,10 +421,16 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     tmp = Input.lerString();
                     view.imprimeLinha("Insira o nũmero máximo de elementos:");
                     n = Input.lerInt();
+
                     try {
+                        Crono.start();
+                        List<Par<String, Double>> t6 = model.getMelhoresClientes(tmp, n);
+                        view.imprimeLinha("CPU Time: " + Crono.stop());
+                        Input.lerString();
+
                         this.useNavControl(new NavControl<>(
                                 "Top " + n + " Clientes de " + tmp,
-                                model.getMelhoresClientes(tmp, n),
+                                t6,
                                 p -> p.getKey() + String.format(", gastou:%5.2f", p.getValue()),
                                 view
                         ));
@@ -401,7 +444,13 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     view.imprimeLinha("Insira o produto que pretende verificar:");
                     tmp = Input.lerString();
                     try {
-                        view.imprimeLinha(model.getFaturacaoTotal(tmp).toString());
+                        Crono.start();
+                        IGlobalRep t7 = model.getFaturacaoTotal(tmp);
+                        Crono.stop();
+                        view.imprimeLinha("CPU Time: " + Crono.stop());
+                        Input.lerString();
+
+                        view.imprimeLinha(t7.toString());
                     } catch (ProdutoInexistenteException ex) {
                         view.imprimeLinha(ex.getMessage());
                     }

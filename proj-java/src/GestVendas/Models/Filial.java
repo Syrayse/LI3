@@ -7,7 +7,6 @@ import GestVendas.lib.Par;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 public class Filial implements IFilial, Serializable {
@@ -20,16 +19,16 @@ public class Filial implements IFilial, Serializable {
         return 0;
     }
 
+    public int getNumClientes() {
+        return 0;
+    }
+
     public int getNumClientes(int mes) {
         return 0;
     }
 
     public int getNumClientes(String prodCode) {
         return 0;
-    }
-
-    public Set<String> getClientes(int mes) {
-        return null;
     }
 
     public List<String> getTop3Compradores() {
