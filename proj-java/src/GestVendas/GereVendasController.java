@@ -500,10 +500,14 @@ public class GereVendasController implements InterfGereVendasController, Seriali
     private void createDataMenu() {
         view.imprimeLinha("Indique o ficheiro de configurações que pretende carregar:");
         String configs = Input.lerString();
+        double tmp;
 
         try {
+            Crono.start();
             model.createData(configs);
+            tmp = Crono.stop();
             view.imprimeLinha("Ficheiro " + configs + " carregado com sucesso!");
+            view.imprimeLinha("CPU Time: " + tmp);
         } catch (Exception exc) {
             view.imprimeLinha(exc.getMessage());
             view.imprimeLinha("Ocorreu erro ao carregar ficheiro de configurações.");
@@ -517,6 +521,8 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         InterfGereVendasModel m = new GereVendasModel();
         String clientes, produtos, vendas;
         int n_filiais;
+        double tmp;
+
 
         view.imprimeLinha("Indique o numero de filiais desejado:");
         n_filiais = Input.lerInt();
@@ -531,9 +537,18 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         vendas = Input.lerString();
 
         try {
+            Crono.start();
             m.setClientes(clientes);
+            view.imprimeLinha("CPU Time para Clientes: " + Crono.stop());
+
+            Crono.start();
             m.setProdutos(produtos);
+            view.imprimeLinha("CPU Time para Produtos: " + Crono.stop());
+
+            Crono.start();
             m.setVendas(vendas, n_filiais);
+            view.imprimeLinha("CPU Time para Vendas: " + Crono.stop());
+
             view.imprimeLinha("Ficheiros carregados com sucesso!");
             view.imprimeLinha("Informação sobre os ficheiros carregados!:");
 

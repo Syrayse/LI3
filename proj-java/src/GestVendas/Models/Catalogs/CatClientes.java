@@ -34,7 +34,7 @@ public class CatClientes implements ICatClientes, Serializable {
     }
 
     public Set<String> getCodigoClientes() {
-        return new HashSet<String>(clientes.keySet());
+        return new HashSet<>(clientes.keySet());
     }
 
 }

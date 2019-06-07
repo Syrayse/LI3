@@ -22,6 +22,17 @@ public class Venda implements IVenda, Serializable {
         filial = -1;
     }
 
+    public Venda(String[] tokens) {
+        this(tokens[0],
+                Double.parseDouble(tokens[1]),
+                Integer.parseInt(tokens[2]),
+                tokens[3],
+                tokens[4],
+                Integer.parseInt(tokens[5]),
+                Integer.parseInt(tokens[6])
+        );
+    }
+
     public Venda(String codigoProduto, double preco, int unidades, String codigoPromo, String codigoCliente, int mes, int filial) {
         this.codigoProduto = codigoProduto;
         this.preco = preco;
