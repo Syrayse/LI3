@@ -19,6 +19,8 @@ import java.util.TreeSet;
 
 public class GereVendasController implements InterfGereVendasController, Serializable {
 
+    private static final String omissionFile = "gestVendas.dat";
+
     private InterfGereVendasModel model;
     private InterfGereVendasView view;
 
@@ -89,10 +91,17 @@ public class GereVendasController implements InterfGereVendasController, Seriali
     private void carregaFicheiroBin() {
         view.imprimeLinha("Insira o nome do ficheiro do qual pretende carregar o modelo:");
         String modelBin = Input.lerString();
+        double tmp;
+
+        if (modelBin.equals("") || modelBin.equals("\n"))
+            modelBin = omissionFile;
 
         try {
+            Crono.start();
             model = model.carregaEstado(modelBin);
-            view.imprimeLinha("Informação carrega com sucesso!");
+            tmp = Crono.stop();
+            view.imprimeLinha("Informação carregada com sucesso do ficheiro " + modelBin + "!");
+            view.imprimeLinha("CPU Time: " + tmp);
         } catch (Exception exc) {
             view.imprimeLinha(exc.getMessage());
         }
@@ -103,10 +112,17 @@ public class GereVendasController implements InterfGereVendasController, Seriali
     private void guardaFicheiroBin() {
         view.imprimeLinha("Indique o nome do ficheiro onde pretende guardar o modelo atual:");
         String modelBin = Input.lerString();
+        double tmp;
+
+        if (modelBin.equals("") || modelBin.equals("\n"))
+            modelBin = omissionFile;
 
         try {
+            Crono.start();
             model.guardaEstado(modelBin);
-            view.imprimeLinha("Informação guardada com sucesso!");
+            tmp = Crono.stop();
+            view.imprimeLinha("Informação guardada com sucesso  no ficheiro " + modelBin + " !");
+            view.imprimeLinha("CPU Time: " + tmp);
         } catch (IOException ioe) {
             view.imprimeLinha(ioe.getMessage());
         }
@@ -492,10 +508,14 @@ public class GereVendasController implements InterfGereVendasController, Seriali
     private void createDataMenu() {
         view.imprimeLinha("Indique o ficheiro de configurações que pretende carregar:");
         String configs = Input.lerString();
+        double tmp;
 
         try {
+            Crono.start();
             model.createData(configs);
+            tmp = Crono.stop();
             view.imprimeLinha("Ficheiro " + configs + " carregado com sucesso!");
+            view.imprimeLinha("CPU Time: " + tmp);
         } catch (Exception exc) {
             view.imprimeLinha(exc.getMessage());
             view.imprimeLinha("Ocorreu erro ao carregar ficheiro de configurações.");
@@ -509,6 +529,8 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         InterfGereVendasModel m = new GereVendasModel();
         String clientes, produtos, vendas;
         int n_filiais;
+        double tmp;
+
 
         view.imprimeLinha("Indique o numero de filiais desejado:");
         n_filiais = Input.lerInt();
@@ -523,9 +545,18 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         vendas = Input.lerString();
 
         try {
+            Crono.start();
             m.setClientes(clientes);
+            view.imprimeLinha("CPU Time para Clientes: " + Crono.stop());
+
+            Crono.start();
             m.setProdutos(produtos);
+            view.imprimeLinha("CPU Time para Produtos: " + Crono.stop());
+
+            Crono.start();
             m.setVendas(vendas, n_filiais);
+            view.imprimeLinha("CPU Time para Vendas: " + Crono.stop());
+
             view.imprimeLinha("Ficheiros carregados com sucesso!");
             view.imprimeLinha("Informação sobre os ficheiros carregados!:");
 

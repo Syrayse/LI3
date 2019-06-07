@@ -7,6 +7,10 @@ import GestVendas.Exceptions.ProdutoInexistenteException;
 import GestVendas.Models.AuxModels.IGlobalRep;
 import GestVendas.Models.AuxModels.IMonthlyRep;
 import GestVendas.Models.AuxModels.InterfInfoMensal;
+import GestVendas.Models.BaseModels.Cliente;
+import GestVendas.Models.BaseModels.IVenda;
+import GestVendas.Models.BaseModels.Produto;
+import GestVendas.Models.BaseModels.Venda;
 import GestVendas.Models.Catalogs.CatClientes;
 import GestVendas.Models.Catalogs.CatProdutos;
 import GestVendas.Models.Catalogs.ICatClientes;
@@ -27,6 +31,10 @@ import java.util.TreeSet;
 
 public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
+    private String ultimoVendas;
+    private int vendasErradas;
+    private int vendasZero;
+
     private ICatClientes clientes;
     private ICatProdutos produtos;
     private IFaturacao faturacao;
@@ -34,6 +42,9 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     private List<IFilial> filiais;
 
     public GereVendasModel() {
+        ultimoVendas = "";
+        vendasErradas = -1;
+        vendasZero = -1;
         clientes = null;
         produtos = null;
         faturacao = null;
@@ -94,9 +105,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
         for (String entry : lines) {
 
             if (validateProdutoCode(entry)) {
-                // Valido
-            } else {
-                // Invalido
+                produtos.insereProduto(new Produto(entry));
             }
 
         }
@@ -112,9 +121,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
         for (String entry : lines) {
 
             if (validateClienteCode(entry)) {
-                // Valido
-            } else {
-                // Invalido
+                clientes.insereCliente(new Cliente(entry));
             }
 
         }
@@ -125,6 +132,9 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     public InterfGereVendasModel setVendas(String file, int n_filiais) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(file));
         String[] tokens;
+
+        this.vendasZero = 0;
+        this.vendasErradas = 0;
 
         faturacao = new Faturacao();
         global = new Filial();
@@ -139,23 +149,28 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
             tokens = entry.split(" ");
 
             if (validateVendaCode(tokens)) {
-                // Valido
+                IVenda venda = new Venda(tokens);
+
+                // Fazer outras cenas
+
+                if (venda.getPreco() == 0.0)
+                    this.vendasZero++;
+
             } else {
-                // Invalido
+                this.vendasErradas++;
             }
 
         }
+
+        ultimoVendas = file;
 
         return this;
     }
 
     public InterfGereVendasModel carregaEstado(String fich) throws IOException, ClassNotFoundException {
-        InterfGereVendasModel tmp = null;
-
         FileInputStream fileIn = new FileInputStream(fich);
         ObjectInputStream in = new ObjectInputStream(fileIn);
-
-        tmp = (GereVendasModel) in.readObject();
+        InterfGereVendasModel tmp = (GereVendasModel) in.readObject();
 
         in.close();
         fileIn.close();
@@ -177,12 +192,12 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     // Q1
     public String ultimoFicheiroVendas() {
-        return "";
+        return ultimoVendas;
     }
 
     // Q2
     public int getNumVendasErradas() {
-        return 0;
+        return vendasErradas;
     }
 
     // Q3
@@ -217,7 +232,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     // Q9
     public int getNumVendasZero() {
-        return 0;
+        return vendasZero;
     }
 
     // Q10
@@ -321,14 +336,26 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     }
 
     private boolean validateProdutoCode(String prodCode) {
-        return false;
+        return prodCode.length() == 6 &&
+                Common.intervaloInclusivo(prodCode.charAt(0), 'A', 'Z') &&
+                Common.intervaloInclusivo(prodCode.charAt(1), 'A', 'Z') &&
+                Common.intervaloInclusivo(Integer.parseInt(prodCode.substring(2)), 1000, 9999);
     }
 
     private boolean validateClienteCode(String clienteCode) {
-        return false;
+        return clienteCode.length() == 5 &&
+                Common.intervaloInclusivo(clienteCode.charAt(0), 'A', 'Z') &&
+                Common.intervaloInclusivo(Integer.parseInt(clienteCode.substring(1)), 1000, 5000);
     }
 
     private boolean validateVendaCode(String[] vendaTokens) {
-        return false;
+        return vendaTokens.length == 7 &&
+                produtos.existeProduto(vendaTokens[0]) &&
+                Common.intervaloInclusivo(Double.parseDouble(vendaTokens[1]), 0.0, 999.99) &&
+                Common.intervaloInclusivo(Integer.parseInt(vendaTokens[2]), 1, 200) &&
+                (vendaTokens[3].equals("N") || vendaTokens[3].equals("P")) &&
+                clientes.existeCliente(vendaTokens[4]) &&
+                Common.intervaloInclusivo(Integer.parseInt(vendaTokens[5]), 1, Common.MES_MAX) &&
+                Common.intervaloInclusivo(Integer.parseInt(vendaTokens[6]), 1, getNFiliais());
     }
 }

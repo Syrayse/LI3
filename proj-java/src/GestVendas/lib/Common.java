@@ -11,4 +11,11 @@ public final class Common {
         return min <= x && x <= max;
     }
 
+    public static boolean intervaloInclusivo(char x, char min, char max) {
+        return min <= x && x <= max;
+    }
+
+    public static boolean intervaloInclusivo(double x, double min, double max) {
+        return min <= x && x <= max;
+    }
 }
