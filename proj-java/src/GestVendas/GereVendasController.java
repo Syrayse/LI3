@@ -19,6 +19,8 @@ import java.util.TreeSet;
 
 public class GereVendasController implements InterfGereVendasController, Serializable {
 
+    private static final String omissionFile = "gestVendas.dat";
+
     private InterfGereVendasModel model;
     private InterfGereVendasView view;
 
@@ -90,9 +92,12 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         view.imprimeLinha("Insira o nome do ficheiro do qual pretende carregar o modelo:");
         String modelBin = Input.lerString();
 
+        if (modelBin.equals("") || modelBin.equals("\n"))
+            modelBin = omissionFile;
+
         try {
             model = model.carregaEstado(modelBin);
-            view.imprimeLinha("Informação carrega com sucesso!");
+            view.imprimeLinha("Informação carregada com sucesso do ficheiro " + modelBin + "!");
         } catch (Exception exc) {
             view.imprimeLinha(exc.getMessage());
         }
@@ -104,9 +109,12 @@ public class GereVendasController implements InterfGereVendasController, Seriali
         view.imprimeLinha("Indique o nome do ficheiro onde pretende guardar o modelo atual:");
         String modelBin = Input.lerString();
 
+        if (modelBin.equals("") || modelBin.equals("\n"))
+            modelBin = omissionFile;
+
         try {
             model.guardaEstado(modelBin);
-            view.imprimeLinha("Informação guardada com sucesso!");
+            view.imprimeLinha("Informação guardada com sucesso  no ficheiro " + modelBin + " !");
         } catch (IOException ioe) {
             view.imprimeLinha(ioe.getMessage());
         }
