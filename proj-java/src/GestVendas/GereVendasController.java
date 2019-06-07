@@ -91,13 +91,17 @@ public class GereVendasController implements InterfGereVendasController, Seriali
     private void carregaFicheiroBin() {
         view.imprimeLinha("Insira o nome do ficheiro do qual pretende carregar o modelo:");
         String modelBin = Input.lerString();
+        double tmp;
 
         if (modelBin.equals("") || modelBin.equals("\n"))
             modelBin = omissionFile;
 
         try {
+            Crono.start();
             model = model.carregaEstado(modelBin);
+            tmp = Crono.stop();
             view.imprimeLinha("Informação carregada com sucesso do ficheiro " + modelBin + "!");
+            view.imprimeLinha("CPU Time: " + tmp);
         } catch (Exception exc) {
             view.imprimeLinha(exc.getMessage());
         }
@@ -108,13 +112,17 @@ public class GereVendasController implements InterfGereVendasController, Seriali
     private void guardaFicheiroBin() {
         view.imprimeLinha("Indique o nome do ficheiro onde pretende guardar o modelo atual:");
         String modelBin = Input.lerString();
+        double tmp;
 
         if (modelBin.equals("") || modelBin.equals("\n"))
             modelBin = omissionFile;
 
         try {
+            Crono.start();
             model.guardaEstado(modelBin);
+            tmp = Crono.stop();
             view.imprimeLinha("Informação guardada com sucesso  no ficheiro " + modelBin + " !");
+            view.imprimeLinha("CPU Time: " + tmp);
         } catch (IOException ioe) {
             view.imprimeLinha(ioe.getMessage());
         }
