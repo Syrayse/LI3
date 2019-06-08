@@ -33,6 +33,8 @@ public class MonthlyRep implements IMonthlyRep, Serializable {
     public IMonthlyRep addToMonth(int month, int val) {
         int curr = getMonth(month);
 
+        monthly.remove(month - 1);
+
         monthly.add(month - 1, curr + val);
 
         return this;

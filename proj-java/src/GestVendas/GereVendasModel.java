@@ -133,7 +133,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
         List<String> lines = Files.readAllLines(Paths.get(file));
         String[] tokens;
         String codeProd, codeCliente;
-        int quant, mes;
+        int quant, mes, fil;
         double rev;
 
         this.vendasZero = 0;
@@ -159,8 +159,10 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
                 quant = venda.getUnidades();
                 rev = venda.getReceita();
                 mes = venda.getMes();
+                fil = venda.getFilial();
 
                 global.insereVenda(codeCliente, codeProd, mes, quant, rev);
+                faturacao.insereVenda(codeProd, mes, quant, rev, fil);
                 filiais.get(venda.getFilial() - 1).insereVenda(codeCliente, codeProd, mes, quant, rev);
                 if (venda.getPreco() == 0.0)
                     this.vendasZero++;
