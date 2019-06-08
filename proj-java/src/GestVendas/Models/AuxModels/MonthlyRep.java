@@ -52,10 +52,10 @@ public class MonthlyRep implements IMonthlyRep, Serializable {
             sb.append(String.format("|    %2d    |", i + 1));
         }
 
-        sb.append("\n");
+        sb.append("\n\t\t\t");
 
         for (int i = 0; i < meses; i++) {
-            sb.append(String.format("   %8d   ", getMonth(i + 1)));
+            sb.append(String.format(" %8d \t", getMonth(i + 1)));
         }
 
         sb.append("\n");

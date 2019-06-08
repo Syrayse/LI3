@@ -251,7 +251,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     // Q11
     public IMonthlyRep getComprasPorMes() {
-        return null;
+        return global.getComprasMes();
     }
 
     // Q12
@@ -261,7 +261,12 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     // Q13
     public List<IMonthlyRep> getNumDistintosClienteMonthFil() {
-        return null;
+        List<IMonthlyRep> r = new ArrayList<>(filiais.size());
+
+        for (int i = 0; i < filiais.size(); i++)
+            r.add(i, filiais.get(i).getMonthRepDintis());
+
+        return r;
     }
 
     // INTERROGACOES Dinamicas
@@ -277,7 +282,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     // Q2
     public Par<Integer,Integer> getVendasInfo(int mes) {
-        return new Par<>(faturacao.getNumVendas(mes), global.getNumClientes(mes));
+        return new Par<>(global.getNumVendas(mes), global.getNumClientes(mes));
     }
 
     public Par<Integer, Integer> getVendasInfo(int mes, int filial) throws FilialInvalidException {

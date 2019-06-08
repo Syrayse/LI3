@@ -2,6 +2,7 @@ package GestVendas.Models;
 
 import GestVendas.Exceptions.ClienteInexistenteException;
 import GestVendas.Exceptions.ProdutoInexistenteException;
+import GestVendas.Models.AuxModels.IMonthlyRep;
 import GestVendas.Models.AuxModels.InterfInfoMensal;
 import GestVendas.lib.Par;
 
@@ -111,4 +112,18 @@ public interface IFilial {
      * @throws ProdutoInexistenteException Caso o produto não exista.
      */
     List<Par<String, Double>> getMelhoresClientes(String prodCode, int N) throws ProdutoInexistenteException;
+
+    /**
+     * Obter um estrutura que indica, por mes, o número de clientes distintos.
+     *
+     * @return Por mes, o número de clientes distintos.
+     */
+    IMonthlyRep getMonthRepDintis();
+
+    /**
+     * Obter uma estrutura que indica, por mes, o número de compras efetuadas.
+     *
+     * @return Por mes, o número de compras efetuadas.
+     */
+    IMonthlyRep getComprasMes();
 }

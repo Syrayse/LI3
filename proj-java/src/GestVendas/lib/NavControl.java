@@ -9,8 +9,8 @@ import java.util.function.Function;
 
 public class NavControl<E> implements INavControl<E> {
 
-    private static final int N_COLS = 4;
-    private static final int N_LINS = 5;
+    private static final int N_COLS = 2;
+    private static final int N_LINS = 10;
     private static final int N_PER_PAGE = N_COLS * N_LINS;
 
     private List<E> dict;
@@ -63,7 +63,7 @@ public class NavControl<E> implements INavControl<E> {
             return null;
         int perPage = NavControl.N_PER_PAGE;
 
-        if (end > size) {
+        if (end >= size) {
             page = 1;
 
             init = 0;
@@ -109,13 +109,14 @@ public class NavControl<E> implements INavControl<E> {
 
         StringBuilder content = new StringBuilder("");
         String line;
+        int p;
 
         view.printHeader(title, "BLUE");
 
-        for (int i = init; i < N_LINS && i < size; i++) {
+        for (int i = 0; i < N_LINS && i < size && i < (end - init + 1); i++) {
 
-            for (int j = 0; j < N_COLS && (j * N_LINS + i) < size; j++) {
-                line = String.format("%5d: %s\t", (j * N_LINS + i) + 1, print_function.apply(dict.get(j * N_LINS + i)));
+            for (int j = 0; j < N_COLS && (j * N_LINS + init + i) < end && (j * N_LINS + init + i) < size; j++) {
+                line = String.format("%5d: %s\t", (j * N_LINS + init + i) + 1, print_function.apply(dict.get(j * N_LINS + init + i)));
                 content.append(line);
             }
 

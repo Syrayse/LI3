@@ -255,7 +255,7 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     List<IMonthlyRep> l = model.getNumDistintosClienteMonthFil();
                     it = Crono.stop();
 
-                    for (int j = 0; i < l.size(); i++) {
+                    for (int j = 0; j < l.size(); j++) {
                         view.imprimeLinha("FILIAL " + (j + 1));
                         view.imprime(l.get(j).toString());
                     }

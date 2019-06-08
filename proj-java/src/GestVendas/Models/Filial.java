@@ -2,10 +2,7 @@ package GestVendas.Models;
 
 import GestVendas.Exceptions.ClienteInexistenteException;
 import GestVendas.Exceptions.ProdutoInexistenteException;
-import GestVendas.Models.AuxModels.IQuantMoney;
-import GestVendas.Models.AuxModels.InterfInfoMensal;
-import GestVendas.Models.AuxModels.QuantMoney;
-import GestVendas.Views.Input;
+import GestVendas.Models.AuxModels.*;
 import GestVendas.lib.Common;
 import GestVendas.lib.Par;
 
@@ -58,6 +55,8 @@ public class Filial implements IFilial, Serializable {
         sets.add(codProd);
         clientSide.put(codCliente, sets);
 
+        numVendas[mes - 1]++;
+
         return this;
     }
 
@@ -78,8 +77,8 @@ public class Filial implements IFilial, Serializable {
     }
 
     public int getNumClientes(int mes) {
-        return (int) clientSide.values().stream()
-                .filter(m -> m.stream().anyMatch(l -> !productSide.get(l).get(m)[mes - 1].isEmpty()))
+        return (int) clientSide.keySet().stream().filter(s -> clientSide.get(s).stream()
+                .anyMatch(l -> !productSide.get(l).get(s)[mes - 1].isEmpty()))
                 .count();
     }
 
@@ -101,9 +100,6 @@ public class Filial implements IFilial, Serializable {
                 }
         );
 
-        System.out.println("wtf");
-        Input.lerString();
-
         for (int i = 0; i < 3 && orde.size() > 0; i++) {
             list.add(orde.poll());
         }
@@ -113,18 +109,37 @@ public class Filial implements IFilial, Serializable {
 
     public InterfInfoMensal getInfoProduto(String prodCode) throws ProdutoInexistenteException {
         safeGuardProduto(prodCode);
+        InterfInfoMensal iim = new InfoMensal();
+        int meses = Common.MES_MAX;
 
-        return null;
+        productSide.get(prodCode).forEach(
+                (k, v) -> updateIIM(iim, v)
+        );
+
+        return iim;
     }
 
     public InterfInfoMensal getInfoCliente(String clientCode) throws ClienteInexistenteException {
         safeGuardCliente(clientCode);
-        return null;
+        InterfInfoMensal iim = new InfoMensal();
+
+        clientSide.get(clientCode).forEach(
+                s -> updateIIM(iim, getIQM(s, clientCode))
+        );
+
+        return iim;
     }
 
     public TreeSet<Par<String, Integer>> getClientesProductSum(String clientCode) throws ClienteInexistenteException {
         safeGuardCliente(clientCode);
-        return null;
+        Comparator<Par<String, Integer>> comparaQuant = (p1, p2) -> (-1) * Integer.compare(p1.getValue(), p2.getValue());
+        TreeSet<Par<String, Integer>> tree = new TreeSet<>(comparaQuant);
+
+        clientSide.get(clientCode).forEach(
+                s -> tree.add(new Par<>(s, getQuants(getIQM(s, clientCode))))
+        );
+
+        return tree;
     }
 
     public List<Par<String, Integer>> getTopNVersatileClientes(int N) {
@@ -147,7 +162,38 @@ public class Filial implements IFilial, Serializable {
 
     public List<Par<String, Double>> getMelhoresClientes(String prodCode, int N) throws ProdutoInexistenteException {
         safeGuardProduto(prodCode);
-        return null;
+
+        Comparator<Par<String, Double>> compGasto = (p1, p2) -> (-1) * Double.compare(p1.getValue(), p2.getValue());
+        PriorityQueue<Par<String, Double>> orde = new PriorityQueue<>(clientSide.size(), compGasto);
+        List<Par<String, Double>> list = new ArrayList<>(Math.min(N, clientSide.size()));
+
+        productSide.get(prodCode).forEach(
+                (k, v) -> orde.add(new Par<>(k, getReceita(v)))
+        );
+
+        for (int i = 0; i < N && orde.size() > 0; i++) {
+            list.add(orde.poll());
+        }
+
+        return list;
+    }
+
+    public IMonthlyRep getMonthRepDintis() {
+        IMonthlyRep r = new MonthlyRep();
+
+        for (int i = 0; i < Common.MES_MAX; i++)
+            r.addToMonth(i + 1, this.getNumClientes(i + 1));
+
+        return r;
+    }
+
+    public IMonthlyRep getComprasMes() {
+        IMonthlyRep r = new MonthlyRep();
+
+        for (int i = 0; i < Common.MES_MAX; i++)
+            r.addToMonth(i + 1, numVendas[i]);
+
+        return r;
     }
 
     private void safeGuardProduto(String prodCode) throws ProdutoInexistenteException {
@@ -191,6 +237,17 @@ public class Filial implements IFilial, Serializable {
 
     private IQuantMoney[] getIQM(String codProd, String codCliente) {
         return productSide.get(codProd).get(codCliente);
+    }
+
+    private void updateIIM(InterfInfoMensal iim, IQuantMoney[] v) {
+        int meses = Common.MES_MAX;
+        for (int i = 0; i < meses; i++) {
+            if (!v[i].isEmpty()) {
+                iim.insereQuant(i + 1, v[i].getQuantidade());
+                iim.insereReceita(i + 1, v[i].getReceita());
+                iim.insereQuandDis(i + 1, 1);
+            }
+        }
     }
 
 }
