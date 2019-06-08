@@ -246,7 +246,7 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     Crono.start();
                     IGlobalRep rm = model.getFaturacaoPorMesFil();
                     it = Crono.stop();
-                    view.imprime(rm.toString());
+                    view.imprimeLinha(rm.toString());
                     view.imprimeLinha("CPU Time: " + it);
                     Input.lerString();
                     break;

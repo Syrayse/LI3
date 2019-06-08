@@ -258,7 +258,7 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
 
     // Q12
     public IGlobalRep getFaturacaoPorMesFil() {
-        return null;
+        return faturacao.getOverall(filiais.size());
     }
 
     // Q13

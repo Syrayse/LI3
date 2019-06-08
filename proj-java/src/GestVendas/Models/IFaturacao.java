@@ -58,4 +58,12 @@ public interface IFaturacao {
      * @return A faturação total.
      */
     double getFaturacao();
+
+    /**
+     * Calcula uma estrutura com a estrutura de faturacao geral do sistema, por filial e total.
+     *
+     * @param n_filiais Filiais a considerar.
+     * @return Estrutura calculada.
+     */
+    IGlobalRep getOverall(int n_filiais);
 }

@@ -2,13 +2,13 @@ package GestVendas.Models;
 
 import GestVendas.Exceptions.ProdutoInexistenteException;
 import GestVendas.Models.AuxModels.FatProd;
+import GestVendas.Models.AuxModels.GlobalRep;
 import GestVendas.Models.AuxModels.IGlobalRep;
-import GestVendas.Models.AuxModels.MonthlyRep;
 import GestVendas.lib.Common;
+import GestVendas.lib.Par;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Faturacao implements IFaturacao, Serializable {
 
@@ -52,48 +52,34 @@ public class Faturacao implements IFaturacao, Serializable {
     }
 
     public int getNumProdutos() {
-        return productSideFat.size();
+        return produtos.size();
     }
 
     public Set<String> getCodigoProdutos() {
-        return productSideFat.keySet();
+        return produtos.keySet();
     }
 
     public IGlobalRep getInfo(String prodCode, int n_filiais) throws ProdutoInexistenteException {
-        IGlobalRep res = productSideFat.get(prodCode);
-
-
-        if (res == null) {
-            throw new ProdutoInexistenteException();
-        }
-
-        return res;
+        safeGuardProduto(prodCode);
+        IGlobalRep igr = new GlobalRep(n_filiais);
+        addToGlobal(igr, produtos.get(prodCode));
+        return igr;
     }
 
     public List<String> getNMaisVendidos(int N) {
-        Map<Integer, String> prods = new HashMap<>();
-        int v;
-        MonthlyRep mr;
+        Comparator<Par<String, Integer>> comp = (p1, p2) -> (-1) * Integer.compare(p1.getValue(), p2.getValue());
+        List<String> list = new ArrayList<>();
+        PriorityQueue<Par<String, Integer>> prio = new PriorityQueue<>(produtos.size(), comp);
 
-        for (Map.Entry entry : productSideVendas.entrySet()){
-            mr = (MonthlyRep) entry.getValue();
+        produtos.forEach(
+                (k, v) -> prio.add(new Par<>(k, sumQuants(v)))
+        );
 
-            v = 0;
-            for (int i = 1; i <= meses; i++) {
-                v += mr.getMonth(i);
-            }
-            String prod = (String) entry.getKey();
-            prods.put(v, prod);
+        for (int i = 0; i < N && prio.size() > 0; i++) {
+            list.add(i, prio.poll().getKey());
         }
 
-        Map<Integer, String> sorted = new LinkedHashMap<>();
-
-        prods.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
-                .forEachOrdered(x -> sorted.put(x.getKey(), x.getValue()));
-
-        return sorted.values().stream().limit(N).collect(Collectors.toList());
+        return list;
     }
 
     public double getFaturacao() {
@@ -103,15 +89,34 @@ public class Faturacao implements IFaturacao, Serializable {
             fat += faturacao[i];
         }
 
-        /*
-        for (Map<String, IQuantMoney[]> letter : productSide.values()) {
-            for (IQuantMoney[] as : letter.values()) {
-                for (int i = 0; i < 12; i++) {
-                    fat += as[i].getReceita();
-                }
-            }
-        }
-         */
         return fat;
+    }
+
+    public IGlobalRep getOverall(int n_filiais) {
+        IGlobalRep igr = new GlobalRep(n_filiais);
+        produtos.values().forEach(l -> addToGlobal(igr, l));
+        return igr;
+    }
+
+    private void addToGlobal(IGlobalRep igp, List<FatProd> l) {
+        for (FatProd f : l) {
+            if (f.getFilial() <= igp.getNumFiliais())
+                igp.addToFilial(f.getFilial(), f.getMes(), f.getReceita());
+        }
+    }
+
+    private void safeGuardProduto(String prodCode) throws ProdutoInexistenteException {
+        if (!produtos.containsKey(prodCode))
+            throw new ProdutoInexistenteException("O produto " + prodCode + " nao esta inserido!");
+    }
+
+    private int sumQuants(List<FatProd> l) {
+        int r = 0;
+
+        for (FatProd fp : l) {
+            r += fp.getQuantidade();
+        }
+
+        return r;
     }
 }

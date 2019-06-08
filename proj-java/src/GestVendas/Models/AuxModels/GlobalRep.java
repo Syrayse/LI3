@@ -99,7 +99,7 @@ public class GlobalRep implements IGlobalRep, Serializable {
             sb.append(String.format("%d\t\t\t", i));
 
             for (int j = 1; j <= meses; j++) {
-                sb.append(String.format("  %8.2f\t", getTotal(i, j)));
+                sb.append(String.format("  %9.2f\t", getTotal(i, j)));
             }
 
             sb.append("\n");
@@ -108,7 +108,7 @@ public class GlobalRep implements IGlobalRep, Serializable {
         sb.append("Total\t\t");
 
         for (int j = 1; j <= meses; j++) {
-            sb.append(String.format("  %8.2f\t", getTotal(j)));
+            sb.append(String.format("  %9.2f\t", getTotal(j)));
         }
 
         return sb.toString();
