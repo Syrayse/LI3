@@ -1,0 +1,8 @@
+GestVendas
+GestVendas.Exceptions
+GestVendas.lib
+GestVendas.Models
+GestVendas.Models.AuxModels
+GestVendas.Models.BaseModels
+GestVendas.Models.Catalogs
+GestVendas.Views
