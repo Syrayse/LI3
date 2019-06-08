@@ -75,7 +75,6 @@ public class Faturacao implements IFaturacao, Serializable {
         if (res == null) {
             throw new ProdutoInexistenteException();
         }
-        System.out.println(res.getNumFiliais());
 
         return res;
     }
