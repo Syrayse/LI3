@@ -44,8 +44,8 @@ public class Faturacao implements IFaturacao, Serializable {
         if (arr == null)
             arr = new MonthlyRep();
 
-        maps.addToFilial(fil, mes, receita);
-        arr.addToMonth(mes, quantidade);
+        maps = maps.addToFilial(fil, mes, receita);
+        arr = arr.addToMonth(mes, quantidade);
 
         productSideFat.put(codProd, maps);
         productSideVendas.put(codProd, arr);

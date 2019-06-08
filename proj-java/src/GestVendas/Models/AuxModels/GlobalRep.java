@@ -51,16 +51,20 @@ public class GlobalRep implements IGlobalRep, Serializable {
 
             quanto = amounts.get(mes - 1) + val;
 
+            amounts.remove(mes - 1);
             amounts.add(mes - 1, quanto);
 
+            global.remove(filial);
             global.add(filial, amounts);
 
             amountsG = amountsG == null ? makeMonthly() : amountsG;
 
             quanto = amountsG.get(mes - 1) + val;
 
+            amountsG.remove(mes - 1);
             amountsG.add(mes - 1, quanto);
 
+            global.remove(0);
             global.add(0, amountsG);
         }
         return this;
