@@ -1,8 +1,9 @@
 package GestVendas.Models;
 
-import GestVendas.Comparators.CompMaisGasto;
 import GestVendas.Exceptions.ProdutoInexistenteException;
-import GestVendas.Models.AuxModels.*;
+import GestVendas.Models.AuxModels.FatProd;
+import GestVendas.Models.AuxModels.IGlobalRep;
+import GestVendas.Models.AuxModels.MonthlyRep;
 import GestVendas.lib.Common;
 
 import java.io.Serializable;
@@ -11,8 +12,7 @@ import java.util.stream.Collectors;
 
 public class Faturacao implements IFaturacao, Serializable {
 
-    private Map<String, IGlobalRep> productSideFat;
-    private Map<String, IMonthlyRep> productSideVendas;
+    private Map<String, List<FatProd>> produtos;
     private int[] numVendas;
     private double[] faturacao;
 
@@ -27,28 +27,19 @@ public class Faturacao implements IFaturacao, Serializable {
             faturacao [i] = 0.0;
         }
 
-        productSideFat = new HashMap<>();
-        productSideVendas = new HashMap<>();
+        produtos = new HashMap<>();
     }
 
     public IFaturacao insereVenda(String codProd, int mes, int quantidade, double receita, int fil) {
 
-        IGlobalRep maps;
-        IMonthlyRep arr;
+        List<FatProd> list = produtos.get(codProd);
 
-        maps = productSideFat.get(codProd);
-        arr = productSideVendas.get(codProd);
+        if (list == null)
+            list = new ArrayList<>(5);
 
-        if (maps == null)
-            maps = new GlobalRep(3);
-        if (arr == null)
-            arr = new MonthlyRep();
+        list.add(new FatProd(fil, mes, quantidade, receita));
 
-        maps = maps.addToFilial(fil, mes, receita);
-        arr = arr.addToMonth(mes, quantidade);
-
-        productSideFat.put(codProd, maps);
-        productSideVendas.put(codProd, arr);
+        produtos.put(codProd, list);
 
         numVendas[mes - 1] += quantidade;
         faturacao[mes - 1] += receita;
