@@ -236,15 +236,15 @@ public interface InterfGereVendasModel {
      * @return Uma lista com o código dos top 3 clientes que mais dinheiro gastaram numa dada filial.
      * @throws FilialInvalidException Caso a filial indicada não exista.
      */
-    List<String> getTop3Compradores(int filial) throws FilialInvalidException;
+    List<Par<String, Double>> getTop3Compradores(int filial) throws FilialInvalidException;
 
     /**
-     * Calcula um TreeSet com pares, que associa a cada cliente o número de produtos distintos comprados.
+     * Calcula uma lista com pares, que associa a cada cliente o número de produtos distintos comprados.
      * Ordenado por ordem decrescente do número de produtos distintos comprados.
-     * @param N Tamanho máximo do TreeSet.
-     * @return O TreeSet calculado.
+     * @param N Tamanho máximo da lista.
+     * @return A lista calculada.
      */
-    TreeSet<Par<String,Integer>> getTopNVersatileClientes(int N);
+    List<Par<String, Integer>> getTopNVersatileClientes(int N);
 
     /**
      * Calcula uma lista com pares, que associada a cada cliente o montante gasto no produto indicado.

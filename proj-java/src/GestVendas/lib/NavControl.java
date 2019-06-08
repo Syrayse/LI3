@@ -112,10 +112,10 @@ public class NavControl<E> implements INavControl<E> {
 
         view.printHeader(title, "BLUE");
 
-        for (int i = init; i < end && i < size; i++) {
+        for (int i = init; i < N_LINS && i < size; i++) {
 
             for (int j = 0; j < N_COLS && (j * N_LINS + i) < size; j++) {
-                line = String.format("%5d: %s\t", j + 1, print_function.apply(dict.get(j)));
+                line = String.format("%5d: %s\t", (j * N_LINS + i) + 1, print_function.apply(dict.get(j * N_LINS + i)));
                 content.append(line);
             }
 

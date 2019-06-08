@@ -132,6 +132,9 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     public InterfGereVendasModel setVendas(String file, int n_filiais) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(file));
         String[] tokens;
+        String codeProd, codeCliente;
+        int quant, mes;
+        double rev;
 
         this.vendasZero = 0;
         this.vendasErradas = 0;
@@ -151,8 +154,14 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
             if (validateVendaCode(tokens)) {
                 IVenda venda = new Venda(tokens);
 
-                // Fazer outras cenas
+                codeProd = venda.getCodigoProduto();
+                codeCliente = venda.getCodigoCliente();
+                quant = venda.getUnidades();
+                rev = venda.getReceita();
+                mes = venda.getMes();
 
+                global.insereVenda(codeCliente, codeProd, mes, quant, rev);
+                filiais.get(venda.getFilial() - 1).insereVenda(codeCliente, codeProd, mes, quant, rev);
                 if (venda.getPreco() == 0.0)
                     this.vendasZero++;
 
@@ -306,13 +315,13 @@ public class GereVendasModel implements InterfGereVendasModel, Serializable {
     }
 
     // Q7
-    public List<String> getTop3Compradores(int filial) throws FilialInvalidException {
+    public List<Par<String, Double>> getTop3Compradores(int filial) throws FilialInvalidException {
         safeGuardFilial(filial);
         return filiais.get(filial - 1).getTop3Compradores();
     }
 
     // Q8
-    public TreeSet<Par<String,Integer>> getTopNVersatileClientes(int N) {
+    public List<Par<String, Integer>> getTopNVersatileClientes(int N) {
         return global.getTopNVersatileClientes(N);
     }
 

@@ -24,7 +24,7 @@ public class Par<K, V> implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Par<?, ?> par = (Par<?, ?>) o;
+        Par<K, V> par = (Par<K, V>) o;
         return key.equals(par.getKey()) &&
                 value.equals(par.getValue());
     }

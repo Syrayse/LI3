@@ -14,6 +14,18 @@ import java.util.TreeSet;
 public interface IFilial {
 
     /**
+     * Adiciona um registo de venda à filial.
+     *
+     * @param codCliente Código do cliente.
+     * @param codProd    Código do produto.
+     * @param mes        Mês em que ocorreu a venda.
+     * @param quantidade Quantidade transaccionada.
+     * @param receita    Receita total originada da venda.
+     * @return A Filial com uma nova venda.
+     */
+    IFilial insereVenda(String codCliente, String codProd, int mes, int quantidade, double receita);
+
+    /**
      * Calcula o número total de vendas na filial.
      *
      * @return O número total de vendas na filial.
@@ -55,7 +67,7 @@ public interface IFilial {
      * Indica uma lista com o código dos top 3 clientes que mais dinheiro gastaram naquela filial.
      * @return Lista com o código dos top 3 clientes que mais dinheiro gastaram naquela filial.
      */
-    List<String> getTop3Compradores();
+    List<Par<String, Double>> getTop3Compradores();
 
     /**
      * Calcula uma estrutura com a informação mensal associada a um cliente.
@@ -83,12 +95,12 @@ public interface IFilial {
     TreeSet<Par<String, Integer>> getClientesProductSum(String clientCode) throws ClienteInexistenteException;
 
     /**
-     * Calcula um TreeSet de pares, que associam a cada cliente o número de produtos distintos que este comprou.
+     * Calcula uma lista de pares, que associam a cada cliente o número de produtos distintos que este comprou.
      * Ordenado por ordem decrescente do número distinto de produtos comprados.
-     * @param N Tamanho máximo do TreeSet
+     * @param N Tamanho máximo da lista.
      * @return O TreeSet Calculado.
      */
-    TreeSet<Par<String, Integer>> getTopNVersatileClientes(int N);
+    List<Par<String, Integer>> getTopNVersatileClientes(int N);
 
     /**
      * Calcula uma lista de pares, que associam a cada cliente o valor gasto num dado produto.

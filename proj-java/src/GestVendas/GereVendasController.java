@@ -401,14 +401,14 @@ public class GereVendasController implements InterfGereVendasController, Seriali
 
                     try {
                         Crono.start();
-                        List<String> t4 = model.getTop3Compradores(n);
+                        List<Par<String, Double>> t4 = model.getTop3Compradores(n);
                         view.imprimeLinha("CPU Time: " + Crono.stop());
                         Input.lerString();
 
                         this.useNavControl(new NavControl<>(
-                                "Top 3 Maiores Compradores na Filial " + n,
+                                "Top " + t4.size() + " Maiores Compradores na Filial " + n,
                                 t4,
-                                s -> s,
+                                s -> String.format("%s, gastou: %f", s.getKey(), s.getValue()),
                                 view
                         ));
                     } catch (FilialInvalidException fie) {
@@ -421,12 +421,12 @@ public class GereVendasController implements InterfGereVendasController, Seriali
                     n = Input.lerInt();
 
                     Crono.start();
-                    TreeSet<Par<String, Integer>> t5 = model.getTopNVersatileClientes(n);
+                    List<Par<String, Integer>> t5 = model.getTopNVersatileClientes(n);
                     view.imprimeLinha("CPU Time: " + Crono.stop());
                     Input.lerString();
 
                     this.useNavControl(new NavControl<>(
-                            "Top " + n + " Clientes de Produtos Distintos",
+                            "Top " + t5.size() + " Clientes de Produtos Distintos",
                             t5,
                             p -> String.format("%s, distintos:%5d", p.getKey(), p.getValue()),
                             view
@@ -487,7 +487,7 @@ public class GereVendasController implements InterfGereVendasController, Seriali
             view.clearScreen();
             navigator.showPage();
             view.listOptions();
-            i = 0;
+            i = Input.lerInt();
             switch (i) {
                 case 0:
                     in = false;

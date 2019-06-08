@@ -2,10 +2,11 @@ package GestVendas.Models.AuxModels;
 
 import GestVendas.lib.Common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonthlyRep implements IMonthlyRep {
+public class MonthlyRep implements IMonthlyRep, Serializable {
 
     private List<Integer> monthly;
 

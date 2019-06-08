@@ -2,10 +2,11 @@ package GestVendas.Models.AuxModels;
 
 import GestVendas.lib.Common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlobalRep implements IGlobalRep {
+public class GlobalRep implements IGlobalRep, Serializable {
 
     List<List<Double>> global;
 
