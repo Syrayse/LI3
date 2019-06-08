@@ -3,6 +3,7 @@ package GestVendas.Models;
 import GestVendas.Exceptions.ProdutoInexistenteException;
 import GestVendas.Models.AuxModels.IGlobalRep;
 import GestVendas.Models.AuxModels.IQuantMoney;
+import GestVendas.lib.Common;
 
 import java.io.Serializable;
 import java.util.*;
@@ -12,8 +13,18 @@ public class Faturacao implements IFaturacao, Serializable {
     private Map<String, Map<String, IQuantMoney[]>> productSide;
     private int[] numVendas;
     private double[] faturacao;
+    private static int meses = Common.MES_MAX;
 
+    public Faturacao() {
+        numVendas = new int[meses];
+        faturacao = new double[meses];
+        productSide = new HashMap<>();
 
+        for (int i = 0; i < meses; i++) {
+            numVendas[i] = 0;
+            faturacao[i] = 0.0;
+        }
+    }
 
     public int getNumVendas(int mes) {
         return numVendas[mes - 1];
