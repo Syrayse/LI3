@@ -87,7 +87,7 @@ public class NavControl<E> implements INavControl<E> {
         int perPage = NavControl.N_PER_PAGE;
 
         if (init < perPage) {
-            page = (size / perPage) + 1;
+            page = ((size - 1) / perPage) + 1;
 
             end = page * perPage;
 

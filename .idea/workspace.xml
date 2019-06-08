@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c9fdaa6e-cc24-4dfd-87ff-474f66e7ddab" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasController.java" beforeDir="false" afterPath="$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proj-java/src/GestVendas/Models/Faturacao.java" beforeDir="false" afterPath="$PROJECT_DIR$/proj-java/src/GestVendas/Models/Faturacao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proj-java/src/GestVendas/Models/IFaturacao.java" beforeDir="false" afterPath="$PROJECT_DIR$/proj-java/src/GestVendas/Models/IFaturacao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proj-java/src/GestVendas/lib/NavControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/proj-java/src/GestVendas/lib/NavControl.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,12 +22,12 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasModel.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="100">
+                <state relative-caret-position="3120">
                   <caret line="260" column="50" selection-start-line="260" selection-start-column="50" selection-end-line="260" selection-end-column="50" />
                   <folding>
                     <element signature="imports" expanded="true" />
                     <element signature="e#7269#7270#0" expanded="true" />
-                    <element signature="e#7309#7310#0" expanded="true" />
+                    <element signature="e#7328#7329#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -39,8 +36,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/IFaturacao.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="709">
-                  <caret line="63" column="45" selection-start-line="63" selection-start-column="45" selection-end-line="63" selection-end-column="45" />
+                <state relative-caret-position="900">
+                  <caret line="64" column="45" selection-start-line="64" selection-start-column="45" selection-end-line="64" selection-end-column="45" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -51,8 +48,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/InterfGereVendasModel.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="155">
-                  <caret line="226" column="60" lean-forward="true" selection-start-line="226" selection-start-column="60" selection-end-line="226" selection-end-column="60" />
+                <state relative-caret-position="3225">
+                  <caret line="226" column="60" selection-start-line="226" selection-start-column="60" selection-end-line="226" selection-end-column="60" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -64,7 +61,19 @@
             <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/Catalogs/CatProdutos.java">
               <provider selected="true" editor-type-id="text-editor">
                 <state>
-                  <caret column="35" lean-forward="true" selection-start-column="35" selection-end-column="35" />
+                  <caret column="35" selection-start-column="35" selection-end-column="35" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/GlobalRep.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="531">
+                  <caret line="108" lean-forward="true" selection-start-line="108" selection-end-line="108" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -75,20 +84,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/Faturacao.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1140">
-                  <caret line="82" column="9" lean-forward="true" selection-start-line="82" selection-start-column="9" selection-end-line="82" selection-end-column="9" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasController.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="233">
-                  <caret line="248" column="38" selection-start-line="248" selection-start-column="38" selection-end-line="248" selection-end-column="38" />
+                <state relative-caret-position="975">
+                  <caret line="79" column="9" selection-start-line="79" selection-start-column="9" selection-end-line="79" selection-end-column="9" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -97,10 +94,13 @@
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/InterfInfoMensal.java">
+            <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasController.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1035">
-                  <caret line="69" column="4" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="29" />
+                <state relative-caret-position="3465">
+                  <caret line="248" column="38" selection-start-line="248" selection-start-column="38" selection-end-line="248" selection-end-column="38" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -129,11 +129,11 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/lib/NavControl.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1260">
-                  <caret line="89" column="39" selection-start-line="89" selection-start-column="39" selection-end-line="89" selection-end-column="39" />
+                <state relative-caret-position="370">
+                  <caret line="101" lean-forward="true" selection-start-line="101" selection-end-line="101" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -179,7 +179,7 @@
             <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/FatProd.java">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="300">
-                  <caret line="20" column="22" lean-forward="true" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
+                  <caret line="20" column="22" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
                   <folding>
                     <element signature="e#626#627#0" expanded="true" />
                     <element signature="e#659#660#0" expanded="true" />
@@ -192,7 +192,7 @@
             <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/IGlobalRep.java">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="368">
-                  <caret line="40" column="7" lean-forward="true" selection-start-line="40" selection-start-column="7" selection-end-line="40" selection-end-column="7" />
+                  <caret line="40" column="7" selection-start-line="40" selection-start-column="7" selection-end-line="40" selection-end-column="7" />
                 </state>
               </provider>
             </entry>
@@ -256,21 +256,20 @@
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/InterfGereVendasModel.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/IFilial.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/MonthlyRep.java" />
-        <option value="$PROJECT_DIR$/proj-java/src/GestVendas/lib/NavControl.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/InterfInfoMensal.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/Filial.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/InfoMensal.java" />
-        <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/GlobalRep.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/FatProd.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/IFaturacao.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasModel.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/Faturacao.java" />
         <option value="$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasController.java" />
+        <option value="$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/GlobalRep.java" />
+        <option value="$PROJECT_DIR$/proj-java/src/GestVendas/lib/NavControl.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="960" />
+  <component name="ProjectFrameBounds" extendedState="4">
     <option name="y" value="25" />
     <option name="width" value="960" />
     <option name="height" value="1055" />
@@ -281,8 +280,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -356,6 +353,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -419,7 +418,8 @@
       <workItem from="1560001532709" duration="11638000" />
       <workItem from="1560016414599" duration="2192000" />
       <workItem from="1560021796915" duration="510000" />
-      <workItem from="1560022644401" duration="1257000" />
+      <workItem from="1560022644401" duration="1404000" />
+      <workItem from="1560026685846" duration="919000" />
     </task>
     <task id="LOCAL-00001" summary="sm">
       <created>1557484186442</created>
@@ -512,15 +512,21 @@
       <option name="project" value="LOCAL" />
       <updated>1560022170106</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="versao mais eficiente da faturacao">
+      <created>1560023988177</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1560023988177</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="94122000" />
+    <option name="totallyTimeSpent" value="95188000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1920" height="1055" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="25" width="960" height="1055" extended-state="4" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="1" />
@@ -528,7 +534,7 @@
       <window_info id="UI Designer" order="3" />
       <window_info id="Capture Tool" order="4" />
       <window_info id="Favorites" order="5" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="6" visible="true" weight="0.24172892" />
+      <window_info content_ui="combo" id="Project" order="6" visible="true" weight="0.5010941" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32829374" />
       <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33693305" />
@@ -602,7 +608,8 @@
     <MESSAGE value="quase todas" />
     <MESSAGE value="FINAL touches" />
     <MESSAGE value="alterar cenas no faturacao" />
-    <option name="LAST_COMMIT_MESSAGE" value="alterar cenas no faturacao" />
+    <MESSAGE value="versao mais eficiente da faturacao" />
+    <option name="LAST_COMMIT_MESSAGE" value="versao mais eficiente da faturacao" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -809,20 +816,72 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/GlobalRep.java">
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/InterfInfoMensal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1590">
-          <caret line="122" column="5" selection-start-line="122" selection-start-column="5" selection-end-line="122" selection-end-column="5" />
+        <state relative-caret-position="1035">
+          <caret line="69" column="4" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3120">
+          <caret line="260" column="50" selection-start-line="260" selection-start-column="50" selection-end-line="260" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#7269#7270#0" expanded="true" />
+            <element signature="e#7328#7329#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/IFaturacao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="900">
+          <caret line="64" column="45" selection-start-line="64" selection-start-column="45" selection-end-line="64" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/InterfInfoMensal.java">
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/InterfGereVendasModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1035">
-          <caret line="69" column="4" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="29" />
+        <state relative-caret-position="3225">
+          <caret line="226" column="60" selection-start-line="226" selection-start-column="60" selection-end-line="226" selection-end-column="60" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/Catalogs/CatProdutos.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="35" selection-start-column="35" selection-end-column="35" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/Faturacao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="975">
+          <caret line="79" column="9" selection-start-line="79" selection-start-column="9" selection-end-line="79" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3465">
+          <caret line="248" column="38" selection-start-line="248" selection-start-column="38" selection-end-line="248" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -840,16 +899,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
           <caret line="31" column="32" selection-start-line="31" selection-start-column="32" selection-end-line="31" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/lib/NavControl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="89" column="39" selection-start-line="89" selection-start-column="39" selection-end-line="89" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -882,20 +931,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/Catalogs/CatProdutos.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="35" lean-forward="true" selection-start-column="35" selection-end-column="35" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/FatProd.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
-          <caret line="20" column="22" lean-forward="true" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
+          <caret line="20" column="22" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
           <folding>
             <element signature="e#626#627#0" expanded="true" />
             <element signature="e#659#660#0" expanded="true" />
@@ -906,56 +945,24 @@
     <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/IGlobalRep.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
-          <caret line="40" column="7" lean-forward="true" selection-start-line="40" selection-start-column="7" selection-end-line="40" selection-end-column="7" />
+          <caret line="40" column="7" selection-start-line="40" selection-start-column="7" selection-end-line="40" selection-end-column="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasModel.java">
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/AuxModels/GlobalRep.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="260" column="50" selection-start-line="260" selection-start-column="50" selection-end-line="260" selection-end-column="50" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#7269#7270#0" expanded="true" />
-            <element signature="e#7309#7310#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/IFaturacao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="709">
-          <caret line="63" column="45" selection-start-line="63" selection-start-column="45" selection-end-line="63" selection-end-column="45" />
+        <state relative-caret-position="531">
+          <caret line="108" lean-forward="true" selection-start-line="108" selection-end-line="108" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/Models/Faturacao.java">
+    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/lib/NavControl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1140">
-          <caret line="82" column="9" lean-forward="true" selection-start-line="82" selection-start-column="9" selection-end-line="82" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/InterfGereVendasModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="226" column="60" lean-forward="true" selection-start-line="226" selection-start-column="60" selection-end-line="226" selection-end-column="60" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proj-java/src/GestVendas/GereVendasController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="248" column="38" selection-start-line="248" selection-start-column="38" selection-end-line="248" selection-end-column="38" />
+        <state relative-caret-position="370">
+          <caret line="101" lean-forward="true" selection-start-line="101" selection-end-line="101" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
