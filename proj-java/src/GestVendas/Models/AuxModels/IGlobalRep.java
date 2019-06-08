@@ -30,6 +30,8 @@ public interface IGlobalRep {
      */
     double getTotal(int mes);
 
+    int getNumFiliais();
+
     /**
      * Representação em string da estrutura.
      * @return Representação em string da estrutura.

@@ -18,7 +18,11 @@ public class GlobalRep implements IGlobalRep, Serializable {
         global = new ArrayList<>(filial + 1);
 
         for (int i = 0; i <= filial; i++) {
-            global.add(i, makeMonthly());
+            List<Double> mensal = new ArrayList<>(12);
+            for (int j = 0; j < 12; j++) {
+                mensal.add(0.0);
+            }
+            global.add(i, mensal);
         }
     }
 
@@ -41,6 +45,7 @@ public class GlobalRep implements IGlobalRep, Serializable {
         if (filial > 0) {
             double quanto;
             List<Double> amounts = global.get(filial);
+            List<Double> amountsG = global.get(0);
 
             amounts = amounts == null ? makeMonthly() : amounts;
 
@@ -50,13 +55,13 @@ public class GlobalRep implements IGlobalRep, Serializable {
 
             global.add(filial, amounts);
 
-            amounts = global.get(0);
+            amountsG = amountsG == null ? makeMonthly() : amountsG;
 
-            quanto = amounts.get(mes - 1) + val;
+            quanto = amountsG.get(mes - 1) + val;
 
-            amounts.add(mes - 1, quanto);
+            amountsG.add(mes - 1, quanto);
 
-            global.add(0, amounts);
+            global.add(0, amountsG);
         }
         return this;
     }
@@ -84,19 +89,19 @@ public class GlobalRep implements IGlobalRep, Serializable {
 
         sb.append("\n");
 
-        sb.append("FILIAIS\t");
+        sb.append("FILIAIS\n");
 
         for (int i = 1; i <= filiais; i++) {
-            sb.append(String.format("%d\t\t", i));
+            sb.append(String.format("%d\t\t\t", i));
 
-            for (int j = 1; j <= meses; i++) {
+            for (int j = 1; j <= meses; j++) {
                 sb.append(String.format("   %6.2f   ", getTotal(i, j)));
             }
 
             sb.append("\n");
         }
 
-        sb.append("Global\t");
+        sb.append("Global\t\t");
 
         for (int j = 1; j <= meses; j++) {
             sb.append(String.format("   %6.2f   ", getTotal(j)));

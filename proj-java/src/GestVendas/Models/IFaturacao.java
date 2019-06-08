@@ -11,6 +11,8 @@ import java.util.Set;
  */
 public interface IFaturacao {
 
+    IFaturacao insereVenda(String codProd, int mes, int quantidade, double receita, int fil);
+
     /**
      * Calcula o número de vendas num dado mês.
      *
